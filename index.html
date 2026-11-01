@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Музей Завидовской школы</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-glow" aria-hidden="true"></div>
+
+  <header class="hero">
+    <div class="title-row">
+      <h1 class="site-title">Музей Завидовской школы</h1>
+      <span class="emblem-crop coat">
+        <img
+          class="coat-of-arms"
+          src="images/coat_of_arms_of_the_Konakovsky_District.png"
+          alt="Герб Конаковского округа"
+        />
+      </span>
+    </div>
+
+    <div class="location-line">
+      <p class="location-text">
+        Тверская область, Конаковский МО, с.&nbsp;Завидово, ул.&nbsp;Школьная, д.&nbsp;12, 171275
+      </p>
+      <div class="location-marks">
+        <span class="red-pin" aria-hidden="true" title="Отметка на карте"></span>
+        <span class="emblem-crop flag">
+          <img
+            class="region-flag"
+            src="images/Flag_of_Tver_Oblast.png"
+            alt="Флаг Тверской области"
+          />
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="gallery-section" aria-label="Фотографии школы и музея">
+      <div class="gallery-shell">
+        <div class="carousel" id="carousel">
+          <div class="track" id="track"></div>
+          <button class="nav-btn prev" type="button" aria-label="Предыдущее фото">
+            <span></span>
+          </button>
+          <button class="nav-btn next" type="button" aria-label="Следующее фото">
+            <span></span>
+          </button>
+          <button class="fullscreen-btn" id="galleryFullscreenBtn" type="button" aria-label="Открыть фото на весь экран">
+            ⛶
+          </button>
+        </div>
+      </div>
+
+      <div class="dots" id="dots" role="tablist" aria-label="Навигация по фотографиям"></div>
+    </section>
+
+    <section class="about" aria-labelledby="about-heading">
+      <h2 id="about-heading">О школе и музее</h2>
+      <div class="about-text" id="aboutText"></div>
+    </section>
+
+    <section class="cta">
+      <button class="walk-btn" id="walkBtn" type="button">
+        Пройтись по музею?
+      </button>
+    </section>
+
+    <section class="socials" aria-label="Мы в социальных сетях">
+      <a class="social-card" id="maxLink" href="https://max.ru/id6911016133_gos" target="_blank" rel="noopener noreferrer">
+        <img src="images/MAX_logo.png" alt="MAX" />
+        <div>
+          <strong>Мы в MAX!</strong>
+          <span>Перейти в сообщество</span>
+        </div>
+      </a>
+      <a class="social-card" id="vkLink" href="https://vk.ru/club181865686" target="_blank" rel="noopener noreferrer">
+        <img src="images/VK_logo.png" alt="VK" />
+        <div>
+          <strong>Мы в VK!</strong>
+          <span>Перейти в сообщество</span>
+        </div>
+      </a>
+    </section>
+  </main>
+
+  <footer>
+    <p>Музей Завидовской средней общеобразовательной школы</p>
+  </footer>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lightbox-backdrop" data-close-lightbox></div>
+    <button class="close-x" type="button" id="closeLightbox" aria-label="Закрыть полноэкранный просмотр">×</button>
+    <button class="nav-btn prev lightbox-nav" type="button" id="lightboxPrev" aria-label="Предыдущее фото">
+      <span></span>
+    </button>
+    <img id="lightboxImage" alt="" />
+    <button class="nav-btn next lightbox-nav" type="button" id="lightboxNext" aria-label="Следующее фото">
+      <span></span>
+    </button>
+    <p class="lightbox-caption" id="lightboxCaption"></p>
+  </div>
+
+  <div class="exhibit" id="exhibit" aria-hidden="true">
+    <div class="exhibit-blur" id="exhibitBlur"></div>
+    <div class="exhibit-dim"></div>
+    <button class="close-x exhibit-close" type="button" id="closeExhibit" aria-label="Закрыть">×</button>
+    <article class="exhibit-card">
+      <div class="exhibit-visual" id="exhibitVisual">
+        <div class="exhibit-shot">
+          <img class="exhibit-photo" id="exhibitPhoto" alt="" />
+          <div class="nested-markers" id="exhibitMarkers"></div>
+        </div>
+      </div>
+      <div class="exhibit-copy">
+        <h3 class="exhibit-title" id="exhibitTitle"></h3>
+        <p class="exhibit-text" id="exhibitText"></p>
+        <button class="audio-toggle" id="audioToggle" type="button" aria-label="Слушать аудиозапись" aria-pressed="false" hidden>
+          <svg class="audio-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <path class="audio-speaker" d="M4 12h6l7-6v20l-7-6H4z" />
+            <path class="audio-wave" d="M22 11a7 7 0 0 1 0 10m3-14a12 12 0 0 1 0 18" />
+            <path class="audio-play" d="m13 12 7 4-7 4z" />
+            <path class="audio-stop" d="M13 12h7v8h-7z" />
+          </svg>
+          <span id="audioToggleLabel">Слушать аудио</span>
+        </button>
+        <audio class="exhibit-audio" id="exhibitAudio" preload="metadata" hidden aria-label="Аудиозапись экспоната"></audio>
+        <p class="audio-status" id="audioStatus" role="status" hidden>Аудиодорожка недоступна.</p>
+      </div>
+    </article>
+  </div>
+
+  <div class="tour" id="tour" aria-hidden="true">
+    <div class="tour-viewport" id="tourViewport">
+      <div class="tour-world" id="tourWorld">
+        <div class="map-frame" id="mapFrame">
+          <img class="map-photo" id="mapImage" src="images/interior_of_the_museum_entrance.png" alt="Схема входа в музей" />
+          <div class="map-markers" id="mapMarkers"></div>
+        </div>
+      </div>
+    </div>
+    <button class="tour-exit" id="tourExit" type="button" aria-label="Выйти из виртуальной экскурсии">
+      <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+        <path d="M9 42V7.5h22V42" />
+        <path d="M14 42V12h12v30" />
+        <circle cx="22" cy="27" r="1.2" />
+        <path d="M24 27h17m-6-6 6 6-6 6" />
+      </svg>
+      <span>Выйти</span>
+    </button>
+    <aside class="tour-hint" id="tourHint" hidden>
+      <button class="hint-close" type="button" id="closeHint" aria-label="Закрыть подсказку">×</button>
+      <p>Чтобы узнать информацию о любом интересующем обьекте, нажмите на него пальцем(на телефоне или планшете) или мышкой(на PC, ноутбуке).</p>
+    </aside>
+  </div>
+
+  <div class="scene" id="scene" aria-hidden="true">
+    <div class="scene-viewport" id="sceneViewport">
+      <div class="scene-world" id="sceneWorld">
+        <div class="scene-frame" id="sceneFrame">
+          <img class="scene-photo" id="scenePhoto" alt="" />
+          <div class="nested-markers" id="sceneMarkers"></div>
+        </div>
+      </div>
+    </div>
+    <button class="close-x scene-close" type="button" id="closeScene" aria-label="Вернуться к карте музея">×</button>
+  </div>
+
+  <div class="book-view" id="bookView" aria-hidden="true">
+    <button class="close-x book-close" type="button" id="closeBook" aria-label="Закрыть книгу памяти">×</button>
+    <div class="book-toolbar">
+      <h3 class="book-title">Книга памяти 1941–1945</h3>
+      <p class="book-page-label" id="bookPageLabel"></p>
+    </div>
+    <div class="book-viewport" id="bookViewport">
+      <div class="book-world" id="bookWorld">
+        <div class="book3d" id="book3d">
+          <div class="book-leaf" id="bookLeaf">
+            <div class="leaf-face leaf-front">
+              <img id="bookFrontImg" alt="Страница книги памяти" />
+            </div>
+            <div class="leaf-face leaf-back">
+              <img id="bookBackImg" alt="" />
+            </div>
+          </div>
+          <img class="book-under" id="bookUnderImg" alt="" />
+        </div>
+      </div>
+    </div>
+    <button class="book-nav prev" type="button" id="bookPrev" aria-label="Предыдущая страница"></button>
+    <button class="book-nav next" type="button" id="bookNext" aria-label="Следующая страница"></button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
