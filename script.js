@@ -3,9 +3,9 @@ const TEXT_DIR = "Texts/";
 const AUDIO_DIR = "Audio/";
 
 const GALLERY = [
-  { file: "school_photo.jpg", caption: "Завидовская школа" },
-  { file: "museum_entrance.jpg", caption: "Вход в школьный музей" },
-  { file: "triptych_1.jpg", caption: "Триптих 1" },
+  { file: "school_photo.jpg", caption: "Завидовская школа", fillFrame: true },
+  { file: "museum_entrance.jpg", caption: "Вход в школьный музей", fillFrame: true },
+  { file: "triptych_1.jpg", caption: "Триптих 1", fillFrame: true },
   { file: "triptych_2.jpg", caption: "Триптих 2" },
   { file: "triptych_3.jpg", caption: "Триптих 3" },
   { file: "triptych_4.jpg", caption: "Триптих 4" },
@@ -163,12 +163,14 @@ Object.assign(EXHIBITS, {
     "Bratskaya_mogila_v_derevne_Arkhangelskoye_(IV)",
     "Братская могила в деревне Архангельское"
   ),
-  "Katyusha_(V)": makeExhibit("Katyusha_(V)", "Памятник «Катюша»"),
+  "Katyusha_(V)": makeExhibit("Katyusha_(V)", "Памятник «Катюша»", {
+    fallback: "Памятник «Катюша» напоминает о советской реактивной артиллерии, сыгравшей важную роль в годы Великой Отечественной войны. Название «Катюша» закрепилось за реактивными системами залпового огня и стало одним из узнаваемых символов военного времени. Экспонат посвящён памяти защитников Родины и их подвигу.",
+  }),
   "Memorial_Vasilkovskomu_(VI)": makeExhibit("Memorial_Vasilkovskomu_(VI)", "Мемориал Васильковскому"),
   "Bessmertny_Polk(7)_(VII)": makeExhibit("Bessmertny_Polk(7)_(VII)", "Дети на Бессмертном полку", { textFile: null }),
   "Bessmertny_Polk(7)_(VIII)": makeExhibit("Bessmertny_Polk(7)_(VIII)", "Встреча с духовенством", { textFile: null }),
   "Bessmertny_Polk(7)_(IX)": makeExhibit("Bessmertny_Polk(7)_(IX)", "Митинг у памятника", { textFile: null }),
-  "Bessmertny_Polk(7)_(X)": makeExhibit("Bessmertny_Polk(7)_(X)", "Церемония у клумбы", { textFile: null }),
+  "Bessmertny_Polk(7)_(X)": makeExhibit("Bessmertny_Polk(7)_(X)", "Панихида", { textFile: null }),
   "Bessmertny_Polk(7)_(XI)": makeExhibit("Bessmertny_Polk(7)_(XI)", "Возложение цветов", { textFile: null }),
   "Bessmertny_Polk(7)_(XII)": makeExhibit("Bessmertny_Polk(7)_(XII)", "Последний ветеран из Завидово", { textFile: null }),
   "Bessmertny_Polk(7)_(XIII)": makeExhibit("Bessmertny_Polk(7)_(XIII)", "Честь и память!", { textFile: null }),
@@ -321,13 +323,10 @@ const SCENES = {
   },
 };
 
-const BOOK_PAGES = [
-  { file: "kniga_pamyati(5).jpg", label: "Обложка" },
-  ...Array.from({ length: 14 }, (_, i) => ({
+const BOOK_PAGES = Array.from({ length: 14 }, (_, i) => ({
     file: `kniga_pamyati(5)_page_${i + 1}.jpg`,
     label: `Страница ${i + 1} из 14`,
-  })),
-];
+}));
 
 const ABOUT_FALLBACK = `Завидовская средняя общеобразовательная школа была основана в 1971 году. История нашего села и школы неразрывно связаны: именно появление учебного заведения придало мощный импульс развитию территории, сделав её многолюдной и процветающей. Родители учеников искренне стремились к тому, чтобы их дети получали качественное образование прямо на родной земле, избавляя семьи от необходимости уезжать в другие города и позволяя совместными усилиями развивать родное поселение.
 В истоках музея заложена инициатива Гореликова Валерия Петровича, возглавившего патриотический школьный кружок специализирующегося на раскопках и захоронениях останков советских бойцов. Находки от раскопок нужно было организовать в единое место, так и появился наш музей в 2009-м году. На этапе своего становления музей активно участвовал в профильных конкурсах и завоевал почетное первое место. Особо масштабный виток развития Завидовского музея пришелся на 2024–2026 годы.
@@ -415,7 +414,7 @@ function encodePath(dir, file) {
   return dir + encodeURIComponent(imageFile).replace(/%2F/g, "/");
 }
 
-function createPanZoom(viewport, world, onWheel = null) {
+function createPanZoom(viewport, world) {
   const state = { scale: 1, x: 0, y: 0, min: 1, max: 4.2 };
   let dragging = false;
   let lastX = 0;
@@ -452,10 +451,6 @@ function createPanZoom(viewport, world, onWheel = null) {
 
   viewport.addEventListener("wheel", (event) => {
     event.preventDefault();
-    if (onWheel) {
-      onWheel(event);
-      return;
-    }
     const rect = viewport.getBoundingClientRect();
     zoomAt(event.clientX - rect.left, event.clientY - rect.top, state.scale * (event.deltaY < 0 ? 1.12 : 1 / 1.12));
   }, { passive: false });
@@ -463,7 +458,7 @@ function createPanZoom(viewport, world, onWheel = null) {
   viewport.addEventListener("pointerdown", (event) => {
     if (event.target.closest("button")) return;
     pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-    viewport.setPointerCapture(event.pointerId);
+    if (viewport.setPointerCapture) viewport.setPointerCapture(event.pointerId);
     if (pointers.size === 1) {
       dragging = true;
       lastX = event.clientX;
@@ -498,8 +493,14 @@ function createPanZoom(viewport, world, onWheel = null) {
   });
 
   function endPointer(event) {
+    if (!pointers.has(event.pointerId)) return;
     pointers.delete(event.pointerId);
-    if (pointers.size === 0) {
+    if (pointers.size === 1) {
+      const remainingPointer = [...pointers.values()][0];
+      dragging = true;
+      lastX = remainingPointer.x;
+      lastY = remainingPointer.y;
+    } else if (pointers.size === 0) {
       dragging = false;
       viewport.classList.remove("is-panning");
     }
@@ -507,6 +508,7 @@ function createPanZoom(viewport, world, onWheel = null) {
 
   viewport.addEventListener("pointerup", endPointer);
   viewport.addEventListener("pointercancel", endPointer);
+  viewport.addEventListener("lostpointercapture", endPointer);
 
   return {
     state,
@@ -523,18 +525,7 @@ function createPanZoom(viewport, world, onWheel = null) {
 
 const mapZoom = createPanZoom(tourViewport, tourWorld);
 const sceneZoom = createPanZoom(sceneViewport, sceneWorld);
-const bookZoom = createPanZoom(bookViewport, bookWorld, (event) => {
-  if (event.ctrlKey || event.metaKey) {
-    const rect = bookViewport.getBoundingClientRect();
-    bookZoom.zoomAt(
-      event.clientX - rect.left,
-      event.clientY - rect.top,
-      bookZoom.state.scale * (event.deltaY < 0 ? 1.12 : 1 / 1.12)
-    );
-    return;
-  }
-  if (Math.abs(event.deltaY) >= 20) flipBook(event.deltaY > 0 ? 1 : -1);
-});
+const bookZoom = createPanZoom(bookViewport, bookWorld);
 
 function fitImageFrame(viewport, frame, img, zoomApi, padding = 0.96) {
   const vw = viewport.clientWidth;
@@ -562,6 +553,12 @@ function fitBook() {
 
 function fitGalleryImage(visual, img) {
   if (!img.naturalWidth || !img.naturalHeight) return;
+  if (visual.closest(".slide")?.dataset.fillFrame === "true") {
+    visual.style.width = `${carousel.clientWidth}px`;
+    visual.style.height = `${carousel.clientHeight}px`;
+    fitGalleryHotspots(visual, img);
+    return;
+  }
   const shell = carousel.parentElement;
   const shellStyle = getComputedStyle(shell);
   const maxWidth = Math.min(
@@ -580,6 +577,27 @@ function fitGalleryImage(visual, img) {
   visual.style.height = `${height}px`;
 }
 
+function fitGalleryHotspots(visual, img) {
+  const frameWidth = carousel.clientWidth;
+  const frameHeight = carousel.clientHeight;
+  const scale = Math.max(frameWidth / img.naturalWidth, frameHeight / img.naturalHeight);
+  const renderedWidth = img.naturalWidth * scale;
+  const renderedHeight = img.naturalHeight * scale;
+  const cropX = (renderedWidth - frameWidth) / 2;
+  const cropY = (renderedHeight - frameHeight) / 2;
+
+  visual.querySelectorAll(".hotspot").forEach((hotspot) => {
+    const sourceLeft = Number.parseFloat(hotspot.dataset.sourceLeft);
+    const sourceTop = Number.parseFloat(hotspot.dataset.sourceTop);
+    const sourceWidth = Number.parseFloat(hotspot.dataset.sourceWidth);
+    const sourceHeight = Number.parseFloat(hotspot.dataset.sourceHeight);
+    hotspot.style.left = `${(sourceLeft / 100 * renderedWidth - cropX) / frameWidth * 100}%`;
+    hotspot.style.top = `${(sourceTop / 100 * renderedHeight - cropY) / frameHeight * 100}%`;
+    hotspot.style.width = `${sourceWidth / 100 * renderedWidth / frameWidth * 100}%`;
+    hotspot.style.height = `${sourceHeight / 100 * renderedHeight / frameHeight * 100}%`;
+  });
+}
+
 function fitGalleryImages() {
   track.querySelectorAll(".slide-visual").forEach((visual) => {
     fitGalleryImage(visual, visual.querySelector(".slide-photo"));
@@ -594,6 +612,7 @@ function renderGallery() {
     const slide = document.createElement("article");
     slide.className = "slide";
     slide.dataset.index = String(i);
+    slide.dataset.fillFrame = String(Boolean(item.fillFrame));
 
     const frame = document.createElement("div");
     frame.className = "slide-frame";
@@ -621,6 +640,10 @@ function renderGallery() {
       hotspot.style.top = spot.top;
       hotspot.style.width = spot.width;
       hotspot.style.height = spot.height;
+      hotspot.dataset.sourceLeft = Number.parseFloat(spot.left);
+      hotspot.dataset.sourceTop = Number.parseFloat(spot.top);
+      hotspot.dataset.sourceWidth = Number.parseFloat(spot.width);
+      hotspot.dataset.sourceHeight = Number.parseFloat(spot.height);
       hotspot.setAttribute("aria-label", `Открыть информацию: ${EXHIBITS[spot.id]?.title || item.caption}`);
       const marker = document.createElement("span");
       marker.className = "marker";
@@ -976,6 +999,8 @@ function renderMapMarkers() {
     pin.style.top = item.top;
     pin.style.animationDelay = `${0.12 * i}s`;
     pin.setAttribute("aria-label", item.title);
+    pin.title = item.title;
+    if (item.id === "vipuskniki_1941g(9)") pin.classList.add("is-graduates-marker");
     const horizontalPosition = Number.parseFloat(item.left);
     pin.dataset.labelPosition = horizontalPosition > 80 ? "left" : horizontalPosition < 18 ? "right" : "below";
     const glow = document.createElement("span");
@@ -984,15 +1009,13 @@ function renderMapMarkers() {
     dot.className = "pin-dot";
     pin.append(glow, dot);
 
-    if (item.id !== "vipuskniki_1941g(9)") {
-      const label = document.createElement("span");
-      label.className = "pin-label";
-      const title = document.createElement("span");
-      title.className = "pin-label-text";
-      title.textContent = item.title;
-      label.appendChild(title);
-      pin.appendChild(label);
-    }
+    const label = document.createElement("span");
+    label.className = "pin-label";
+    const title = document.createElement("span");
+    title.className = "pin-label-text";
+    title.textContent = item.title;
+    label.appendChild(title);
+    pin.appendChild(label);
 
     pin.addEventListener("click", (event) => {
       event.stopPropagation();
@@ -1035,20 +1058,6 @@ function openTour() {
   tourHint.hidden = false;
   requestAnimationFrame(() => tourHint.classList.add("is-visible"));
 }
-
-function zoomMapBy(factor) {
-  const centerX = tourViewport.clientWidth / 2;
-  const centerY = tourViewport.clientHeight / 2;
-  mapZoom.zoomAt(centerX, centerY, mapZoom.state.scale * factor);
-}
-
-document.getElementById("mapZoomIn").addEventListener("click", () => zoomMapBy(1.3));
-document.getElementById("mapZoomOut").addEventListener("click", () => zoomMapBy(1 / 1.3));
-document.getElementById("mapZoomReset").addEventListener("click", () => {
-  if (mapImage.complete && mapImage.naturalWidth) {
-    fitImageFrame(tourViewport, mapFrame, mapImage, mapZoom);
-  }
-});
 
 function closeTour() {
   exhibitStack = [];
@@ -1255,33 +1264,6 @@ document.getElementById("closeScene").addEventListener("click", closeScene);
 document.getElementById("closeBook").addEventListener("click", closeBook);
 document.getElementById("bookPrev").addEventListener("click", () => flipBook(-1));
 document.getElementById("bookNext").addEventListener("click", () => flipBook(1));
-let bookSwipeStart = null;
-let suppressBookClickUntil = 0;
-bookViewport.addEventListener("pointerdown", (event) => {
-  bookSwipeStart = event.pointerType === "touch"
-    ? { x: event.clientX, y: event.clientY }
-    : null;
-});
-bookViewport.addEventListener("pointerup", (event) => {
-  if (!bookSwipeStart) return;
-  const deltaX = event.clientX - bookSwipeStart.x;
-  const deltaY = event.clientY - bookSwipeStart.y;
-  bookSwipeStart = null;
-  if (bookZoom.state.scale <= 1.05 && Math.abs(deltaY) > 50 && Math.abs(deltaY) > Math.abs(deltaX)) {
-    suppressBookClickUntil = performance.now() + 400;
-    flipBook(deltaY < 0 ? 1 : -1);
-  }
-});
-bookViewport.addEventListener("pointercancel", () => {
-  bookSwipeStart = null;
-});
-bookViewport.addEventListener("click", (event) => {
-  if (performance.now() < suppressBookClickUntil) return;
-  if (event.target.closest("button")) return;
-  const rect = book3d.getBoundingClientRect();
-  if (event.clientX > rect.left + rect.width * 0.62) flipBook(1);
-  else if (event.clientX < rect.left + rect.width * 0.38) flipBook(-1);
-});
 
 carousel.addEventListener("pointerdown", (event) => {
   startX = event.clientX;
