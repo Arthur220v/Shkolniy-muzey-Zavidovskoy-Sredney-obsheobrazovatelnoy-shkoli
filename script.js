@@ -382,13 +382,18 @@ const DEFAULT_LINKS = {
 };
 
 let index = 0;
+let galleryRequestId = 0;
+const galleryImageLoads = new Map();
 let startX = 0;
 let startY = 0;
 const textCache = {};
 let lightboxCloseTimer = 0;
+let lightboxRequestId = 0;
+let lightboxTargetIndex = 0;
 let exhibitCloseTimer = 0;
 let tourCloseTimer = 0;
 let sceneCloseTimer = 0;
+let sceneRequestId = 0;
 let bookCloseTimer = 0;
 let bookFlipTimer = 0;
 let bookFlipHandler = null;
@@ -404,7 +409,10 @@ if (window.matchMedia("(hover: none)").matches) {
 }
 
 function encodePath(dir, file) {
-  return dir + encodeURIComponent(file).replace(/%2F/g, "/");
+  const imageFile = dir === IMAGE_DIR && !/^kniga_pamyati/i.test(file)
+    ? file.replace(/\.(jpe?g)$/i, ".webp")
+    : file;
+  return dir + encodeURIComponent(imageFile).replace(/%2F/g, "/");
 }
 
 function createPanZoom(viewport, world, onWheel = null) {
@@ -556,8 +564,11 @@ function fitGalleryImage(visual, img) {
   if (!img.naturalWidth || !img.naturalHeight) return;
   const shell = carousel.parentElement;
   const shellStyle = getComputedStyle(shell);
-  const maxWidth = shell.clientWidth - parseFloat(shellStyle.paddingLeft) - parseFloat(shellStyle.paddingRight);
-  const maxHeight = Math.min(window.innerHeight * (window.matchMedia("(max-width: 560px)").matches ? 0.52 : 0.68), 620);
+  const maxWidth = Math.min(
+    shell.clientWidth - parseFloat(shellStyle.paddingLeft) - parseFloat(shellStyle.paddingRight),
+    carousel.clientWidth
+  ) * 0.96;
+  const maxHeight = carousel.clientHeight * 0.94;
   if (!maxWidth || !maxHeight) return;
   const scale = Math.min(
     maxWidth / img.naturalWidth,
@@ -567,10 +578,6 @@ function fitGalleryImage(visual, img) {
   const height = img.naturalHeight * scale;
   visual.style.width = `${width}px`;
   visual.style.height = `${height}px`;
-  if (visual.closest(".slide").classList.contains("is-active")) {
-    carousel.style.width = `${width}px`;
-    carousel.style.height = `${height}px`;
-  }
 }
 
 function fitGalleryImages() {
@@ -596,9 +603,14 @@ function renderGallery() {
 
     const img = document.createElement("img");
     img.className = "slide-photo";
-    img.src = encodePath(IMAGE_DIR, item.file);
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.dataset.src = encodePath(IMAGE_DIR, item.file);
     img.alt = item.caption;
     img.addEventListener("load", () => fitGalleryImage(visual, img));
+    img.addEventListener("error", () => {
+      console.error(`Не удалось загрузить фотографию «${item.caption}».`);
+    });
     visual.appendChild(img);
 
     (HOTSPOTS[i] || []).forEach((spot) => {
@@ -659,8 +671,40 @@ function isBookOpen() {
   return bookView.classList.contains("is-open");
 }
 
-function goTo(nextIndex, instant) {
-  index = (nextIndex + GALLERY.length) % GALLERY.length;
+function loadGalleryImage(slide) {
+  const image = slide.querySelector(".slide-photo");
+  if (image.complete && image.naturalWidth) return Promise.resolve(true);
+
+  const existingLoad = galleryImageLoads.get(image);
+  if (existingLoad) return existingLoad;
+
+  image.loading = "eager";
+  image.fetchPriority = "high";
+  image.src = image.dataset.src;
+  const load = decodeImage(image, GALLERY[Number(slide.dataset.index)].caption)
+    .finally(() => galleryImageLoads.delete(image));
+  galleryImageLoads.set(image, load);
+  return load;
+}
+
+function preloadNextGalleryImage(currentIndex) {
+  const nextIndex = (currentIndex + 1) % GALLERY.length;
+  const image = track.children[nextIndex].querySelector(".slide-photo");
+  if (image.complete && image.naturalWidth) return;
+  loadGalleryImage(track.children[nextIndex]);
+}
+
+async function goTo(nextIndex, instant) {
+  const requestedIndex = (nextIndex + GALLERY.length) % GALLERY.length;
+  const requestId = ++galleryRequestId;
+  const imageReady = await loadGalleryImage(track.children[requestedIndex]);
+  if (!imageReady || requestId !== galleryRequestId) return false;
+
+  index = requestedIndex;
+  fitGalleryImage(
+    track.children[index].querySelector(".slide-visual"),
+    track.children[index].querySelector(".slide-photo")
+  );
   track.style.transition = instant ? "none" : "";
   track.style.transform = `translateX(-${index * 100}%)`;
   [...dotsWrap.children].forEach((dot, i) => dot.classList.toggle("active", i === index));
@@ -674,10 +718,14 @@ function goTo(nextIndex, instant) {
   if (instant) requestAnimationFrame(() => {
     track.style.transition = "";
   });
+  preloadNextGalleryImage(index);
+  return true;
 }
 
 function openLightbox() {
   const item = GALLERY[index];
+  lightboxTargetIndex = index;
+  const requestId = ++lightboxRequestId;
   clearTimeout(lightboxCloseTimer);
   lightbox.classList.remove("is-closing");
   lightbox.setAttribute("aria-hidden", "false");
@@ -685,14 +733,29 @@ function openLightbox() {
   lightboxImage.src = encodePath(IMAGE_DIR, item.file);
   lightboxImage.alt = item.caption;
   lightboxCaption.textContent = item.caption;
-  requestAnimationFrame(() => {
-    lightbox.classList.add("is-open");
-    requestAnimationFrame(() => lightboxImage.classList.add("is-shown"));
-  });
   document.body.classList.add("modal-open");
+  decodeImage(lightboxImage, item.file).then(() => {
+    if (requestId !== lightboxRequestId) return;
+    requestAnimationFrame(() => {
+      if (requestId !== lightboxRequestId) return;
+      lightbox.classList.add("is-open");
+      requestAnimationFrame(() => {
+        if (requestId === lightboxRequestId) lightboxImage.classList.add("is-shown");
+      });
+    });
+  });
+}
+
+function navigateLightbox(direction) {
+  lightboxTargetIndex = (lightboxTargetIndex + direction + GALLERY.length) % GALLERY.length;
+  const requestedIndex = lightboxTargetIndex;
+  goTo(requestedIndex).then((navigated) => {
+    if (navigated && isLightboxOpen() && requestedIndex === lightboxTargetIndex) openLightbox();
+  });
 }
 
 function closeLightbox() {
+  lightboxRequestId += 1;
   lightbox.classList.remove("is-open");
   lightbox.classList.add("is-closing");
   lightboxImage.classList.remove("is-shown");
@@ -701,6 +764,16 @@ function closeLightbox() {
   lightboxCloseTimer = window.setTimeout(() => {
     lightbox.classList.remove("is-closing");
   }, 420);
+}
+
+async function decodeImage(image, description) {
+  try {
+    await image.decode();
+    return true;
+  } catch (error) {
+    console.error(`Не удалось загрузить фотографию «${description}».`, error);
+    return false;
+  }
 }
 
 async function readTextFile(path, fallback) {
@@ -757,6 +830,7 @@ async function openExhibit(id, blurSrc) {
   exhibit.classList.toggle("is-hymn-detail", id === "Hymn_RF(4)");
   exhibit.classList.toggle("is-flag-detail", id === "Flag_RF(2)");
 
+  exhibit.classList.remove("is-open");
   exhibitPhoto.src = encodePath(IMAGE_DIR, data.image);
   exhibitPhoto.alt = data.title || data.image;
   exhibitTitle.textContent = data.title || "";
@@ -766,8 +840,13 @@ async function openExhibit(id, blurSrc) {
   clearTimeout(exhibitCloseTimer);
   exhibit.setAttribute("aria-hidden", "false");
   exhibit.classList.remove("is-closing");
-  requestAnimationFrame(() => exhibit.classList.add("is-open"));
   document.body.classList.add("modal-open");
+  decodeImage(exhibitPhoto, data.image).then(() => {
+    if (requestId !== exhibitRequestId) return;
+    requestAnimationFrame(() => {
+      if (requestId === exhibitRequestId) exhibit.classList.add("is-open");
+    });
+  });
   stopAudio();
   audioStatus.hidden = true;
   audioStatus.textContent = "Аудиодорожка недоступна.";
@@ -798,7 +877,8 @@ async function openExhibit(id, blurSrc) {
 }
 
 function closeExhibit() {
-  if (!isExhibitOpen() && !exhibit.classList.contains("is-closing")) {
+  const exhibitIsPending = exhibit.getAttribute("aria-hidden") === "false";
+  if (!isExhibitOpen() && !exhibit.classList.contains("is-closing") && !exhibitIsPending) {
     exhibitStack = [];
     currentExhibitId = null;
     stopAudio();
@@ -969,20 +1049,26 @@ function closeTour() {
 function openScene(id) {
   const data = SCENES[id];
   if (!data) return;
+  const requestId = ++sceneRequestId;
   clearTimeout(sceneCloseTimer);
   scenePhoto.src = encodePath(IMAGE_DIR, data.image);
   scenePhoto.alt = data.title;
   renderNestedMarkers(sceneMarkers, data.spots, encodePath(IMAGE_DIR, data.image));
   scene.setAttribute("aria-hidden", "false");
   scene.classList.remove("is-closing");
-  requestAnimationFrame(() => scene.classList.add("is-open"));
-  const layout = () => fitImageFrame(sceneViewport, sceneFrame, scenePhoto, sceneZoom, 0.94);
-  if (scenePhoto.complete && scenePhoto.naturalWidth) layout();
-  else scenePhoto.onload = layout;
+  decodeImage(scenePhoto, data.image).then(() => {
+    if (requestId !== sceneRequestId) return;
+    fitImageFrame(sceneViewport, sceneFrame, scenePhoto, sceneZoom, 0.94);
+    requestAnimationFrame(() => {
+      if (requestId === sceneRequestId) scene.classList.add("is-open");
+    });
+  });
 }
 
 function closeScene() {
-  if (!isSceneOpen() && !scene.classList.contains("is-closing")) return;
+  const sceneIsPending = scene.getAttribute("aria-hidden") === "false";
+  if (!isSceneOpen() && !scene.classList.contains("is-closing") && !sceneIsPending) return;
+  sceneRequestId += 1;
   scene.classList.remove("is-open");
   scene.classList.add("is-closing");
   scene.setAttribute("aria-hidden", "true");
@@ -1107,14 +1193,8 @@ bookFrontImg.addEventListener("load", () => {
 document.querySelector(".nav-btn.prev").addEventListener("click", () => goTo(index - 1));
 document.querySelector(".nav-btn.next").addEventListener("click", () => goTo(index + 1));
 document.getElementById("galleryFullscreenBtn").addEventListener("click", openLightbox);
-document.getElementById("lightboxPrev").addEventListener("click", () => {
-  goTo(index - 1);
-  openLightbox();
-});
-document.getElementById("lightboxNext").addEventListener("click", () => {
-  goTo(index + 1);
-  openLightbox();
-});
+document.getElementById("lightboxPrev").addEventListener("click", () => navigateLightbox(-1));
+document.getElementById("lightboxNext").addEventListener("click", () => navigateLightbox(1));
 document.getElementById("closeLightbox").addEventListener("click", closeLightbox);
 document.querySelector("[data-close-lightbox]").addEventListener("click", closeLightbox);
 document.getElementById("closeExhibit").addEventListener("click", closeExhibit);
@@ -1216,12 +1296,12 @@ document.addEventListener("keydown", (event) => {
   }
   if (isExhibitOpen() || isTourOpen() || isSceneOpen()) return;
   if (event.key === "ArrowLeft") {
-    goTo(index - 1);
-    if (isLightboxOpen()) openLightbox();
+    if (isLightboxOpen()) navigateLightbox(-1);
+    else goTo(index - 1);
   }
   if (event.key === "ArrowRight") {
-    goTo(index + 1);
-    if (isLightboxOpen()) openLightbox();
+    if (isLightboxOpen()) navigateLightbox(1);
+    else goTo(index + 1);
   }
 });
 

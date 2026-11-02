@@ -243,7 +243,7 @@ footer {
 .track {
   display: flex;
   height: 100%;
-  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
@@ -267,7 +267,6 @@ footer {
   position: relative;
   flex: 0 0 auto;
   line-height: 0;
-  transform: translateY(-2%);
 }
 
 .slide-visual img.slide-photo {
@@ -277,18 +276,14 @@ footer {
   object-fit: contain;
   user-select: none;
   opacity: 0;
-  transform: scale(1.04);
-  filter: blur(8px);
+  transform: none;
+  filter: none;
   transition:
-    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.7s ease;
+    opacity 0.22s ease;
 }
 
 .slide.is-active .slide-photo {
   opacity: 1;
-  transform: scale(1);
-  filter: blur(0);
 }
 
 .hotspot {
@@ -552,7 +547,7 @@ footer {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.42s ease, visibility 0.42s ease;
+  transition: opacity 0.34s ease, visibility 0.34s ease;
 }
 
 .lightbox.is-open,
@@ -582,12 +577,12 @@ footer {
   border-radius: 8px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
   opacity: 0;
-  transform: scale(0.92) translateY(22px);
-  filter: blur(8px);
+  transform: scale(0.99) translateY(8px);
+  filter: blur(2px);
   transition:
-    opacity 0.48s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.48s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.48s ease;
+    opacity 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.3s ease;
 }
 
 .lightbox.is-open img.is-shown {
@@ -663,10 +658,10 @@ footer {
   border: 1px solid rgba(212, 176, 106, 0.22);
   overflow: auto;
   opacity: 0;
-  transform: translateY(28px) scale(0.97);
+  transform: translateY(12px) scale(0.99);
   transition:
-    opacity 0.48s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .exhibit.is-open .exhibit-card {
@@ -697,11 +692,11 @@ footer {
   border-radius: 12px;
   background: #000;
   display: block;
-  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.24s ease;
 }
 
 .exhibit-photo:hover {
-  transform: scale(1.015);
+  transform: scale(1.005);
 }
 
 .exhibit-title {
@@ -944,7 +939,7 @@ body.modal-open {
   visibility: hidden;
   pointer-events: none;
   background: #050910;
-  transition: opacity 0.7s ease, visibility 0.7s ease;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
 }
 
 .tour.is-open,
@@ -1023,14 +1018,14 @@ body.modal-open {
 }
 
 .tour.is-open .map-frame {
-  animation: mapArrive 1.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: mapArrive 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes mapArrive {
   from {
     opacity: 0;Ч
-    filter: blur(18px) brightness(0.4);
-    transform: scale(1.08);
+    filter: blur(6px) brightness(0.85);
+    transform: scale(1.025);
   }
   to {
     opacity: 1;
@@ -1296,20 +1291,6 @@ body.modal-open {
   transform-style: preserve-3d;
 }
 
-.book3d::before {
-  content: "";
-  position: absolute;
-  z-index: 3;
-  top: 1%;
-  bottom: 1%;
-  left: 0;
-  width: 18px;
-  border-radius: 4px 0 0 4px;
-  background: linear-gradient(90deg, #5b351c, #b8884e 38%, #ead3a7 72%, #6f4729);
-  box-shadow: 4px 0 8px rgba(0, 0, 0, 0.34);
-  pointer-events: none;
-}
-
 .book-under,
 .book-leaf img,
 .leaf-face img {
@@ -1323,10 +1304,8 @@ body.modal-open {
 .book-under {
   position: absolute;
   inset: 0;
-  border-radius: 2px 10px 10px 2px;
-  box-shadow:
-    18px 18px 40px rgba(0, 0, 0, 0.45),
-    inset 8px 0 16px rgba(0, 0, 0, 0.12);
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
 }
 
 .book-leaf {
@@ -1353,8 +1332,8 @@ body.modal-open {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   overflow: hidden;
-  border-radius: 2px 10px 10px 2px;
-  box-shadow: 10px 14px 30px rgba(0, 0, 0, 0.28);
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
   transition: box-shadow 0.3s ease;
 }
 
@@ -1363,9 +1342,7 @@ body.modal-open {
   position: absolute;
   z-index: 1;
   inset: 0;
-  background:
-    linear-gradient(90deg, rgba(24, 16, 8, 0.24), transparent 12%, transparent 82%, rgba(24, 16, 8, 0.12)),
-    linear-gradient(0deg, rgba(24, 16, 8, 0.08), transparent 12%, transparent 94%, rgba(255, 255, 255, 0.08));
+  background: none;
   pointer-events: none;
 }
 
@@ -1465,8 +1442,8 @@ body.modal-open {
 
 @media (max-width: 860px) {
   .map-pin {
-    width: 34px;
-    height: 34px;
+    width: 48px;
+    height: 48px;
   }
 
   .book3d {
@@ -1478,7 +1455,29 @@ body.modal-open {
 
 @media (hover: none) {
   .map-pin {
-    opacity: 0.52;
+    width: 48px;
+    height: 48px;
+    opacity: 1;
+  }
+
+  .map-pin .pin-dot {
+    width: 13px;
+    height: 13px;
+  }
+
+  .map-pin .pin-glow {
+    inset: -5px;
+  }
+
+  .touch-device .marker {
+    width: 30px;
+    height: 30px;
+  }
+
+  .touch-device .marker-icon {
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
   }
 }
 
@@ -1487,7 +1486,6 @@ body.modal-open {
   .emblem-crop.coat,
   .location-line,
   .gallery-section,
-  .slide-visual img.slide-photo,
   .lightbox img,
   .exhibit-card,
   .exhibit-photo {
@@ -1520,7 +1518,7 @@ body.modal-open {
   .emblem-crop.coat,
   .location-line,
   .gallery-section,
-  .slide.is-active .slide-photo,
+  .slide-visual img.slide-photo,
   .lightbox.is-open img.is-shown,
   .exhibit.is-open .exhibit-card {
     opacity: 1 !important;
