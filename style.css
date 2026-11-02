@@ -547,7 +547,7 @@ footer {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.34s ease, visibility 0.34s ease;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
 }
 
 .lightbox.is-open,
@@ -577,12 +577,11 @@ footer {
   border-radius: 8px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
   opacity: 0;
-  transform: scale(0.99) translateY(8px);
-  filter: blur(2px);
+  transform: scale(0.995);
+  filter: none;
   transition:
-    opacity 0.34s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.3s ease;
+    opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lightbox.is-open img.is-shown {
@@ -632,7 +631,7 @@ footer {
   inset: -20px;
   background-size: cover;
   background-position: center;
-  filter: blur(18px) saturate(0.8);
+  filter: blur(12px) saturate(0.8);
   transform: scale(1.08);
 }
 
@@ -640,7 +639,7 @@ footer {
   position: absolute;
   inset: 0;
   background: rgba(3, 8, 18, 0.72);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(6px);
 }
 
 .exhibit-card {
@@ -658,10 +657,10 @@ footer {
   border: 1px solid rgba(212, 176, 106, 0.22);
   overflow: auto;
   opacity: 0;
-  transform: translateY(12px) scale(0.99);
+  transform: translateY(6px);
   transition:
-    opacity 0.36s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .exhibit.is-open .exhibit-card {
@@ -692,11 +691,11 @@ footer {
   border-radius: 12px;
   background: #000;
   display: block;
-  transition: transform 0.24s ease;
+  transition: transform 0.18s ease-out;
 }
 
 .exhibit-photo:hover {
-  transform: scale(1.005);
+  transform: scale(1.003);
 }
 
 .exhibit-title {
@@ -939,7 +938,7 @@ body.modal-open {
   visibility: hidden;
   pointer-events: none;
   background: #050910;
-  transition: opacity 0.4s ease, visibility 0.4s ease;
+  transition: opacity 0.24s ease, visibility 0.24s ease;
 }
 
 .tour.is-open,
@@ -1018,14 +1017,14 @@ body.modal-open {
 }
 
 .tour.is-open .map-frame {
-  animation: mapArrive 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: mapArrive 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes mapArrive {
   from {
-    opacity: 0;Ч
-    filter: blur(6px) brightness(0.85);
-    transform: scale(1.025);
+    opacity: 0;
+    filter: blur(2px) brightness(0.95);
+    transform: scale(1.01);
   }
   to {
     opacity: 1;
@@ -1176,6 +1175,18 @@ body.modal-open {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
 }
 
+.hot-area.is-disabled {
+  cursor: not-allowed;
+}
+
+.hot-area.is-disabled .hot-area-label {
+  opacity: 0.55;
+}
+
+.map-zoom-controls {
+  display: none;
+}
+
 .tour-exit {
   position: absolute;
   left: 1rem;
@@ -1229,7 +1240,7 @@ body.modal-open {
   line-height: 1.45;
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition: opacity 0.22s ease, transform 0.22s ease;
 }
 
 .tour-hint.is-visible {
@@ -1454,6 +1465,51 @@ body.modal-open {
 }
 
 @media (hover: none) {
+  .map-zoom-controls {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 8;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .map-zoom-controls button {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid rgba(240, 213, 154, 0.58);
+    border-radius: 50%;
+    background: rgba(7, 20, 40, 0.88);
+    color: var(--gold-bright);
+    font: 600 1.5rem/1 "Manrope", "Segoe UI", sans-serif;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tour-hint {
+    right: 0.45rem;
+    bottom: 0.65rem;
+    width: min(54vw, 250px);
+    padding: 0.65rem 1.8rem 0.65rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    line-height: 1.3;
+    transform: translateY(6px);
+  }
+
+  .tour-hint.is-visible {
+    transform: none;
+  }
+
+  .hint-close {
+    top: 0.15rem;
+    right: 0.2rem;
+  }
+
   .map-pin {
     width: 48px;
     height: 48px;

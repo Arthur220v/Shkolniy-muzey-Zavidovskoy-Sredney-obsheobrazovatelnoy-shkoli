@@ -280,7 +280,7 @@ const SCENES = {
     image: "Novay_School_vitrina(8).jpg",
     title: "Витрина «Новая школа»",
     spots: [
-      { id: "Novay_School_vitrina(8)_(XVI)", title: "Газета «Заря»", left: "12%", top: "18%", width: "22%", height: "22%" },
+      { id: "Novay_School_vitrina(8)_(XVI)", title: "Газета «Заря»", left: "12%", top: "18%", width: "22%", height: "22%", disabled: true },
       { id: "Novay_School_vitrina(8)_(XVII)", title: "Поход по местам боевой славы", left: "12%", top: "42%", width: "20%", height: "18%" },
       { id: "Novay_School_vitrina(8)_(XVIII)", title: "Экскурсия в Калинине", left: "12%", top: "62%", width: "20%", height: "18%" },
       { id: "Novay_School_vitrina(8)_(XIX)", title: "Завидовская школа, 1971 год", left: "38%", top: "22%", width: "24%", height: "16%" },
@@ -794,7 +794,8 @@ function renderNestedMarkers(container, spots, blurSrc) {
   (spots || []).forEach((spot) => {
     const area = document.createElement("button");
     area.type = "button";
-    area.className = "hot-area";
+    area.className = `hot-area${spot.disabled ? " is-disabled" : ""}`;
+    area.disabled = Boolean(spot.disabled);
     area.style.left = spot.left;
     area.style.top = spot.top;
     area.style.width = spot.width;
@@ -806,10 +807,12 @@ function renderNestedMarkers(container, spots, blurSrc) {
     label.textContent = spot.title;
     area.appendChild(label);
 
-    area.addEventListener("click", (event) => {
-      event.stopPropagation();
-      openExhibit(spot.id, blurSrc);
-    });
+    if (!spot.disabled) {
+      area.addEventListener("click", (event) => {
+        event.stopPropagation();
+        openExhibit(spot.id, blurSrc);
+      });
+    }
     container.appendChild(area);
   });
 }
@@ -1032,6 +1035,20 @@ function openTour() {
   tourHint.hidden = false;
   requestAnimationFrame(() => tourHint.classList.add("is-visible"));
 }
+
+function zoomMapBy(factor) {
+  const centerX = tourViewport.clientWidth / 2;
+  const centerY = tourViewport.clientHeight / 2;
+  mapZoom.zoomAt(centerX, centerY, mapZoom.state.scale * factor);
+}
+
+document.getElementById("mapZoomIn").addEventListener("click", () => zoomMapBy(1.3));
+document.getElementById("mapZoomOut").addEventListener("click", () => zoomMapBy(1 / 1.3));
+document.getElementById("mapZoomReset").addEventListener("click", () => {
+  if (mapImage.complete && mapImage.naturalWidth) {
+    fitImageFrame(tourViewport, mapFrame, mapImage, mapZoom);
+  }
+});
 
 function closeTour() {
   exhibitStack = [];
