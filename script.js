@@ -3,9 +3,9 @@ const TEXT_DIR = "Texts/";
 const AUDIO_DIR = "Audio/";
 
 const GALLERY = [
-  { file: "school_photo.jpg", caption: "Завидовская школа", fillFrame: true },
-  { file: "museum_entrance.jpg", caption: "Вход в школьный музей", fillFrame: true },
-  { file: "triptych_1.jpg", caption: "Триптих 1", fillFrame: true },
+  { file: "school_photo.jpg", caption: "Завидовская школа" },
+  { file: "museum_entrance.jpg", caption: "Вход в школьный музей" },
+  { file: "triptych_1.jpg", caption: "Триптих 1" },
   { file: "triptych_2.jpg", caption: "Триптих 2" },
   { file: "triptych_3.jpg", caption: "Триптих 3" },
   { file: "triptych_4.jpg", caption: "Триптих 4" },
@@ -164,7 +164,7 @@ Object.assign(EXHIBITS, {
     "Братская могила в деревне Архангельское"
   ),
   "Katyusha_(V)": makeExhibit("Katyusha_(V)", "Памятник «Катюша»", {
-    fallback: "Памятник «Катюша» напоминает о советской реактивной артиллерии, сыгравшей важную роль в годы Великой Отечественной войны. Название «Катюша» закрепилось за реактивными системами залпового огня и стало одним из узнаваемых символов военного времени. Экспонат посвящён памяти защитников Родины и их подвигу.",
+    fallback: "Памятник «Катюша»\nНа 116 км автомагистрали Москва Санкт–Петербург у поворота на дорогу к городу Конаково установлен монумент «Катюша» — легендарная ракетная установка. Памятник сооружен в 1965 году. На этом рубеже началось наступление войск Калининского фронта, где шли ожесточенные кровопролитные бои.\nВ ноябре 1941 года воинам 185-й стрелковой дивизии был дан приказ остановить врага у села Завидово. Четыре дня шли кровопролитные бои, в результате которых дорогу на Конаково удалось закрыть для противника, хотя село и было оставлено. А 5 декабря началось знаменитое контрнаступление. В память об этих боях на повороте с шоссе Москва – Санкт-Петербург на Конаково стоит памятник – гвардейский миномёт «Катюша».\nНаши войска отбивали многочисленные атаки противника, задерживая его продвижение к Москве.\nНа постаменте мемориальная доска с надписью: «Здесь шли бои. Здесь, пламенем объятый, стоял на смерть России верный сын. Отсюда начинался путь солдата, нелёгкий путь к Победе, на Берлин».",
   }),
   "Memorial_Vasilkovskomu_(VI)": makeExhibit("Memorial_Vasilkovskomu_(VI)", "Мемориал Васильковскому"),
   "Bessmertny_Polk(7)_(VII)": makeExhibit("Bessmertny_Polk(7)_(VII)", "Дети на Бессмертном полку", { textFile: null }),
@@ -553,12 +553,6 @@ function fitBook() {
 
 function fitGalleryImage(visual, img) {
   if (!img.naturalWidth || !img.naturalHeight) return;
-  if (visual.closest(".slide")?.dataset.fillFrame === "true") {
-    visual.style.width = `${carousel.clientWidth}px`;
-    visual.style.height = `${carousel.clientHeight}px`;
-    fitGalleryHotspots(visual, img);
-    return;
-  }
   const shell = carousel.parentElement;
   const shellStyle = getComputedStyle(shell);
   const maxWidth = Math.min(
@@ -577,27 +571,6 @@ function fitGalleryImage(visual, img) {
   visual.style.height = `${height}px`;
 }
 
-function fitGalleryHotspots(visual, img) {
-  const frameWidth = carousel.clientWidth;
-  const frameHeight = carousel.clientHeight;
-  const scale = Math.max(frameWidth / img.naturalWidth, frameHeight / img.naturalHeight);
-  const renderedWidth = img.naturalWidth * scale;
-  const renderedHeight = img.naturalHeight * scale;
-  const cropX = (renderedWidth - frameWidth) / 2;
-  const cropY = (renderedHeight - frameHeight) / 2;
-
-  visual.querySelectorAll(".hotspot").forEach((hotspot) => {
-    const sourceLeft = Number.parseFloat(hotspot.dataset.sourceLeft);
-    const sourceTop = Number.parseFloat(hotspot.dataset.sourceTop);
-    const sourceWidth = Number.parseFloat(hotspot.dataset.sourceWidth);
-    const sourceHeight = Number.parseFloat(hotspot.dataset.sourceHeight);
-    hotspot.style.left = `${(sourceLeft / 100 * renderedWidth - cropX) / frameWidth * 100}%`;
-    hotspot.style.top = `${(sourceTop / 100 * renderedHeight - cropY) / frameHeight * 100}%`;
-    hotspot.style.width = `${sourceWidth / 100 * renderedWidth / frameWidth * 100}%`;
-    hotspot.style.height = `${sourceHeight / 100 * renderedHeight / frameHeight * 100}%`;
-  });
-}
-
 function fitGalleryImages() {
   track.querySelectorAll(".slide-visual").forEach((visual) => {
     fitGalleryImage(visual, visual.querySelector(".slide-photo"));
@@ -612,7 +585,6 @@ function renderGallery() {
     const slide = document.createElement("article");
     slide.className = "slide";
     slide.dataset.index = String(i);
-    slide.dataset.fillFrame = String(Boolean(item.fillFrame));
 
     const frame = document.createElement("div");
     frame.className = "slide-frame";
@@ -640,10 +612,6 @@ function renderGallery() {
       hotspot.style.top = spot.top;
       hotspot.style.width = spot.width;
       hotspot.style.height = spot.height;
-      hotspot.dataset.sourceLeft = Number.parseFloat(spot.left);
-      hotspot.dataset.sourceTop = Number.parseFloat(spot.top);
-      hotspot.dataset.sourceWidth = Number.parseFloat(spot.width);
-      hotspot.dataset.sourceHeight = Number.parseFloat(spot.height);
       hotspot.setAttribute("aria-label", `Открыть информацию: ${EXHIBITS[spot.id]?.title || item.caption}`);
       const marker = document.createElement("span");
       marker.className = "marker";

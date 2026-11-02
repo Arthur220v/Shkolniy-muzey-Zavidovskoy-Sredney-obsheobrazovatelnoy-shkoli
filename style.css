@@ -286,10 +286,6 @@ footer {
   opacity: 1;
 }
 
-.slide[data-fill-frame="true"] .slide-photo {
-  object-fit: cover;
-}
-
 .hotspot {
   position: absolute;
   border: 0;
