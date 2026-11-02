@@ -273,6 +273,7 @@ footer {
   display: block;
   width: 100%;
   height: 100%;
+  border-radius: 12px;
   object-fit: contain;
   user-select: none;
   opacity: 0;
@@ -1496,7 +1497,14 @@ body.modal-open {
     inset: -5px;
   }
 
-  .touch-device .map-pin.is-graduates-marker .pin-label {
+  .touch-device .map-pin:hover .pin-label,
+  .touch-device .map-pin:focus:not(:focus-visible) .pin-label {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .touch-device .map-pin:active .pin-label,
+  .touch-device .map-pin:focus-visible .pin-label {
     opacity: 1;
     visibility: visible;
   }
