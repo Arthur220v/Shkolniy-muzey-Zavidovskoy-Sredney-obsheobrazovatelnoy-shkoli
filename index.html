@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261102-8" />
+  <link rel="stylesheet" href="style.css?v=20261106-6" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -117,6 +117,10 @@
         <strong>Сайт нашей школы</strong>
       </a>
     </section>
+
+    <aside class="site-notice" role="status">
+      Сайт находится под редакцией и дорабатывается. Просим проявить терпение.
+    </aside>
   </main>
 
   <footer>
@@ -171,6 +175,17 @@
         <div class="map-frame" id="mapFrame">
           <img class="map-photo" id="mapImage" src="images/interior_of_the_museum_entrance.png" alt="Схема входа в музей" />
           <div class="map-markers" id="mapMarkers"></div>
+          <button class="tour-direction tour-continue" id="tourContinue" type="button" aria-label="Продолжить экскурсию в следующий зал" title="Перейти в следующий зал">
+            <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+              <path d="M24 9v30m-11-11 11 11 11-11" />
+            </svg>
+          </button>
+          <button class="tour-direction tour-back" id="tourBack" type="button" aria-label="Вернуться ко входу в музей" hidden>
+            <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+              <path d="M38 24H9m11-11L9 24l11 11" />
+            </svg>
+            <span>К входу</span>
+          </button>
         </div>
       </div>
     </div>
@@ -185,7 +200,7 @@
     </button>
     <aside class="tour-hint" id="tourHint" hidden>
       <button class="hint-close" type="button" id="closeHint" aria-label="Закрыть подсказку">×</button>
-      <p>Чтобы узнать информацию о любом интересующем обьекте, нажмите на него пальцем(на телефоне или планшете) или мышкой(на PC, ноутбуке).</p>
+      <p>Чтобы узнать информацию об экспонате, нажмите на отметку. Для перехода в следующий зал нажмите стрелку по центру.</p>
     </aside>
   </div>
 
@@ -226,6 +241,6 @@
     <button class="book-nav next" type="button" id="bookNext" aria-label="Следующая страница"></button>
   </div>
 
-  <script src="script.js?v=20261102-8"></script>
+  <script src="script.js?v=20261106-6"></script>
 </body>
 </html>

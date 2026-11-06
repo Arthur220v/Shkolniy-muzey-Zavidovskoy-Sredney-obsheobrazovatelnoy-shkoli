@@ -561,6 +561,20 @@ footer {
   mix-blend-mode: screen;
 }
 
+.site-notice {
+  width: min(100% - 2rem, 760px);
+  margin: 0 auto 2.2rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(255, 180, 180, 0.5);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(150, 25, 38, 0.96), rgba(92, 14, 28, 0.98));
+  color: #fff3f1;
+  font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+  line-height: 1.55;
+  text-align: center;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28), 0 0 24px rgba(210, 35, 54, 0.16);
+}
+
 .social-card strong {
   display: block;
   font-size: 1.05rem;
@@ -609,6 +623,14 @@ footer {
   display: grid;
   place-items: center;
   background: rgba(2, 6, 14, 0.92);
+}
+
+.lightbox.is-exhibit-image {
+  z-index: 50;
+}
+
+.lightbox.is-exhibit-image .lightbox-nav {
+  display: none;
 }
 
 .lightbox img {
@@ -801,6 +823,29 @@ footer {
   grid-row: 2;
   justify-content: flex-start;
   text-align: center;
+}
+
+.exhibit.is-biography-detail .exhibit-card {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.exhibit.is-biography-detail .exhibit-visual {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+}
+
+.exhibit.is-biography-detail .exhibit-photo {
+  width: min(100%, 360px);
+  max-height: 34vh;
+  cursor: zoom-in;
+}
+
+.exhibit.is-biography-detail .exhibit-copy {
+  grid-column: 1;
+  grid-row: 2;
+  justify-content: flex-start;
 }
 
 .exhibit-text {
@@ -1047,6 +1092,32 @@ body.modal-open {
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
 }
 
+.map-frame {
+  isolation: isolate;
+  transition: filter 0.32s ease, transform 0.32s ease;
+}
+
+.map-frame::after {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  content: "";
+  background: radial-gradient(ellipse at center, rgba(2, 5, 12, 0.96), #02050c);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.32s ease;
+}
+
+.map-frame.is-transitioning {
+  filter: brightness(0.28) blur(2px);
+  transform: scale(0.985);
+  pointer-events: none;
+}
+
+.map-frame.is-transitioning::after {
+  opacity: 1;
+}
+
 .map-photo,
 .scene-photo {
   display: block;
@@ -1090,6 +1161,90 @@ body.modal-open {
   height: 42px;
 }
 
+.tour-direction {
+  position: absolute;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(240, 213, 154, 0.76);
+  border-radius: 999px;
+  background: rgba(7, 20, 40, 0.86);
+  color: var(--gold-bright);
+  font: 700 0.88rem/1.2 "Manrope", "Segoe UI", sans-serif;
+  cursor: pointer;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.45), 0 0 22px rgba(240, 213, 154, 0.28);
+  backdrop-filter: blur(8px);
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.tour-direction[hidden] {
+  display: none;
+}
+
+.tour-direction:hover,
+.tour-direction:focus-visible {
+  background: rgba(16, 36, 69, 0.96);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.52), 0 0 28px rgba(240, 213, 154, 0.48);
+}
+
+.tour-direction:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+.tour-direction svg {
+  width: 38px;
+  height: 38px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tour-continue {
+  left: 50%;
+  bottom: 0.65rem;
+  width: 58px;
+  height: 58px;
+  padding: 0.45rem;
+  transform: translateX(-50%);
+  animation: directionPulse 2.2s ease-in-out infinite;
+}
+
+.tour-continue:hover,
+.tour-continue:focus-visible {
+  transform: translate(-50%, -3px);
+}
+
+.tour-continue svg {
+  animation: arrowNudge 1.5s ease-in-out infinite;
+}
+
+@keyframes arrowNudge {
+  0%, 100% { transform: translateY(-2px); }
+  50% { transform: translateY(3px); }
+}
+
+.tour-back {
+  top: 1rem;
+  left: 1rem;
+  min-height: 48px;
+  padding: 0.25rem 0.85rem 0.25rem 0.3rem;
+}
+
+.tour-back svg {
+  width: 34px;
+  height: 34px;
+}
+
+@keyframes directionPulse {
+  0%, 100% { box-shadow: 0 8px 26px rgba(0, 0, 0, 0.45), 0 0 18px rgba(240, 213, 154, 0.22); }
+  50% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 30px rgba(240, 213, 154, 0.52); }
+}
+
 .pin-label {
   position: absolute;
   display: flex;
@@ -1129,6 +1284,33 @@ body.modal-open {
   left: calc(100% + 0.65rem);
   top: 50%;
   transform: translateY(-50%);
+}
+
+.map-pin[data-label-position="above"] .pin-label {
+  left: 50%;
+  top: auto;
+  bottom: calc(100% + 0.5rem);
+  transform: translateX(-50%);
+}
+
+.longitudinal-pin .pin-dot {
+  display: grid;
+  place-items: center;
+  color: #071428;
+  font: 800 0.8rem/1 "Manrope", "Segoe UI", sans-serif;
+}
+
+.longitudinal-pin.is-disabled {
+  cursor: not-allowed;
+}
+
+.longitudinal-pin.is-disabled .pin-label {
+  opacity: 1;
+  visibility: visible;
+}
+
+.longitudinal-pin .pin-label {
+  max-width: min(250px, 42vw);
 }
 
 .map-pin:hover .pin-label,
@@ -1214,6 +1396,12 @@ body.modal-open {
   white-space: normal;
   pointer-events: none;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.hot-area-label.is-above {
+  top: 0.25rem;
+  bottom: auto;
+  transform: translate(-50%, calc(-100% + 12px));
 }
 
 .hot-area.is-disabled {
@@ -1305,6 +1493,11 @@ body.modal-open {
 .nested-markers {
   position: absolute;
   inset: 0;
+  pointer-events: none;
+}
+
+.hot-area {
+  pointer-events: auto;
 }
 
 .book-toolbar {
@@ -1499,6 +1692,17 @@ body.modal-open {
     height: min(72vh, 760px);
   }
 
+  .tour-continue {
+    bottom: 0.45rem;
+    width: 52px;
+    height: 52px;
+  }
+
+  .tour-back {
+    top: 0.65rem;
+    left: 0.65rem;
+    min-height: 42px;
+  }
 }
 
 @media (hover: none) {
@@ -1535,6 +1739,21 @@ body.modal-open {
 
   .map-pin .pin-glow {
     inset: -5px;
+  }
+
+  .longitudinal-pin .pin-dot {
+    width: 17px;
+    height: 17px;
+  }
+
+  .tour-continue {
+    width: 48px;
+    height: 48px;
+    padding: 0.35rem;
+  }
+
+  .tour-back {
+    font-size: 0.78rem;
   }
 
   .touch-device .map-pin:hover .pin-label,
@@ -1579,6 +1798,23 @@ body.modal-open {
   .map-pin .pin-glow {
     transition: none !important;
     animation: none !important;
+  }
+
+  .tour-continue {
+    animation: none !important;
+  }
+
+  .tour-continue svg {
+    animation: none !important;
+  }
+
+  .map-frame,
+  .map-frame::after {
+    transition: none !important;
+  }
+
+  .map-frame.is-transitioning::after {
+    opacity: 1;
   }
 
   .book-leaf {

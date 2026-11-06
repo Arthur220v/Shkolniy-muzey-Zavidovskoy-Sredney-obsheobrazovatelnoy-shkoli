@@ -110,6 +110,7 @@ function makeExhibit(id, title, extras = {}) {
     id,
     title,
     image: extras.image || `${id}.jpg`,
+    preserveImageFormat: Boolean(extras.preserveImageFormat),
     textFile,
     audioFile: extras.audioFile === null ? null : (extras.audioFile || audioFileForExhibit(id, textFile)),
     fallback: extras.fallback || "",
@@ -203,6 +204,47 @@ Object.assign(EXHIBITS, {
   "vitrina_pamyati(13)_(XXVI)": makeExhibit("vitrina_pamyati(13)_(XXVI)", "Хлеб для партизан"),
 });
 
+[
+  {
+    numeral: "I",
+    audioFile: "audio_for_Stend_about_Chechnya_Afghanistan_WWII(1)_(I).mp3",
+  },
+  {
+    numeral: "II",
+    audioFile: "audio_Stend_about_Chechnya_Afghanistan_WWII(1)_(II).mp3",
+  },
+  {
+    numeral: "III",
+    audioFile: "audio_for_Stend_about_Chechnya_Afghanistan_WWII(1)_(III).mp3",
+  },
+  {
+    numeral: "IV",
+    audioFile: "audio_for_Stend_about_Chechnya_Afghanistan_WWII(1)_(IV)).mp3",
+  },
+  {
+    numeral: "V",
+    audioFile: "audio_for_Stend_about_Chechnya_Afghanistan_WWII(1)_(V).mp3",
+  },
+  {
+    numeral: "VI",
+    image: "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI).png",
+    textFile: "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)_info_about_image.txt",
+    audioFile: "audio_for_Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)_info_about_image.mp3",
+    title: "Герой - Денис Сергеевич Стребин",
+  },
+  { numeral: "VII" },
+  { numeral: "VIII" },
+  { numeral: "X", title: "Рисунок Пети Помозкова" },
+].forEach(({ numeral, ...details }) => {
+  const id = `Stend_about_Chechnya_Afghanistan_WWII(1)_(${numeral})`;
+  EXHIBITS[id] = makeExhibit(id, details.title || `Раздел ${numeral}`, {
+    image: details.image || `${id}.jpg`,
+    preserveImageFormat: true,
+    textFile: details.textFile || null,
+    audioFile: details.audioFile || null,
+  });
+});
+
 Object.entries(EXHIBITS).forEach(([key, exhibit]) => {
   if (typeof exhibit.audioFile === "undefined") {
     exhibit.audioFile = audioFileForExhibit(key, exhibit.textFile);
@@ -248,6 +290,35 @@ const MAP_OBJECTS = [
   { id: "medicinskaya_vitrina(11)", title: "Медицинская витрина", color: "green", left: "9.8%", top: "68.5%", type: "exhibit" },
   { id: "maket_boev(12)", title: "Макет уличных боёв", color: "blue", left: "47.6%", top: "30.8%", type: "exhibit" },
   { id: "vitrina_pamyati(13)", title: "Витрина памяти", color: "green", left: "67.4%", top: "31.0%", type: "scene" },
+];
+
+const LONGITUDINAL_OBJECTS = [
+  {
+    id: "Stend_about_Chechnya_Afghanistan_WWII(1)",
+    title: "Экспозиция о Чечне, Афганистане и Великой Отечественной войне",
+    number: "1",
+    color: "red",
+    left: "58%",
+    top: "14%",
+  },
+  {
+    title: "Стенд «История Завидово» — раздел готовится",
+    number: "2",
+    color: "red",
+    left: "23%",
+    top: "80%",
+    disabled: true,
+    labelPosition: "above",
+  },
+  {
+    title: "Раздел готовится",
+    number: "3",
+    color: "blue",
+    left: "61%",
+    top: "94%",
+    disabled: true,
+    labelPosition: "above",
+  },
 ];
 
 const SCENES = {
@@ -321,9 +392,44 @@ const SCENES = {
       { id: "vitrina_pamyati(13)_(XXVI)", title: "Хлеб для партизан", left: "18%", top: "28%", width: "22%", height: "16%" },
     ],
   },
+  "Stend_about_Chechnya_Afghanistan_WWII(1)": {
+    image: "Stend_about_Chechnya_Afghanistan_WWII(1).jpg",
+    title: "Экспозиция о Чечне, Афганистане и Великой Отечественной войне",
+    preserveImageFormat: true,
+    spots: [
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(I)", title: "Раздел I", left: "31%", top: "23%", width: "22%", height: "15%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(II)", title: "Раздел II", left: "55%", top: "29%", width: "16%", height: "9%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(III)", title: "Раздел III", left: "55%", top: "20%", width: "17%", height: "9%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(IV)", title: "Раздел IV", left: "30%", top: "40%", width: "23%", height: "16%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(V)", title: "Раздел V", left: "59%", top: "42%", width: "17%", height: "15%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)", title: "Герой - Денис Сергеевич Стребин", left: "44%", top: "43%", width: "15%", height: "15%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(VII)", title: "Раздел VII", left: "24%", top: "54%", width: "27%", height: "11%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(VIII)", title: "Раздел VIII", left: "54%", top: "54%", width: "23%", height: "10%" },
+      {
+        id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(IX)",
+        title: "Я знаю и горжусь",
+        left: "53%",
+        top: "64%",
+        width: "23%",
+        height: "17%",
+        labelPosition: "above",
+        book: {
+          title: "Я знаю и горжусь",
+          pages: [
+            { file: "Stend_about_Chechnya_Afghanistan_WWII(1)_(IX).jpg", label: "Обложка" },
+            ...Array.from({ length: 12 }, (_, i) => ({
+              file: `Stend_about_Chechnya_Afghanistan_WWII(1)_(IX)_page_${i + 1}.${i === 11 ? "png" : "jpg"}`,
+              label: `Страница ${i + 1} из 12`,
+            })),
+          ],
+        },
+      },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(X)", title: "Рисунок Пети Помозкова", left: "39%", top: "72%", width: "20%", height: "17%" },
+    ],
+  },
 };
 
-const BOOK_PAGES = Array.from({ length: 14 }, (_, i) => ({
+const MEMORY_BOOK_PAGES = Array.from({ length: 14 }, (_, i) => ({
     file: `kniga_pamyati(5)_page_${i + 1}.jpg`,
     label: `Страница ${i + 1} из 14`,
 }));
@@ -358,6 +464,8 @@ const tourWorld = document.getElementById("tourWorld");
 const mapFrame = document.getElementById("mapFrame");
 const mapImage = document.getElementById("mapImage");
 const mapMarkers = document.getElementById("mapMarkers");
+const tourContinue = document.getElementById("tourContinue");
+const tourBack = document.getElementById("tourBack");
 const tourHint = document.getElementById("tourHint");
 const scene = document.getElementById("scene");
 const sceneViewport = document.getElementById("sceneViewport");
@@ -374,6 +482,7 @@ const bookFrontImg = document.getElementById("bookFrontImg");
 const bookBackImg = document.getElementById("bookBackImg");
 const bookUnderImg = document.getElementById("bookUnderImg");
 const bookPageLabel = document.getElementById("bookPageLabel");
+const bookTitle = document.querySelector(".book-title");
 
 const DEFAULT_LINKS = {
   max: "https://max.ru/id6911016133_gos",
@@ -381,6 +490,8 @@ const DEFAULT_LINKS = {
 };
 
 let index = 0;
+let mapTransitionId = 0;
+let lightboxGalleryMode = true;
 let galleryRequestId = 0;
 const galleryImageLoads = new Map();
 let startX = 0;
@@ -398,6 +509,7 @@ let bookFlipTimer = 0;
 let bookFlipHandler = null;
 let bookPage = 0;
 let bookBusy = false;
+let currentBookPages = MEMORY_BOOK_PAGES;
 let currentSceneBlur = "";
 let currentExhibitId = null;
 let exhibitStack = [];
@@ -407,8 +519,8 @@ if (window.matchMedia("(hover: none)").matches) {
   document.body.classList.add("touch-device");
 }
 
-function encodePath(dir, file) {
-  const imageFile = dir === IMAGE_DIR && !/^kniga_pamyati/i.test(file)
+function encodePath(dir, file, preserveImageFormat = false) {
+  const imageFile = dir === IMAGE_DIR && !preserveImageFormat && !/^kniga_pamyati/i.test(file)
     ? file.replace(/\.(jpe?g)$/i, ".webp")
     : file;
   return dir + encodeURIComponent(imageFile).replace(/%2F/g, "/");
@@ -716,8 +828,10 @@ async function goTo(nextIndex, instant) {
 function openLightbox() {
   const item = GALLERY[index];
   lightboxTargetIndex = index;
+  lightboxGalleryMode = true;
   const requestId = ++lightboxRequestId;
   clearTimeout(lightboxCloseTimer);
+  lightbox.classList.remove("is-exhibit-image");
   lightbox.classList.remove("is-closing");
   lightbox.setAttribute("aria-hidden", "false");
   lightboxImage.classList.remove("is-shown");
@@ -737,7 +851,32 @@ function openLightbox() {
   });
 }
 
+function openImageLightbox(src, caption) {
+  const requestId = ++lightboxRequestId;
+  lightboxGalleryMode = false;
+  clearTimeout(lightboxCloseTimer);
+  lightbox.classList.add("is-exhibit-image");
+  lightbox.classList.remove("is-closing");
+  lightbox.setAttribute("aria-hidden", "false");
+  lightboxImage.classList.remove("is-shown");
+  lightboxImage.src = src;
+  lightboxImage.alt = caption;
+  lightboxCaption.textContent = caption;
+  document.body.classList.add("modal-open");
+  decodeImage(lightboxImage, caption).then((imageReady) => {
+    if (!imageReady || requestId !== lightboxRequestId) return;
+    requestAnimationFrame(() => {
+      if (requestId !== lightboxRequestId) return;
+      lightbox.classList.add("is-open");
+      requestAnimationFrame(() => {
+        if (requestId === lightboxRequestId) lightboxImage.classList.add("is-shown");
+      });
+    });
+  });
+}
+
 function navigateLightbox(direction) {
+  if (!lightboxGalleryMode) return;
   lightboxTargetIndex = (lightboxTargetIndex + direction + GALLERY.length) % GALLERY.length;
   const requestedIndex = lightboxTargetIndex;
   goTo(requestedIndex).then((navigated) => {
@@ -754,6 +893,7 @@ function closeLightbox() {
   if (!isExhibitOpen() && !isTourOpen()) document.body.classList.remove("modal-open");
   lightboxCloseTimer = window.setTimeout(() => {
     lightbox.classList.remove("is-closing");
+    lightbox.classList.remove("is-exhibit-image");
   }, 420);
 }
 
@@ -794,13 +934,17 @@ function renderNestedMarkers(container, spots, blurSrc) {
     area.setAttribute("aria-label", `Открыть информацию: ${spot.title}`);
 
     const label = document.createElement("span");
-    label.className = "hot-area-label";
+    label.className = `hot-area-label${spot.labelPosition === "above" ? " is-above" : ""}`;
     label.textContent = spot.title;
     area.appendChild(label);
 
     if (!spot.disabled) {
       area.addEventListener("click", (event) => {
         event.stopPropagation();
+        if (spot.book) {
+          openBook(spot.book.pages, spot.book.title);
+          return;
+        }
         openExhibit(spot.id, blurSrc);
       });
     }
@@ -820,13 +964,24 @@ async function openExhibit(id, blurSrc) {
     exhibitStack.push({ id: currentExhibitId, blur: exhibitBlur.style.backgroundImage });
   }
   currentExhibitId = id;
+  const isHeroPortrait = id === "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)";
   exhibit.classList.toggle("is-symbol-detail", id === "Gerb_RF(3)" || id === "Hymn_RF(4)");
   exhibit.classList.toggle("is-hymn-detail", id === "Hymn_RF(4)");
   exhibit.classList.toggle("is-flag-detail", id === "Flag_RF(2)");
+  exhibit.classList.toggle("is-biography-detail", isHeroPortrait);
 
   exhibit.classList.remove("is-open");
-  exhibitPhoto.src = encodePath(IMAGE_DIR, data.image);
+  exhibitPhoto.src = encodePath(IMAGE_DIR, data.image, data.preserveImageFormat);
   exhibitPhoto.alt = data.title || data.image;
+  if (isHeroPortrait) {
+    exhibitPhoto.setAttribute("role", "button");
+    exhibitPhoto.setAttribute("tabindex", "0");
+    exhibitPhoto.setAttribute("aria-label", `Открыть фотографию на весь экран: ${data.title}`);
+  } else {
+    exhibitPhoto.removeAttribute("role");
+    exhibitPhoto.removeAttribute("tabindex");
+    exhibitPhoto.removeAttribute("aria-label");
+  }
   exhibitTitle.textContent = data.title || "";
   exhibitBlur.style.backgroundImage = `url("${blurSrc}")`;
   exhibitText.textContent = data.textFile ? "Загрузка описания..." : "";
@@ -848,7 +1003,11 @@ async function openExhibit(id, blurSrc) {
   audioToggle.disabled = false;
 
   if (data.innerMarkers) {
-    renderNestedMarkers(exhibitMarkers, data.innerMarkers, encodePath(IMAGE_DIR, data.image));
+    renderNestedMarkers(
+      exhibitMarkers,
+      data.innerMarkers,
+      encodePath(IMAGE_DIR, data.image, data.preserveImageFormat)
+    );
   }
 
   if (audioFile) {
@@ -993,6 +1152,99 @@ function renderMapMarkers() {
   });
 }
 
+function renderLongitudinalMarkers() {
+  mapMarkers.innerHTML = "";
+  LONGITUDINAL_OBJECTS.forEach((item) => {
+    const pin = document.createElement("button");
+    pin.type = "button";
+    pin.className = `map-pin longitudinal-pin ${item.color}${item.disabled ? " is-disabled" : ""}`;
+    pin.style.left = item.left;
+    pin.style.top = item.top;
+    pin.dataset.labelPosition = item.labelPosition || "below";
+    pin.setAttribute("aria-label", item.title);
+    pin.setAttribute("aria-disabled", String(Boolean(item.disabled)));
+    pin.title = item.title;
+
+    const glow = document.createElement("span");
+    glow.className = "pin-glow";
+    const dot = document.createElement("span");
+    dot.className = "pin-dot";
+    const label = document.createElement("span");
+    label.className = "pin-label";
+    const title = document.createElement("span");
+    title.className = "pin-label-text";
+    title.textContent = item.title;
+    label.appendChild(title);
+    pin.append(glow, dot, label);
+
+    if (!item.disabled) {
+      pin.addEventListener("click", (event) => {
+        event.stopPropagation();
+        openScene(item.id);
+      });
+    }
+    mapMarkers.appendChild(pin);
+  });
+}
+
+async function switchTourMap(image, alt, renderMarkers, showContinue, immediate) {
+  const imagePath = encodePath(IMAGE_DIR, image);
+  const transitionId = ++mapTransitionId;
+  const updateView = () => {
+    mapImage.alt = alt;
+    renderMarkers();
+    tourContinue.hidden = !showContinue;
+    tourBack.hidden = showContinue;
+    if (mapImage.getAttribute("src") !== imagePath) mapImage.src = imagePath;
+  };
+
+  if (immediate || !isTourOpen()) {
+    mapFrame.classList.remove("is-transitioning");
+    updateView();
+    return;
+  }
+
+  if (mapImage.getAttribute("src") === imagePath) {
+    updateView();
+    return;
+  }
+
+  mapFrame.classList.add("is-transitioning");
+  const fadeDuration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 320;
+  await new Promise((resolve) => window.setTimeout(resolve, fadeDuration));
+  if (transitionId !== mapTransitionId) return;
+
+  updateView();
+  const imageReady = await decodeImage(mapImage, alt);
+  if (transitionId !== mapTransitionId) return;
+  if (imageReady && isTourOpen()) {
+    fitImageFrame(tourViewport, mapFrame, mapImage, mapZoom);
+  }
+  requestAnimationFrame(() => {
+    if (transitionId === mapTransitionId) mapFrame.classList.remove("is-transitioning");
+  });
+}
+
+function showEntranceMap(immediate = false) {
+  return switchTourMap(
+    "interior_of_the_museum_entrance.png",
+    "Интерактивная схема входа в школьный музей",
+    renderMapMarkers,
+    true,
+    immediate
+  );
+}
+
+function showLongitudinalMap() {
+  return switchTourMap(
+    "facing_two_longitudinal_(interactive).png",
+    "Продольный вид экспозиции школьного музея",
+    renderLongitudinalMarkers,
+    false,
+    false
+  );
+}
+
 function openMapObject(item) {
   const blur = encodePath(IMAGE_DIR, "interior_of_the_museum_entrance.png");
   currentSceneBlur = blur;
@@ -1013,6 +1265,7 @@ function openMapObject(item) {
 }
 
 function openTour() {
+  showEntranceMap(true);
   clearTimeout(tourCloseTimer);
   tour.setAttribute("aria-hidden", "false");
   tour.classList.remove("is-closing");
@@ -1032,9 +1285,11 @@ function closeTour() {
   closeExhibit();
   closeScene();
   closeBook();
+  showEntranceMap(true);
   tour.classList.remove("is-open");
   tour.classList.add("is-closing");
   tour.setAttribute("aria-hidden", "true");
+  showEntranceMap();
   tourHint.classList.remove("is-visible");
   document.body.classList.remove("modal-open");
   tourCloseTimer = window.setTimeout(() => tour.classList.remove("is-closing"), 700);
@@ -1045,9 +1300,13 @@ function openScene(id) {
   if (!data) return;
   const requestId = ++sceneRequestId;
   clearTimeout(sceneCloseTimer);
-  scenePhoto.src = encodePath(IMAGE_DIR, data.image);
+  scenePhoto.src = encodePath(IMAGE_DIR, data.image, data.preserveImageFormat);
   scenePhoto.alt = data.title;
-  renderNestedMarkers(sceneMarkers, data.spots, encodePath(IMAGE_DIR, data.image));
+  renderNestedMarkers(
+    sceneMarkers,
+    data.spots,
+    encodePath(IMAGE_DIR, data.image, data.preserveImageFormat)
+  );
   scene.setAttribute("aria-hidden", "false");
   scene.classList.remove("is-closing");
   decodeImage(scenePhoto, data.image).then(() => {
@@ -1070,21 +1329,23 @@ function closeScene() {
 }
 
 function bookSrc(page) {
-  return encodePath(IMAGE_DIR, BOOK_PAGES[page].file);
+  return encodePath(IMAGE_DIR, currentBookPages[page].file, true);
 }
 
 function updateBookChrome() {
-  bookPageLabel.textContent = BOOK_PAGES[bookPage].label;
+  bookPageLabel.textContent = currentBookPages[bookPage].label;
   document.getElementById("bookPrev").disabled = bookPage === 0 || bookBusy;
-  document.getElementById("bookNext").disabled = bookPage === BOOK_PAGES.length - 1 || bookBusy;
+  document.getElementById("bookNext").disabled = bookPage === currentBookPages.length - 1 || bookBusy;
 }
 
-function openBook() {
+function openBook(pages = MEMORY_BOOK_PAGES, title = "Книга памяти 1941–1945") {
   clearTimeout(bookCloseTimer);
   clearTimeout(bookFlipTimer);
   if (bookFlipHandler) bookLeaf.removeEventListener("transitionend", bookFlipHandler);
   bookFlipHandler = null;
   bookFlipTimer = 0;
+  currentBookPages = pages;
+  bookTitle.textContent = title;
   bookPage = 0;
   bookBusy = false;
   bookLeaf.classList.remove("is-turning-forward", "is-turning-back", "is-flipping-forward", "is-flipping-back");
@@ -1118,7 +1379,7 @@ function closeBook() {
 function flipBook(direction) {
   if (bookBusy) return;
   const next = bookPage + direction;
-  if (next < 0 || next >= BOOK_PAGES.length) return;
+  if (next < 0 || next >= currentBookPages.length) return;
   bookBusy = true;
   bookLeaf.classList.remove("is-flipping-forward", "is-flipping-back");
   bookLeaf.classList.add(direction > 0 ? "is-flipping-forward" : "is-flipping-back");
@@ -1154,7 +1415,7 @@ function flipBook(direction) {
     bookFlipHandler = null;
     bookPage = next;
     bookFrontImg.src = bookSrc(bookPage);
-    const peek = Math.min(BOOK_PAGES.length - 1, bookPage + 1);
+    const peek = Math.min(currentBookPages.length - 1, bookPage + 1);
     bookUnderImg.src = bookSrc(peek);
     bookBackImg.src = bookSrc(peek);
     bookLeaf.classList.remove("is-turning-forward");
@@ -1192,6 +1453,18 @@ document.getElementById("lightboxNext").addEventListener("click", () => navigate
 document.getElementById("closeLightbox").addEventListener("click", closeLightbox);
 document.querySelector("[data-close-lightbox]").addEventListener("click", closeLightbox);
 document.getElementById("closeExhibit").addEventListener("click", closeExhibit);
+exhibitPhoto.addEventListener("click", () => {
+  if (currentExhibitId !== "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)") return;
+  openImageLightbox(exhibitPhoto.src, exhibitPhoto.alt);
+});
+exhibitPhoto.addEventListener("keydown", (event) => {
+  if (
+    currentExhibitId !== "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)" ||
+    (event.key !== "Enter" && event.key !== " ")
+  ) return;
+  event.preventDefault();
+  openImageLightbox(exhibitPhoto.src, exhibitPhoto.alt);
+});
 audioToggle.addEventListener("click", async () => {
   if (!exhibitAudio.paused) {
     stopAudio();
@@ -1221,6 +1494,8 @@ exhibit.addEventListener("click", (event) => {
 });
 
 document.getElementById("walkBtn").addEventListener("click", openTour);
+tourContinue.addEventListener("click", showLongitudinalMap);
+tourBack.addEventListener("click", showEntranceMap);
 document.getElementById("tourExit").addEventListener("click", closeTour);
 document.getElementById("closeHint").addEventListener("click", () => {
   tourHint.classList.remove("is-visible");
@@ -1247,11 +1522,16 @@ carousel.addEventListener("pointerup", (event) => {
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
-    if (isExhibitOpen()) closeExhibit();
+    if (isLightboxOpen()) closeLightbox();
+    else if (isExhibitOpen()) closeExhibit();
     else if (isBookOpen()) closeBook();
     else if (isSceneOpen()) closeScene();
-    else if (isLightboxOpen()) closeLightbox();
     else if (isTourOpen()) closeTour();
+    return;
+  }
+  if (isLightboxOpen()) {
+    if (lightboxGalleryMode && event.key === "ArrowLeft") navigateLightbox(-1);
+    if (lightboxGalleryMode && event.key === "ArrowRight") navigateLightbox(1);
     return;
   }
   if (isBookOpen()) {
@@ -1263,12 +1543,10 @@ document.addEventListener("keydown", (event) => {
   }
   if (isExhibitOpen() || isTourOpen() || isSceneOpen()) return;
   if (event.key === "ArrowLeft") {
-    if (isLightboxOpen()) navigateLightbox(-1);
-    else goTo(index - 1);
+    goTo(index - 1);
   }
   if (event.key === "ArrowRight") {
-    if (isLightboxOpen()) navigateLightbox(1);
-    else goTo(index + 1);
+    goTo(index + 1);
   }
 });
 
