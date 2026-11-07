@@ -207,22 +207,27 @@ Object.assign(EXHIBITS, {
 [
   {
     numeral: "I",
+    title: "Война в Афганистане",
     audioFile: "audio_for_Stend_about_Chechnya_Afghanistan_WWII(1)_(I).mp3",
   },
   {
     numeral: "II",
+    title: "Потери советской армии в Афганской войне",
     audioFile: "audio_Stend_about_Chechnya_Afghanistan_WWII(1)_(II).mp3",
   },
   {
     numeral: "III",
+    title: "Боевая деятельность советских войск в Афганистане",
     audioFile: "audio_for_Stend_about_Chechnya_Afghanistan_WWII(1)_(III).mp3",
   },
   {
     numeral: "IV",
+    title: "Чеченская война - 1",
     audioFile: "audio_for_Stend_about_Chechnya_Afghanistan_WWII(1)_(IV)).mp3",
   },
   {
     numeral: "V",
+    title: "Чеченская война - 2",
     audioFile: "audio_for_Stend_about_Chechnya_Afghanistan_WWII(1)_(V).mp3",
   },
   {
@@ -232,8 +237,8 @@ Object.assign(EXHIBITS, {
     audioFile: "audio_for_Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)_info_about_image.mp3",
     title: "Герой - Денис Сергеевич Стребин",
   },
-  { numeral: "VII" },
-  { numeral: "VIII" },
+  { numeral: "VII", title: "Карта Чеченской Республики" },
+  { numeral: "VIII", title: "Грамота Чащину А.А." },
   { numeral: "X", title: "Рисунок Пети Помозкова" },
 ].forEach(({ numeral, ...details }) => {
   const id = `Stend_about_Chechnya_Afghanistan_WWII(1)_(${numeral})`;
@@ -295,7 +300,7 @@ const MAP_OBJECTS = [
 const LONGITUDINAL_OBJECTS = [
   {
     id: "Stend_about_Chechnya_Afghanistan_WWII(1)",
-    title: "Экспозиция о Чечне, Афганистане и Великой Отечественной войне",
+    title: "Стенд о Чечне, Афганистане и Великой Отечественной войне",
     number: "1",
     color: "red",
     left: "58%",
@@ -394,17 +399,17 @@ const SCENES = {
   },
   "Stend_about_Chechnya_Afghanistan_WWII(1)": {
     image: "Stend_about_Chechnya_Afghanistan_WWII(1).jpg",
-    title: "Экспозиция о Чечне, Афганистане и Великой Отечественной войне",
+    title: "Стенд о Чечне, Афганистане и Великой Отечественной войне",
     preserveImageFormat: true,
     spots: [
-      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(I)", title: "Раздел I", left: "31%", top: "23%", width: "22%", height: "15%" },
-      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(II)", title: "Раздел II", left: "55%", top: "29%", width: "16%", height: "9%" },
-      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(III)", title: "Раздел III", left: "55%", top: "20%", width: "17%", height: "9%" },
-      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(IV)", title: "Раздел IV", left: "30%", top: "40%", width: "23%", height: "16%" },
-      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(V)", title: "Раздел V", left: "59%", top: "42%", width: "17%", height: "15%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(I)", title: "Война в Афганистане", left: "31%", top: "23%", width: "22%", height: "15%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(II)", title: "Потери советской армии в Афганской войне", left: "55%", top: "29%", width: "16%", height: "9%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(III)", title: "Боевая деятельность советских войск в Афганистане", left: "55%", top: "20%", width: "17%", height: "9%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(IV)", title: "Чеченская война - 1", left: "30%", top: "40%", width: "23%", height: "16%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(V)", title: "Чеченская война - 2", left: "59%", top: "42%", width: "17%", height: "15%" },
       { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)", title: "Герой - Денис Сергеевич Стребин", left: "44%", top: "43%", width: "15%", height: "15%" },
-      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(VII)", title: "Раздел VII", left: "24%", top: "54%", width: "27%", height: "11%" },
-      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(VIII)", title: "Раздел VIII", left: "54%", top: "54%", width: "23%", height: "10%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(VII)", title: "Карта Чеченской Республики", left: "24%", top: "54%", width: "27%", height: "11%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(VIII)", title: "Грамота Чащину А.А.", left: "54%", top: "54%", width: "23%", height: "10%" },
       {
         id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(IX)",
         title: "Я знаю и горжусь",
@@ -417,22 +422,25 @@ const SCENES = {
           title: "Я знаю и горжусь",
           pages: [
             { file: "Stend_about_Chechnya_Afghanistan_WWII(1)_(IX).jpg", label: "Обложка" },
-            ...Array.from({ length: 12 }, (_, i) => ({
-              file: `Stend_about_Chechnya_Afghanistan_WWII(1)_(IX)_page_${i + 1}.${i === 11 ? "png" : "jpg"}`,
-              label: `Страница ${i + 1} из 12`,
+            ...Array.from({ length: 11 }, (_, i) => ({
+              file: `Stend_about_Chechnya_Afghanistan_WWII(1)_(IX)_page_${i + 1}.jpg`,
+              label: `Страница ${i + 1} из 11`,
             })),
           ],
         },
       },
-      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(X)", title: "Рисунок Пети Помозкова", left: "39%", top: "72%", width: "20%", height: "17%" },
+      { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(X)", title: "Рисунок Пети Помозкова", left: "39%", top: "72%", width: "20%", height: "17%", labelPosition: "above" },
     ],
   },
 };
 
-const MEMORY_BOOK_PAGES = Array.from({ length: 14 }, (_, i) => ({
+const MEMORY_BOOK_PAGES = [
+  { file: "kniga_pamyati(5).jpg", label: "Обложка" },
+  ...Array.from({ length: 14 }, (_, i) => ({
     file: `kniga_pamyati(5)_page_${i + 1}.jpg`,
     label: `Страница ${i + 1} из 14`,
-}));
+  })),
+];
 
 const ABOUT_FALLBACK = `Завидовская средняя общеобразовательная школа была основана в 1971 году. История нашего села и школы неразрывно связаны: именно появление учебного заведения придало мощный импульс развитию территории, сделав её многолюдной и процветающей. Родители учеников искренне стремились к тому, чтобы их дети получали качественное образование прямо на родной земле, избавляя семьи от необходимости уезжать в другие города и позволяя совместными усилиями развивать родное поселение.
 В истоках музея заложена инициатива Гореликова Валерия Петровича, возглавившего патриотический школьный кружок специализирующегося на раскопках и захоронениях останков советских бойцов. Находки от раскопок нужно было организовать в единое место, так и появился наш музей в 2009-м году. На этапе своего становления музей активно участвовал в профильных конкурсах и завоевал почетное первое место. Особо масштабный виток развития Завидовского музея пришелся на 2024–2026 годы.
@@ -477,10 +485,7 @@ const bookView = document.getElementById("bookView");
 const bookViewport = document.getElementById("bookViewport");
 const bookWorld = document.getElementById("bookWorld");
 const book3d = document.getElementById("book3d");
-const bookLeaf = document.getElementById("bookLeaf");
 const bookFrontImg = document.getElementById("bookFrontImg");
-const bookBackImg = document.getElementById("bookBackImg");
-const bookUnderImg = document.getElementById("bookUnderImg");
 const bookPageLabel = document.getElementById("bookPageLabel");
 const bookTitle = document.querySelector(".book-title");
 
@@ -505,8 +510,8 @@ let tourCloseTimer = 0;
 let sceneCloseTimer = 0;
 let sceneRequestId = 0;
 let bookCloseTimer = 0;
-let bookFlipTimer = 0;
-let bookFlipHandler = null;
+let bookTransitionTimer = 0;
+let bookTransitionId = 0;
 let bookPage = 0;
 let bookBusy = false;
 let currentBookPages = MEMORY_BOOK_PAGES;
@@ -934,7 +939,9 @@ function renderNestedMarkers(container, spots, blurSrc) {
     area.setAttribute("aria-label", `Открыть информацию: ${spot.title}`);
 
     const label = document.createElement("span");
-    label.className = `hot-area-label${spot.labelPosition === "above" ? " is-above" : ""}`;
+    const isLongLabel = spot.id.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_") &&
+      (spot.id.endsWith("_(II)") || spot.id.endsWith("_(III)"));
+    label.className = `hot-area-label${spot.labelPosition === "above" ? " is-above" : ""}${isLongLabel ? " is-long" : ""}`;
     label.textContent = spot.title;
     area.appendChild(label);
 
@@ -965,6 +972,7 @@ async function openExhibit(id, blurSrc) {
   }
   currentExhibitId = id;
   const isHeroPortrait = id === "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)";
+  const isStandPhoto = id.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_");
   exhibit.classList.toggle("is-symbol-detail", id === "Gerb_RF(3)" || id === "Hymn_RF(4)");
   exhibit.classList.toggle("is-hymn-detail", id === "Hymn_RF(4)");
   exhibit.classList.toggle("is-flag-detail", id === "Flag_RF(2)");
@@ -973,7 +981,7 @@ async function openExhibit(id, blurSrc) {
   exhibit.classList.remove("is-open");
   exhibitPhoto.src = encodePath(IMAGE_DIR, data.image, data.preserveImageFormat);
   exhibitPhoto.alt = data.title || data.image;
-  if (isHeroPortrait) {
+  if (isStandPhoto) {
     exhibitPhoto.setAttribute("role", "button");
     exhibitPhoto.setAttribute("tabindex", "0");
     exhibitPhoto.setAttribute("aria-label", `Открыть фотографию на весь экран: ${data.title}`);
@@ -1199,18 +1207,19 @@ async function switchTourMap(image, alt, renderMarkers, showContinue, immediate)
   };
 
   if (immediate || !isTourOpen()) {
-    mapFrame.classList.remove("is-transitioning");
+    tour.classList.remove("is-transitioning");
     updateView();
     return;
   }
 
   if (mapImage.getAttribute("src") === imagePath) {
     updateView();
+    tour.classList.remove("is-transitioning");
     return;
   }
 
-  mapFrame.classList.add("is-transitioning");
-  const fadeDuration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 320;
+  tour.classList.add("is-transitioning");
+  const fadeDuration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 200 : 420;
   await new Promise((resolve) => window.setTimeout(resolve, fadeDuration));
   if (transitionId !== mapTransitionId) return;
 
@@ -1221,7 +1230,7 @@ async function switchTourMap(image, alt, renderMarkers, showContinue, immediate)
     fitImageFrame(tourViewport, mapFrame, mapImage, mapZoom);
   }
   requestAnimationFrame(() => {
-    if (transitionId === mapTransitionId) mapFrame.classList.remove("is-transitioning");
+    if (transitionId === mapTransitionId) tour.classList.remove("is-transitioning");
   });
 }
 
@@ -1340,19 +1349,16 @@ function updateBookChrome() {
 
 function openBook(pages = MEMORY_BOOK_PAGES, title = "Книга памяти 1941–1945") {
   clearTimeout(bookCloseTimer);
-  clearTimeout(bookFlipTimer);
-  if (bookFlipHandler) bookLeaf.removeEventListener("transitionend", bookFlipHandler);
-  bookFlipHandler = null;
-  bookFlipTimer = 0;
+  clearTimeout(bookTransitionTimer);
+  bookTransitionId += 1;
+  bookBusy = false;
   currentBookPages = pages;
   bookTitle.textContent = title;
   bookPage = 0;
-  bookBusy = false;
-  bookLeaf.classList.remove("is-turning-forward", "is-turning-back", "is-flipping-forward", "is-flipping-back");
+  bookFrontImg.classList.remove("is-changing", "is-entering");
   bookZoom.setPosition(0, 0, 1);
   bookFrontImg.src = bookSrc(0);
-  bookUnderImg.src = bookSrc(1);
-  bookBackImg.src = bookSrc(1);
+  bookFrontImg.alt = currentBookPages[0].label;
   updateBookChrome();
   bookView.setAttribute("aria-hidden", "false");
   bookView.classList.remove("is-closing");
@@ -1364,70 +1370,65 @@ function openBook(pages = MEMORY_BOOK_PAGES, title = "Книга памяти 19
 
 function closeBook() {
   if (!isBookOpen() && !bookView.classList.contains("is-closing")) return;
-  clearTimeout(bookFlipTimer);
-  if (bookFlipHandler) bookLeaf.removeEventListener("transitionend", bookFlipHandler);
-  bookFlipHandler = null;
-  bookFlipTimer = 0;
+  clearTimeout(bookTransitionTimer);
+  bookTransitionId += 1;
   bookBusy = false;
-  bookLeaf.classList.remove("is-turning-forward", "is-turning-back", "is-flipping-forward", "is-flipping-back");
+  bookFrontImg.classList.remove("is-changing", "is-entering");
   bookView.classList.remove("is-open");
   bookView.classList.add("is-closing");
   bookView.setAttribute("aria-hidden", "true");
   bookCloseTimer = window.setTimeout(() => bookView.classList.remove("is-closing"), 500);
 }
 
-function flipBook(direction) {
+async function flipBook(direction) {
   if (bookBusy) return;
   const next = bookPage + direction;
   if (next < 0 || next >= currentBookPages.length) return;
+  const transitionId = ++bookTransitionId;
+  const nextSrc = bookSrc(next);
   bookBusy = true;
-  bookLeaf.classList.remove("is-flipping-forward", "is-flipping-back");
-  bookLeaf.classList.add(direction > 0 ? "is-flipping-forward" : "is-flipping-back");
   updateBookChrome();
-
-  if (direction > 0) {
-    bookFrontImg.src = bookSrc(bookPage);
-    bookBackImg.src = bookSrc(next);
-    bookUnderImg.src = bookSrc(next);
-    bookLeaf.style.transition = "none";
-    bookLeaf.classList.remove("is-turning-forward", "is-turning-back");
-    void bookLeaf.offsetWidth;
-    bookLeaf.style.transition = "";
-    requestAnimationFrame(() => bookLeaf.classList.add("is-turning-forward"));
-  } else {
-    bookFrontImg.src = bookSrc(next);
-    bookBackImg.src = bookSrc(bookPage);
-    bookUnderImg.src = bookSrc(bookPage);
-    bookLeaf.style.transition = "none";
-    bookLeaf.classList.remove("is-turning-forward", "is-turning-back");
-    bookLeaf.classList.add("is-turning-back");
-    void bookLeaf.offsetWidth;
-    bookLeaf.style.transition = "";
-    requestAnimationFrame(() => bookLeaf.classList.remove("is-turning-back"));
+  const preview = new Image();
+  preview.src = nextSrc;
+  try {
+    await preview.decode();
+  } catch {
+    // Keep navigation available if an image cannot be decoded.
   }
+  if (transitionId !== bookTransitionId) return;
 
-  const finishFlip = (event) => {
-    if (event && (event.target !== bookLeaf || event.propertyName !== "transform")) return;
-    if (!bookBusy) return;
-    clearTimeout(bookFlipTimer);
-    bookFlipTimer = 0;
-    bookLeaf.removeEventListener("transitionend", finishFlip);
-    bookFlipHandler = null;
+  const showNextPage = () => {
+    if (transitionId !== bookTransitionId) return;
     bookPage = next;
-    bookFrontImg.src = bookSrc(bookPage);
-    const peek = Math.min(currentBookPages.length - 1, bookPage + 1);
-    bookUnderImg.src = bookSrc(peek);
-    bookBackImg.src = bookSrc(peek);
-    bookLeaf.classList.remove("is-turning-forward");
-    bookLeaf.classList.remove("is-flipping-forward", "is-flipping-back");
-    bookBusy = false;
+    bookFrontImg.src = nextSrc;
+    bookFrontImg.alt = currentBookPages[bookPage].label;
     updateBookChrome();
+    bookFrontImg.classList.remove("is-changing");
+    bookFrontImg.classList.add("is-entering");
+    void bookFrontImg.offsetWidth;
+    requestAnimationFrame(() => {
+      if (transitionId !== bookTransitionId) return;
+      bookFrontImg.classList.remove("is-entering");
+    });
+    bookTransitionTimer = window.setTimeout(() => {
+      if (transitionId !== bookTransitionId) return;
+      bookBusy = false;
+      updateBookChrome();
+    }, 280);
   };
 
-  bookFlipHandler = finishFlip;
-  bookLeaf.addEventListener("transitionend", finishFlip);
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  bookFlipTimer = window.setTimeout(finishFlip, reducedMotion ? 0 : 1000);
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    showNextPage();
+    bookFrontImg.classList.remove("is-entering");
+    bookBusy = false;
+    updateBookChrome();
+    return;
+  }
+
+  bookFrontImg.style.setProperty("--book-exit-x", direction > 0 ? "-1rem" : "1rem");
+  bookFrontImg.style.setProperty("--book-enter-x", direction > 0 ? "1rem" : "-1rem");
+  bookFrontImg.classList.add("is-changing");
+  bookTransitionTimer = window.setTimeout(showNextPage, 240);
 }
 
 mapImage.addEventListener("load", () => {
@@ -1442,7 +1443,7 @@ window.addEventListener("resize", () => {
 });
 
 bookFrontImg.addEventListener("load", () => {
-  if (isBookOpen() && !bookBusy) fitBook();
+  if (isBookOpen()) fitBook();
 });
 
 document.querySelector(".nav-btn.prev").addEventListener("click", () => goTo(index - 1));
@@ -1454,12 +1455,12 @@ document.getElementById("closeLightbox").addEventListener("click", closeLightbox
 document.querySelector("[data-close-lightbox]").addEventListener("click", closeLightbox);
 document.getElementById("closeExhibit").addEventListener("click", closeExhibit);
 exhibitPhoto.addEventListener("click", () => {
-  if (currentExhibitId !== "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)") return;
+  if (!currentExhibitId?.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_")) return;
   openImageLightbox(exhibitPhoto.src, exhibitPhoto.alt);
 });
 exhibitPhoto.addEventListener("keydown", (event) => {
   if (
-    currentExhibitId !== "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)" ||
+    !currentExhibitId?.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_") ||
     (event.key !== "Enter" && event.key !== " ")
   ) return;
   event.preventDefault();
@@ -1495,7 +1496,7 @@ exhibit.addEventListener("click", (event) => {
 
 document.getElementById("walkBtn").addEventListener("click", openTour);
 tourContinue.addEventListener("click", showLongitudinalMap);
-tourBack.addEventListener("click", showEntranceMap);
+tourBack.addEventListener("click", () => showEntranceMap());
 document.getElementById("tourExit").addEventListener("click", closeTour);
 document.getElementById("closeHint").addEventListener("click", () => {
   tourHint.classList.remove("is-visible");

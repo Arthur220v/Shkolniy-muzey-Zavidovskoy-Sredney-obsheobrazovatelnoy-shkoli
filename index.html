@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261106-6" />
+  <link rel="stylesheet" href="style.css?v=20261107-1" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -189,6 +189,7 @@
         </div>
       </div>
     </div>
+    <div class="tour-transition" aria-hidden="true"></div>
     <button class="tour-exit" id="tourExit" type="button" aria-label="Выйти из виртуальной экскурсии">
       <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
         <path d="M9 42V7.5h22V42" />
@@ -225,15 +226,7 @@
     <div class="book-viewport" id="bookViewport">
       <div class="book-world" id="bookWorld">
         <div class="book3d" id="book3d">
-          <div class="book-leaf" id="bookLeaf">
-            <div class="leaf-face leaf-front">
-              <img id="bookFrontImg" alt="Страница книги памяти" />
-            </div>
-            <div class="leaf-face leaf-back">
-              <img id="bookBackImg" alt="" />
-            </div>
-          </div>
-          <img class="book-under" id="bookUnderImg" alt="" />
+          <img class="book-page" id="bookFrontImg" alt="Страница книги памяти" />
         </div>
       </div>
     </div>
@@ -241,6 +234,6 @@
     <button class="book-nav next" type="button" id="bookNext" aria-label="Следующая страница"></button>
   </div>
 
-  <script src="script.js?v=20261106-6"></script>
+  <script src="script.js?v=20261107-1"></script>
 </body>
 </html>
