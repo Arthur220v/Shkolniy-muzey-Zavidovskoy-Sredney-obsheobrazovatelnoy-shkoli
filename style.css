@@ -198,7 +198,8 @@ footer {
   height: 6px;
   left: 5px;
   top: 5px;
-  width: min(280px, 62vw);
+  background: #fff;
+  border-radius: 50%;
 }
 
 .red-pin:hover,
