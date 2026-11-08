@@ -111,6 +111,7 @@ function makeExhibit(id, title, extras = {}) {
     title,
     image: extras.image || `${id}.jpg`,
     preserveImageFormat: Boolean(extras.preserveImageFormat),
+    fullViewImage: extras.fullViewImage || null,
     textFile,
     audioFile: extras.audioFile === null ? null : (extras.audioFile || audioFileForExhibit(id, textFile)),
     fallback: extras.fallback || "",
@@ -202,6 +203,11 @@ Object.assign(EXHIBITS, {
     audioFile: "audio_vitrina_pamyati(13)_(XXV)_info_about_image.mp3",
   }),
   "vitrina_pamyati(13)_(XXVI)": makeExhibit("vitrina_pamyati(13)_(XXVI)", "Хлеб для партизан"),
+  "vitrina_pamyati(13)_(GX)": makeExhibit("vitrina_pamyati(13)_(GX)", "Герой - Басин И.И.", {
+    textFile: null,
+    audioFile: null,
+    fullViewImage: "vitrina_pamyati(13)_(GX)_full_view_photo.jpg",
+  }),
 });
 
 [
@@ -395,6 +401,7 @@ const SCENES = {
     spots: [
       { id: "vitrina_pamyati(13)_(XXV)", title: "Бой в Берлине", left: "18%", top: "12%", width: "22%", height: "16%" },
       { id: "vitrina_pamyati(13)_(XXVI)", title: "Хлеб для партизан", left: "18%", top: "28%", width: "22%", height: "16%" },
+      { id: "vitrina_pamyati(13)_(GX)", title: "Герой - Басин И.И.", left: "50%", top: "11%", width: "19%", height: "31%" },
     ],
   },
   "Stend_about_Chechnya_Afghanistan_WWII(1)": {
@@ -528,7 +535,10 @@ function encodePath(dir, file, preserveImageFormat = false) {
   const imageFile = dir === IMAGE_DIR && !preserveImageFormat && !/^kniga_pamyati/i.test(file)
     ? file.replace(/\.(jpe?g)$/i, ".webp")
     : file;
-  return dir + encodeURIComponent(imageFile).replace(/%2F/g, "/");
+  const path = dir + encodeURIComponent(imageFile).replace(/%2F/g, "/");
+  const isUpdatedMemoryDisplay = dir === IMAGE_DIR &&
+    /^vitrina_pamyati\(13\)(?:_hits_for_markers|_\(GX\)(?:_full_view_photo)?)?\.(?:jpe?g|webp)$/i.test(imageFile);
+  return isUpdatedMemoryDisplay ? `${path}?v=20261108-1` : path;
 }
 
 function createPanZoom(viewport, world) {
@@ -973,6 +983,7 @@ async function openExhibit(id, blurSrc) {
   currentExhibitId = id;
   const isHeroPortrait = id === "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)";
   const isStandPhoto = id.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_");
+  const canOpenFullView = isStandPhoto || Boolean(data.fullViewImage);
   exhibit.classList.toggle("is-symbol-detail", id === "Gerb_RF(3)" || id === "Hymn_RF(4)");
   exhibit.classList.toggle("is-hymn-detail", id === "Hymn_RF(4)");
   exhibit.classList.toggle("is-flag-detail", id === "Flag_RF(2)");
@@ -981,7 +992,7 @@ async function openExhibit(id, blurSrc) {
   exhibit.classList.remove("is-open");
   exhibitPhoto.src = encodePath(IMAGE_DIR, data.image, data.preserveImageFormat);
   exhibitPhoto.alt = data.title || data.image;
-  if (isStandPhoto) {
+  if (canOpenFullView) {
     exhibitPhoto.setAttribute("role", "button");
     exhibitPhoto.setAttribute("tabindex", "0");
     exhibitPhoto.setAttribute("aria-label", `Открыть фотографию на весь экран: ${data.title}`);
@@ -1454,17 +1465,22 @@ document.getElementById("lightboxNext").addEventListener("click", () => navigate
 document.getElementById("closeLightbox").addEventListener("click", closeLightbox);
 document.querySelector("[data-close-lightbox]").addEventListener("click", closeLightbox);
 document.getElementById("closeExhibit").addEventListener("click", closeExhibit);
-exhibitPhoto.addEventListener("click", () => {
-  if (!currentExhibitId?.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_")) return;
-  openImageLightbox(exhibitPhoto.src, exhibitPhoto.alt);
-});
+function openCurrentExhibitFullView() {
+  const data = EXHIBITS[currentExhibitId];
+  const isStandPhoto = currentExhibitId?.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_");
+  if (!data?.fullViewImage && !isStandPhoto) return;
+  const src = data.fullViewImage
+    ? encodePath(IMAGE_DIR, data.fullViewImage)
+    : exhibitPhoto.src;
+  openImageLightbox(src, exhibitPhoto.alt);
+}
+
+exhibitPhoto.addEventListener("click", openCurrentExhibitFullView);
 exhibitPhoto.addEventListener("keydown", (event) => {
-  if (
-    !currentExhibitId?.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_") ||
-    (event.key !== "Enter" && event.key !== " ")
-  ) return;
+  if (event.key !== "Enter" && event.key !== " ") return;
+  if (!exhibitPhoto.hasAttribute("role")) return;
   event.preventDefault();
-  openImageLightbox(exhibitPhoto.src, exhibitPhoto.alt);
+  openCurrentExhibitFullView();
 });
 audioToggle.addEventListener("click", async () => {
   if (!exhibitAudio.paused) {
