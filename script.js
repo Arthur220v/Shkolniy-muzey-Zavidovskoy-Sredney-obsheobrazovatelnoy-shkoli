@@ -288,18 +288,18 @@ const HOTSPOTS = {
 };
 
 const MAP_OBJECTS = [
-  { id: "Putin_Vladimir_Vladimirovich(1)", title: "Президент Российской Федерации", color: "gold", left: "91.5%", top: "4.2%", type: "exhibit" },
-  { id: "Flag_RF(2)", title: "Государственный флаг России", color: "gold", left: "88.8%", top: "9.8%", type: "exhibit" },
-  { id: "Gerb_RF(3)", title: "Государственный герб России", color: "gold", left: "93.1%", top: "15.6%", type: "exhibit" },
-  { id: "Hymn_RF(4)", title: "Государственный гимн России", color: "gold", left: "88.8%", top: "19.6%", type: "exhibit" },
-  { id: "kniga_pamyati(5)", title: "Книга памяти 1941–1945", color: "gold", left: "85.6%", top: "32.2%", type: "book" },
-  { id: "bratskiye_zakhoroneniya(6)", title: "Стенд «Братские захоронения»", color: "red", left: "73.2%", top: "11.4%", type: "scene" },
-  { id: "Bessmertny_Polk(7)", title: "Стенд «Бессмертный полк»", color: "red", left: "49.8%", top: "12.2%", type: "scene" },
-  { id: "Novay_School_vitrina(8)", title: "Витрина «Новая школа»", color: "red", left: "28.6%", top: "12.0%", type: "scene" },
-  { id: "vipuskniki_1941g(9)", title: "Выпускники 1941 года", color: "red", left: "15%", top: "30%", type: "scene" },
-  { id: "vitrina_tankov(10)", title: "Витрина военной техники", color: "green", left: "19.6%", top: "38.4%", type: "exhibit" },
-  { id: "medicinskaya_vitrina(11)", title: "Медицинская витрина", color: "green", left: "9.8%", top: "68.5%", type: "exhibit" },
-  { id: "maket_boev(12)", title: "Макет уличных боёв", color: "blue", left: "47.6%", top: "30.8%", type: "exhibit" },
+  { id: "Putin_Vladimir_Vladimirovich(1)", title: "Президент Российской Федерации", color: "gold", left: "91.4%", top: "5.2%", type: "exhibit" },
+  { id: "Flag_RF(2)", title: "Государственный флаг России", color: "gold", left: "88.2%", top: "11.1%", type: "exhibit" },
+  { id: "Gerb_RF(3)", title: "Государственный герб России", color: "gold", left: "91.9%", top: "17.6%", type: "exhibit" },
+  { id: "Hymn_RF(4)", title: "Государственный гимн России", color: "gold", left: "88.7%", top: "22.8%", type: "exhibit" },
+  { id: "kniga_pamyati(5)", title: "Книга памяти 1941–1945", color: "gold", left: "84.4%", top: "31.4%", type: "book" },
+  { id: "bratskiye_zakhoroneniya(6)", title: "Стенд «Братские захоронения»", color: "red", left: "75.0%", top: "16.2%", type: "scene" },
+  { id: "Bessmertny_Polk(7)", title: "Стенд «Бессмертный полк»", color: "red", left: "51.3%", top: "12.0%", type: "scene" },
+  { id: "Novay_School_vitrina(8)", title: "Витрина «Новая школа»", color: "red", left: "30.2%", top: "16.4%", type: "scene" },
+  { id: "vipuskniki_1941g(9)", title: "Выпускники 1941 года", color: "red", left: "13.2%", top: "28.9%", type: "scene" },
+  { id: "vitrina_tankov(10)", title: "Витрина военной техники", color: "green", left: "21.9%", top: "39.5%", type: "exhibit" },
+  { id: "medicinskaya_vitrina(11)", title: "Медицинская витрина", color: "green", left: "9.4%", top: "78.0%", type: "exhibit" },
+  { id: "maket_boev(12)", title: "Макет уличных боёв", color: "blue", left: "51.2%", top: "32.0%", type: "exhibit" },
   { id: "vitrina_pamyati(13)", title: "Витрина памяти", color: "green", left: "67.4%", top: "31.0%", type: "scene" },
 ];
 
@@ -538,7 +538,11 @@ function encodePath(dir, file, preserveImageFormat = false) {
   const path = dir + encodeURIComponent(imageFile).replace(/%2F/g, "/");
   const isUpdatedMemoryDisplay = dir === IMAGE_DIR &&
     /^vitrina_pamyati\(13\)(?:_hits_for_markers|_\(GX\)(?:_full_view_photo)?)?\.(?:jpe?g|webp)$/i.test(imageFile);
-  return isUpdatedMemoryDisplay ? `${path}?v=20261108-1` : path;
+  const isUpdatedEntranceMap = dir === IMAGE_DIR &&
+    /^interior_of_the_museum_entrance(?:_hits_for_markers)?\.(?:png|jpe?g|webp)$/i.test(imageFile);
+  return isUpdatedMemoryDisplay
+    ? `${path}?v=20261108-1`
+    : isUpdatedEntranceMap ? `${path}?v=20261108-2` : path;
 }
 
 function createPanZoom(viewport, world) {
