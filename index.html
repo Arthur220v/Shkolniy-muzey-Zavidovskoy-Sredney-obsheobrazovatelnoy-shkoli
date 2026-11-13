@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
   <title>Музей МБОУ СОШ с.Завидово</title>
   <meta name="description" content="Школьный музей МБОУ СОШ с. Завидово: история школы и музея, фотографии экспозиций, памятные материалы и виртуальная экскурсия." />
   <meta name="robots" content="index, follow" />
@@ -24,8 +25,9 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261107-4" />
+  <link rel="stylesheet" href="style.css?v=20261113-2" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -173,7 +175,7 @@
     <div class="tour-viewport" id="tourViewport">
       <div class="tour-world" id="tourWorld">
         <div class="map-frame" id="mapFrame">
-          <img class="map-photo" id="mapImage" src="images/interior_of_the_museum_entrance.png" alt="Схема входа в музей" />
+          <img class="map-photo" id="mapImage" src="images/interior_of_the_museum_entrance.png?v=20261108-2" alt="Схема входа в музей" loading="eager" fetchpriority="high" decoding="async" />
           <div class="map-markers" id="mapMarkers"></div>
           <button class="tour-direction tour-continue" id="tourContinue" type="button" aria-label="Продолжить экскурсию в следующий зал" title="Перейти в следующий зал">
             <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
@@ -234,6 +236,6 @@
     <button class="book-nav next" type="button" id="bookNext" aria-label="Следующая страница"></button>
   </div>
 
-  <script src="script.js?v=20261108-3"></script>
+  <script src="script.js?v=20261113-1"></script>
 </body>
 </html>

@@ -514,6 +514,7 @@ let lightboxRequestId = 0;
 let lightboxTargetIndex = 0;
 let exhibitCloseTimer = 0;
 let tourCloseTimer = 0;
+let tourOpenRequestId = 0;
 let sceneCloseTimer = 0;
 let sceneRequestId = 0;
 let bookCloseTimer = 0;
@@ -1288,23 +1289,27 @@ function openMapObject(item) {
   openExhibit(item.id, blur);
 }
 
-function openTour() {
+async function openTour() {
+  const requestId = ++tourOpenRequestId;
   showEntranceMap(true);
+  const imageReady = await decodeImage(mapImage, "Схема входа в музей");
+  if (requestId !== tourOpenRequestId || !imageReady) return;
+
   clearTimeout(tourCloseTimer);
   tour.setAttribute("aria-hidden", "false");
   tour.classList.remove("is-closing");
   document.body.classList.add("modal-open");
+  fitImageFrame(tourViewport, mapFrame, mapImage, mapZoom);
   requestAnimationFrame(() => {
+    if (requestId !== tourOpenRequestId) return;
     tour.classList.add("is-open");
-    if (mapImage.complete && mapImage.naturalWidth) {
-      fitImageFrame(tourViewport, mapFrame, mapImage, mapZoom);
-    }
   });
   tourHint.hidden = false;
   requestAnimationFrame(() => tourHint.classList.add("is-visible"));
 }
 
 function closeTour() {
+  tourOpenRequestId += 1;
   exhibitStack = [];
   closeExhibit();
   closeScene();
