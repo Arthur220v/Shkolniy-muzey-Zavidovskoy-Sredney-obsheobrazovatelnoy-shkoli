@@ -670,6 +670,11 @@ function fitImageFrame(viewport, frame, img, zoomApi, padding = 0.96) {
   zoomApi.setPosition((vw - nw * size) / 2, (vh - nh * size) / 2, 1);
 }
 
+const entranceMapReady = decodeImage(mapImage, "Схема входа в музей").then((imageReady) => {
+  if (imageReady) fitImageFrame(tourViewport, mapFrame, mapImage, mapZoom);
+  return imageReady;
+});
+
 function fitBook() {
   const vw = bookViewport.clientWidth;
   const vh = bookViewport.clientHeight;
@@ -1292,7 +1297,7 @@ function openMapObject(item) {
 async function openTour() {
   const requestId = ++tourOpenRequestId;
   showEntranceMap(true);
-  const imageReady = await decodeImage(mapImage, "Схема входа в музей");
+  const imageReady = await entranceMapReady;
   if (requestId !== tourOpenRequestId || !imageReady) return;
 
   clearTimeout(tourCloseTimer);
