@@ -500,21 +500,54 @@ footer {
   width: 100%;
   overflow: hidden;
   padding: 5px;
-  border: 1px solid rgba(240, 213, 154, 0.72);
+  border: 2px solid var(--gold);
   border-radius: 23px;
-  background: linear-gradient(145deg, #f0d59a, #866c3e 48%, #d4b06a);
+  background: var(--gold);
   box-shadow: 0 16px 38px rgba(0, 0, 0, 0.3), 0 0 0 4px rgba(212, 176, 106, 0.08);
   cursor: zoom-in;
 }
 
-.teacher-photo-button::after {
+.teacher-portrait {
+  position: relative;
+}
+
+.teacher-symbols {
   position: absolute;
-  inset: 10px;
-  border: 1px solid rgba(255, 239, 199, 0.78);
-  border-radius: 15px;
-  box-shadow: inset 0 0 18px rgba(5, 13, 28, 0.22);
-  content: "";
+  top: 50%;
+  right: -13px;
+  z-index: 2;
+  display: grid;
+  gap: 0.55rem;
+  transform: translateY(-50%);
   pointer-events: none;
+}
+
+.teacher-symbol {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--gold);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.42);
+}
+
+.teacher-symbol svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.teacher-letter {
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  font-size: 17px;
+  font-weight: 700;
 }
 
 .teacher-photo-button img {
