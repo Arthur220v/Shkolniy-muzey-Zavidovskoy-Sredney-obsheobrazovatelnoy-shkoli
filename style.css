@@ -513,16 +513,13 @@ footer {
 
 .teacher-symbols {
   position: absolute;
-  top: 50%;
-  right: -13px;
+  inset: 0;
   z-index: 2;
-  display: grid;
-  gap: 0.55rem;
-  transform: translateY(-50%);
   pointer-events: none;
 }
 
 .teacher-symbol {
+  position: absolute;
   display: grid;
   width: 30px;
   height: 30px;
@@ -532,6 +529,41 @@ footer {
   background: var(--navy);
   color: var(--gold);
   box-shadow: 0 5px 14px rgba(0, 0, 0, 0.42);
+  transition: transform 0.24s ease, box-shadow 0.24s ease;
+}
+
+.teacher-symbol:nth-child(1) {
+  top: 12%;
+  left: -12px;
+  transform: rotate(-12deg);
+}
+
+.teacher-symbol:nth-child(2) {
+  top: 46%;
+  right: -12px;
+  transform: rotate(9deg);
+}
+
+.teacher-symbol:nth-child(3) {
+  bottom: 12%;
+  left: -12px;
+  transform: rotate(-8deg);
+}
+
+.teacher-portrait:hover .teacher-symbol:nth-child(1) {
+  transform: translate(-2px, -3px) rotate(-12deg);
+}
+
+.teacher-portrait:hover .teacher-symbol:nth-child(2) {
+  transform: translate(2px, -1px) rotate(9deg);
+}
+
+.teacher-portrait:hover .teacher-symbol:nth-child(3) {
+  transform: translate(-2px, 2px) rotate(-8deg);
+}
+
+.teacher-portrait:hover .teacher-symbol {
+  box-shadow: 0 0 14px rgba(212, 176, 106, 0.24), 0 5px 14px rgba(0, 0, 0, 0.42);
 }
 
 .teacher-symbol svg {
