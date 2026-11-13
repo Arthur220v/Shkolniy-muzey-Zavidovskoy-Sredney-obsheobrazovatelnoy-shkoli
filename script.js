@@ -1128,11 +1128,13 @@ async function loadAboutAndLinks() {
     ABOUT_FALLBACK
   );
   const aboutBox = document.getElementById("aboutText");
+  const aboutRemainder = document.getElementById("aboutRemainder");
   aboutBox.innerHTML = "";
-  about.replace(/\u200b/g, "").split(/\n+/).map((block) => block.trim()).filter(Boolean).forEach((block) => {
+  aboutRemainder.innerHTML = "";
+  about.replace(/\u200b/g, "").split(/\n+/).map((block) => block.trim()).filter(Boolean).forEach((block, index) => {
     const p = document.createElement("p");
     p.textContent = block;
-    aboutBox.appendChild(p);
+    (index === 0 ? aboutBox : aboutRemainder).appendChild(p);
   });
 
   const linksRaw = await readTextFile(encodePath(TEXT_DIR, "links.txt"), "");
@@ -1478,6 +1480,12 @@ document.getElementById("lightboxPrev").addEventListener("click", () => navigate
 document.getElementById("lightboxNext").addEventListener("click", () => navigateLightbox(1));
 document.getElementById("closeLightbox").addEventListener("click", closeLightbox);
 document.querySelector("[data-close-lightbox]").addEventListener("click", closeLightbox);
+document.querySelectorAll(".teacher-photo-button").forEach((button) => {
+  const image = button.querySelector("img");
+  button.addEventListener("click", () => {
+    openImageLightbox(image.currentSrc || image.src, button.dataset.caption);
+  });
+});
 document.getElementById("closeExhibit").addEventListener("click", closeExhibit);
 function openCurrentExhibitFullView() {
   const data = EXHIBITS[currentExhibitId];

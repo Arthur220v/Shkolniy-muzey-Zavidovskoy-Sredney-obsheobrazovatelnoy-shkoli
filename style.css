@@ -472,6 +472,68 @@ footer {
   hyphens: auto;
 }
 
+.teachers {
+  margin: 2rem 0 2.4rem;
+}
+
+.teachers h2 {
+  margin-bottom: 1.4rem;
+}
+
+.teacher-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 4vw, 2rem);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.teacher-card {
+  min-width: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.teacher-photo-button {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid rgba(240, 213, 154, 0.35);
+  border-radius: 20px;
+  background: var(--navy-deep);
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.3);
+  cursor: zoom-in;
+}
+
+.teacher-photo-button img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  transition: transform 0.28s ease;
+}
+
+.teacher-photo-button:hover img,
+.teacher-photo-button:focus-visible img {
+  transform: scale(1.035);
+}
+
+.teacher-photo-button:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 4px;
+}
+
+.teacher-name {
+  display: block;
+  margin-top: 0.8rem;
+  color: var(--gold-bright);
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  font-size: clamp(1.15rem, 2.8vw, 1.55rem);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
 .cta {
   display: grid;
   justify-items: center;
