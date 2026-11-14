@@ -481,6 +481,10 @@ footer {
   transition: color 0.2s ease, text-shadow 0.2s ease, transform 0.2s ease;
 }
 
+.about-text a.award-inline-link {
+  display: inline;
+}
+
 .about-text a.glow-link:hover,
 .about-text a.glow-link:focus-visible {
   color: #a8d8ff;
