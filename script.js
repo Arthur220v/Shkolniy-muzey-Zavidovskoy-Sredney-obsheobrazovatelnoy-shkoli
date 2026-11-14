@@ -926,28 +926,50 @@ function openImageLightbox(src, caption) {
 }
 
 let eventPhotoIndex = 0;
+let eventPhotoRequestId = 0;
 
 function showEventPhoto(nextIndex, direction) {
   const animationDirection = direction || (nextIndex < eventPhotoIndex ? -1 : 1);
   eventPhotoIndex = (nextIndex + EVENT_PHOTOS.length) % EVENT_PHOTOS.length;
   const photo = EVENT_PHOTOS[eventPhotoIndex];
-  eventPhoto.classList.remove("slide-from-left", "slide-from-right");
-  eventPhoto.src = `${IMAGE_DIR}${photo.file}`;
-  eventPhoto.alt = photo.caption;
-  void eventPhoto.offsetWidth;
-  eventPhoto.classList.add(animationDirection < 0 ? "slide-from-left" : "slide-from-right");
-  eventPhotoButton.dataset.caption = photo.caption;
-  eventGalleryMeta.classList.remove("is-changing");
-  void eventGalleryMeta.offsetWidth;
-  eventGalleryMeta.classList.add("is-changing");
-  eventCaption.textContent = photo.caption;
-  eventCounter.textContent = `${eventPhotoIndex + 1} / ${EVENT_PHOTOS.length}`;
-  [...eventDots.children].forEach((dot, index) => {
-    const active = index === eventPhotoIndex;
-    dot.classList.toggle("active", active);
-    if (active) dot.setAttribute("aria-current", "true");
-    else dot.removeAttribute("aria-current");
-  });
+  const requestId = ++eventPhotoRequestId;
+  const incomingPhoto = new Image();
+  let photoApplied = false;
+
+  const updateGalleryState = () => {
+    eventPhotoButton.dataset.caption = photo.caption;
+    eventGalleryMeta.classList.remove("is-changing");
+    void eventGalleryMeta.offsetWidth;
+    eventGalleryMeta.classList.add("is-changing");
+    eventCaption.textContent = photo.caption;
+    eventCounter.textContent = `${eventPhotoIndex + 1} / ${EVENT_PHOTOS.length}`;
+    [...eventDots.children].forEach((dot, index) => {
+      const active = index === eventPhotoIndex;
+      dot.classList.toggle("active", active);
+      if (active) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
+    });
+  };
+
+  const applyPhoto = () => {
+    if (photoApplied || requestId !== eventPhotoRequestId) return;
+    photoApplied = true;
+    eventPhoto.classList.remove("slide-from-left", "slide-from-right");
+    eventPhoto.src = incomingPhoto.src;
+    eventPhoto.alt = photo.caption;
+    void eventPhoto.offsetWidth;
+    eventPhoto.classList.add(animationDirection < 0 ? "slide-from-left" : "slide-from-right");
+    updateGalleryState();
+  };
+
+  incomingPhoto.onload = applyPhoto;
+  incomingPhoto.onerror = () => {
+    if (requestId !== eventPhotoRequestId) return;
+    eventCaption.textContent = `Не удалось загрузить фотографию: ${photo.caption}`;
+    eventCounter.textContent = `${eventPhotoIndex + 1} / ${EVENT_PHOTOS.length}`;
+  };
+  incomingPhoto.src = `${IMAGE_DIR}${photo.file}`;
+  if (incomingPhoto.complete && incomingPhoto.naturalWidth > 0) applyPhoto();
 }
 
 function initializeEventGallery() {
