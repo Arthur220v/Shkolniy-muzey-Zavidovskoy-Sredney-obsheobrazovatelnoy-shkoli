@@ -1055,7 +1055,8 @@ function renderNestedMarkers(container, spots, blurSrc) {
     const label = document.createElement("span");
     const isLongLabel = spot.id.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_") &&
       (spot.id.endsWith("_(II)") || spot.id.endsWith("_(III)"));
-    label.className = `hot-area-label${spot.labelPosition === "above" ? " is-above" : ""}${isLongLabel ? " is-long" : ""}`;
+    const isGraduateLabel = spot.id.startsWith("vipuskniki_1941g(9)_");
+    label.className = `hot-area-label${spot.labelPosition === "above" ? " is-above" : ""}${isLongLabel ? " is-long" : ""}${isGraduateLabel ? " is-graduate" : ""}`;
     label.textContent = spot.title;
     area.appendChild(label);
 
