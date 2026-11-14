@@ -484,8 +484,10 @@ const lightboxCaption = document.getElementById("lightboxCaption");
 const eventPhotoButton = document.getElementById("eventPhotoButton");
 const eventPhoto = document.getElementById("eventPhoto");
 const eventCaption = document.getElementById("eventCaption");
+const eventGalleryMeta = eventCaption.parentElement;
 const eventCounter = document.getElementById("eventCounter");
 const eventDots = document.getElementById("eventDots");
+const eventCarousel = document.getElementById("eventCarousel");
 const exhibit = document.getElementById("exhibit");
 const exhibitPhoto = document.getElementById("exhibitPhoto");
 const exhibitText = document.getElementById("exhibitText");
@@ -925,12 +927,19 @@ function openImageLightbox(src, caption) {
 
 let eventPhotoIndex = 0;
 
-function showEventPhoto(nextIndex) {
+function showEventPhoto(nextIndex, direction) {
+  const animationDirection = direction || (nextIndex < eventPhotoIndex ? -1 : 1);
   eventPhotoIndex = (nextIndex + EVENT_PHOTOS.length) % EVENT_PHOTOS.length;
   const photo = EVENT_PHOTOS[eventPhotoIndex];
+  eventPhoto.classList.remove("slide-from-left", "slide-from-right");
   eventPhoto.src = `${IMAGE_DIR}${photo.file}`;
   eventPhoto.alt = photo.caption;
+  void eventPhoto.offsetWidth;
+  eventPhoto.classList.add(animationDirection < 0 ? "slide-from-left" : "slide-from-right");
   eventPhotoButton.dataset.caption = photo.caption;
+  eventGalleryMeta.classList.remove("is-changing");
+  void eventGalleryMeta.offsetWidth;
+  eventGalleryMeta.classList.add("is-changing");
   eventCaption.textContent = photo.caption;
   eventCounter.textContent = `${eventPhotoIndex + 1} / ${EVENT_PHOTOS.length}`;
   [...eventDots.children].forEach((dot, index) => {
@@ -952,8 +961,8 @@ function initializeEventGallery() {
     eventDots.appendChild(dot);
   });
   showEventPhoto(0);
-  document.getElementById("eventPrev").addEventListener("click", () => showEventPhoto(eventPhotoIndex - 1));
-  document.getElementById("eventNext").addEventListener("click", () => showEventPhoto(eventPhotoIndex + 1));
+  document.getElementById("eventPrev").addEventListener("click", () => showEventPhoto(eventPhotoIndex - 1, -1));
+  document.getElementById("eventNext").addEventListener("click", () => showEventPhoto(eventPhotoIndex + 1, 1));
   eventPhotoButton.addEventListener("click", () => {
     openImageLightbox(eventPhoto.currentSrc || eventPhoto.src, eventPhotoButton.dataset.caption);
   });
