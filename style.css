@@ -1161,6 +1161,11 @@ body.modal-open {
 }
 
 @media (max-width: 560px) {
+  .about-text p {
+    text-align: left;
+    hyphens: none;
+  }
+
   .carousel {
     height: 52vh;
     border-radius: 16px;
