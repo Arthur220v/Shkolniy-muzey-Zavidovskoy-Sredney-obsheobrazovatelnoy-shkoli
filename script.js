@@ -17,6 +17,17 @@ const GALLERY = [
   { file: "Exhibition_of_Konakovo_Faience.jpg", caption: "Выставка конаковского фаянса" },
 ];
 
+const EVENT_PHOTOS = [
+  { file: "11september_meropriyatiye.jpg", caption: "Мероприятие, посвящённое 11 сентября" },
+  { file: "Vechernyaya_Mosow_1941.jpg", caption: "Вечер памяти «Москва. 1941 год»" },
+  { file: "Vstrecha_s_Veteranom_SVO_Teleginim_Evgeniem.jpg", caption: "Встреча с ветераном СВО Евгением Телегиным" },
+  { file: "Day_Materi.jpg", caption: "День матери в музее" },
+  { file: "Day_WW2_Endless.jpg", caption: "Мероприятие ко Дню окончания Второй мировой войны" },
+  { file: "Day_Detskikh_Obshestvennih_Organization.jpg", caption: "День детских общественных организаций" },
+  { file: "Vstrecha_s_Sovetom_Veteranov.jpg", caption: "Встреча с Советом ветеранов" },
+  { file: "Orlenok_hranitel_history_memory.jpg", caption: "«Орлёнок — хранитель исторической памяти»" },
+];
+
 const EXHIBITS = {
   museum_entrance_left_soviet_soldier_photo: {
     image: "museum_entrance_left_soviet_soldier_photo.jpg",
@@ -470,6 +481,11 @@ const carousel = document.getElementById("carousel");
 const lightbox = document.getElementById("lightbox");
 const lightboxImage = document.getElementById("lightboxImage");
 const lightboxCaption = document.getElementById("lightboxCaption");
+const eventPhotoButton = document.getElementById("eventPhotoButton");
+const eventPhoto = document.getElementById("eventPhoto");
+const eventCaption = document.getElementById("eventCaption");
+const eventCounter = document.getElementById("eventCounter");
+const eventDots = document.getElementById("eventDots");
 const exhibit = document.getElementById("exhibit");
 const exhibitPhoto = document.getElementById("exhibitPhoto");
 const exhibitText = document.getElementById("exhibitText");
@@ -904,6 +920,42 @@ function openImageLightbox(src, caption) {
         if (requestId === lightboxRequestId) lightboxImage.classList.add("is-shown");
       });
     });
+  });
+}
+
+let eventPhotoIndex = 0;
+
+function showEventPhoto(nextIndex) {
+  eventPhotoIndex = (nextIndex + EVENT_PHOTOS.length) % EVENT_PHOTOS.length;
+  const photo = EVENT_PHOTOS[eventPhotoIndex];
+  eventPhoto.src = `${IMAGE_DIR}${photo.file}`;
+  eventPhoto.alt = photo.caption;
+  eventPhotoButton.dataset.caption = photo.caption;
+  eventCaption.textContent = photo.caption;
+  eventCounter.textContent = `${eventPhotoIndex + 1} / ${EVENT_PHOTOS.length}`;
+  [...eventDots.children].forEach((dot, index) => {
+    const active = index === eventPhotoIndex;
+    dot.classList.toggle("active", active);
+    if (active) dot.setAttribute("aria-current", "true");
+    else dot.removeAttribute("aria-current");
+  });
+}
+
+function initializeEventGallery() {
+  EVENT_PHOTOS.forEach((photo, index) => {
+    const dot = document.createElement("button");
+    dot.className = "event-dot";
+    dot.type = "button";
+    dot.setAttribute("role", "tab");
+    dot.setAttribute("aria-label", `Фото ${index + 1}: ${photo.caption}`);
+    dot.addEventListener("click", () => showEventPhoto(index));
+    eventDots.appendChild(dot);
+  });
+  showEventPhoto(0);
+  document.getElementById("eventPrev").addEventListener("click", () => showEventPhoto(eventPhotoIndex - 1));
+  document.getElementById("eventNext").addEventListener("click", () => showEventPhoto(eventPhotoIndex + 1));
+  eventPhotoButton.addEventListener("click", () => {
+    openImageLightbox(eventPhoto.currentSrc || eventPhoto.src, eventPhotoButton.dataset.caption);
   });
 }
 
@@ -1597,5 +1649,6 @@ document.addEventListener("keydown", (event) => {
 });
 
 renderGallery();
+initializeEventGallery();
 renderMapMarkers();
 loadAboutAndLinks();

@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261114-2" />
+  <link rel="stylesheet" href="style.css?v=20261114-3" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -196,6 +196,25 @@
           </blockquote>
         </div>
       </div>
+      <section class="event-section" aria-labelledby="event-heading">
+        <h3 id="event-heading">Мероприятия в нашем музее</h3>
+        <div class="event-carousel" id="eventCarousel">
+          <button class="event-photo-button" id="eventPhotoButton" type="button" aria-label="Открыть фотографию мероприятия в полном размере">
+            <img id="eventPhoto" alt="" decoding="async" />
+          </button>
+          <button class="nav-btn prev event-nav" id="eventPrev" type="button" aria-label="Предыдущее мероприятие">
+            <span></span>
+          </button>
+          <button class="nav-btn next event-nav" id="eventNext" type="button" aria-label="Следующее мероприятие">
+            <span></span>
+          </button>
+        </div>
+        <div class="event-gallery-meta">
+          <p id="eventCaption" aria-live="polite"></p>
+          <span id="eventCounter" aria-live="polite"></span>
+        </div>
+        <div class="event-dots" id="eventDots" role="tablist" aria-label="Выбор фотографии мероприятия"></div>
+      </section>
     </section>
 
     <aside class="site-notice" role="status">
@@ -314,6 +333,6 @@
     <button class="book-nav next" type="button" id="bookNext" aria-label="Следующая страница"></button>
   </div>
 
-  <script src="script.js?v=20261114-1"></script>
+  <script src="script.js?v=20261114-2"></script>
 </body>
 </html>
