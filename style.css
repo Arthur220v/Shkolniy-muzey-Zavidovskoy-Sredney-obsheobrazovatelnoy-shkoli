@@ -2307,10 +2307,12 @@ body.modal-open {
 
 @media (max-width: 560px) {
   .hot-area-label.is-graduate {
+    width: 122%;
     padding: 0.08rem 0.1rem;
     font-size: 0.42rem;
     line-height: 1.05;
-    overflow-wrap: anywhere;
+    overflow-wrap: normal;
+    word-break: normal;
   }
 }
 
