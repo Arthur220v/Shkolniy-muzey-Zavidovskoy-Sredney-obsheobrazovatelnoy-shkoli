@@ -1255,7 +1255,7 @@ async function switchTourMap(image, alt, renderMarkers, showContinue, immediate)
   }
 
   tour.classList.add("is-transitioning");
-  const fadeDuration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 200 : 420;
+  const fadeDuration = 420;
   await new Promise((resolve) => window.setTimeout(resolve, fadeDuration));
   if (transitionId !== mapTransitionId) return;
 
@@ -1456,14 +1456,6 @@ async function flipBook(direction) {
       updateBookChrome();
     }, 280);
   };
-
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    showNextPage();
-    bookFrontImg.classList.remove("is-entering");
-    bookBusy = false;
-    updateBookChrome();
-    return;
-  }
 
   bookFrontImg.style.setProperty("--book-exit-x", direction > 0 ? "-1rem" : "1rem");
   bookFrontImg.style.setProperty("--book-enter-x", direction > 0 ? "1rem" : "-1rem");
