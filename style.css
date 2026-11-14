@@ -754,13 +754,41 @@ footer {
 }
 
 .additional-info > h2 {
+  position: relative;
   margin: 0 0 1.5rem;
+  padding: 0 clamp(2rem, 8vw, 5.5rem);
   color: var(--gold-bright);
   font-family: "Cormorant Garamond", "Times New Roman", serif;
   font-size: clamp(2rem, 4vw, 2.8rem);
   font-weight: 600;
   text-align: center;
   text-shadow: 0 0 18px rgba(212, 176, 106, 0.22);
+}
+
+.additional-info > h2::before,
+.additional-info > h2::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: clamp(1.5rem, 7.2vw, 5rem);
+  height: 12px;
+  transform: translateY(-50%);
+}
+
+.additional-info > h2::before {
+  left: 0;
+  background:
+    radial-gradient(circle, rgba(240, 213, 154, 0.9) 0 1.5px, transparent 2px) left center / 5px 5px no-repeat,
+    linear-gradient(90deg, rgba(212, 176, 106, 0.25), rgba(240, 213, 154, 0.82)) center / 100% 1px no-repeat,
+    radial-gradient(circle, rgba(240, 213, 154, 0.9) 0 2px, transparent 2.5px) right center / 7px 7px no-repeat;
+}
+
+.additional-info > h2::after {
+  right: 0;
+  background:
+    radial-gradient(circle, rgba(240, 213, 154, 0.9) 0 1.5px, transparent 2px) right center / 5px 5px no-repeat,
+    linear-gradient(270deg, rgba(212, 176, 106, 0.25), rgba(240, 213, 154, 0.82)) center / 100% 1px no-repeat,
+    radial-gradient(circle, rgba(240, 213, 154, 0.9) 0 2px, transparent 2.5px) left center / 7px 7px no-repeat;
 }
 
 .author-card {
