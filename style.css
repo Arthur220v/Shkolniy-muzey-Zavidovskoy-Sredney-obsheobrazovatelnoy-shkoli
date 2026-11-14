@@ -1950,20 +1950,29 @@ body.modal-open {
   position: absolute;
   top: 50%;
   left: 0;
-  display: grid;
-  width: 44px;
-  height: 68px;
-  place-items: center;
-  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 126px;
+  height: 48px;
+  padding: 0 0.75rem;
   border: 1px solid rgba(212, 176, 106, 0.55);
   border-left: 0;
   border-radius: 0 14px 14px 0;
   background: linear-gradient(145deg, rgba(20, 42, 78, 0.98), rgba(8, 18, 36, 0.98));
   color: var(--gold-bright);
-  font-size: 1.2rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 9px rgba(240, 213, 154, 0.52), 0 0 18px rgba(240, 213, 154, 0.24);
   cursor: pointer;
   transform: translateY(-50%);
   box-shadow: 0 8px 26px rgba(0, 0, 0, 0.38);
+}
+
+.hint-restore-label {
+  white-space: nowrap;
 }
 
 .hint-restore[hidden] {
@@ -1990,7 +1999,7 @@ body.modal-open {
 
 .tour-hint.is-visible.is-collapsed {
   opacity: 1;
-  transform: translate3d(calc(100% - 44px), 0, 0);
+  transform: translate3d(calc(100% - 126px), 0, 0);
   transition:
     opacity 0.3s ease,
     transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2032,14 +2041,10 @@ body.modal-open {
 .hint-legend {
   display: grid;
   gap: 0.3rem;
-  max-height: min(44vh, 360px);
-  overflow: auto;
+  overflow: visible;
   margin-top: 0.85rem;
   padding: 0.65rem;
-  border: 1px solid rgba(212, 176, 106, 0.32);
   border-radius: 16px;
-  background: rgba(3, 10, 22, 0.86);
-  box-shadow: inset 0 0 22px rgba(20, 42, 78, 0.38);
   animation: hintLegendReveal 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -2317,7 +2322,7 @@ body.modal-open {
   }
 
   .tour-hint.is-visible.is-collapsed {
-    transform: translate3d(calc(100% - 42px), 0, 0);
+    transform: translate3d(calc(100% - 126px), 0, 0);
   }
 
   .hint-legend-item {
