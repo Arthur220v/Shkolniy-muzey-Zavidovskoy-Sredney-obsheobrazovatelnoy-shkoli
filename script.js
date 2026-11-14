@@ -1140,7 +1140,10 @@ async function loadAboutAndLinks() {
   aboutRemainder.innerHTML = "";
   about.replace(/\u200b/g, "").split(/\n+/).map((block) => block.trim()).filter(Boolean).forEach((block, index) => {
     const p = document.createElement("p");
-    p.textContent = block;
+    const withLinks = block
+      .replace(/Валерий Ильин/g, '<a class="glow-link" href="https://tvereparhia.ru/about/clergy/valeriy-dmitrievich-ilin-protoierey/" target="_blank" rel="noopener noreferrer">Валерий Ильин</a>')
+      .replace(/Пётр Дубяго/g, '<a class="glow-link" href="https://tvereparhia.ru/about/clergy/petr-ivanovich-dubyago-protoierey/" target="_blank" rel="noopener noreferrer">Пётр Дубяго</a>');
+    p.innerHTML = withLinks;
     (index === 0 ? aboutBox : aboutRemainder).appendChild(p);
   });
 
