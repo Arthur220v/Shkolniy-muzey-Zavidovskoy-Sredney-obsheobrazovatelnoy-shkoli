@@ -474,24 +474,22 @@ footer {
 
 .about-text a.glow-link {
   display: inline-block;
-  color: #7ad7ff;
+  color: #7bb7ff;
   font-weight: 700;
   text-decoration: none;
-  text-shadow: 0 0 10px rgba(122, 215, 255, 0.9), 0 0 20px rgba(122, 215, 255, 0.7);
-  border-bottom: 1px solid rgba(122, 215, 255, 0.7);
-  transition: color 0.2s ease, text-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  text-shadow: 0 0 8px rgba(123, 183, 255, 0.55), 0 0 18px rgba(140, 200, 255, 0.32);
+  transition: color 0.2s ease, text-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .about-text a.glow-link:hover,
 .about-text a.glow-link:focus-visible {
-  color: #dff9ff;
-  text-shadow: 0 0 12px rgba(158, 228, 255, 1), 0 0 22px rgba(122, 215, 255, 0.9), 0 0 36px rgba(122, 215, 255, 0.8);
-  border-color: rgba(223, 249, 255, 0.9);
+  color: #a8d8ff;
+  text-shadow: 0 0 10px rgba(131, 195, 255, 0.8), 0 0 20px rgba(162, 217, 255, 0.5);
   transform: translateY(-1px);
 }
 
 .about-text a.glow-link:focus-visible {
-  outline: 2px solid rgba(122, 215, 255, 0.9);
+  outline: 2px solid rgba(132, 189, 255, 0.8);
   outline-offset: 3px;
   border-radius: 4px;
 }
