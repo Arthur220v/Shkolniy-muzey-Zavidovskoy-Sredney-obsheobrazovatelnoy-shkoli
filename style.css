@@ -1799,12 +1799,16 @@ body.modal-open {
 }
 
 .map-pin.gold .pin-dot { background: #f0d24a; }
+.map-pin.orange .pin-dot { background: #f08c32; }
 .map-pin.red .pin-dot { background: #e03131; }
 .map-pin.green .pin-dot { background: #2f9e44; }
 .map-pin.blue .pin-dot { background: #1c7ed6; }
 
 .map-pin.gold .pin-glow {
   background: radial-gradient(circle, rgba(240, 210, 74, 0.7), transparent 68%);
+}
+.map-pin.orange .pin-glow {
+  background: radial-gradient(circle, rgba(240, 140, 50, 0.76), transparent 68%);
 }
 .map-pin.red .pin-glow {
   background: radial-gradient(circle, rgba(224, 49, 49, 0.7), transparent 68%);
@@ -1932,6 +1936,40 @@ body.modal-open {
     transform 0.62s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
 }
 
+.hint-content {
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+
+.tour-hint.is-collapsed .hint-content {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.hint-restore {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  display: grid;
+  width: 44px;
+  height: 68px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(212, 176, 106, 0.55);
+  border-left: 0;
+  border-radius: 0 14px 14px 0;
+  background: linear-gradient(145deg, rgba(20, 42, 78, 0.98), rgba(8, 18, 36, 0.98));
+  color: var(--gold-bright);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transform: translateY(-50%);
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.38);
+}
+
+.hint-restore[hidden] {
+  display: none;
+}
+
 .tour-hint::after {
   content: "";
   position: absolute;
@@ -1950,16 +1988,113 @@ body.modal-open {
   transform: none;
 }
 
+.tour-hint.is-visible.is-collapsed {
+  opacity: 1;
+  transform: translate3d(calc(100% - 44px), 0, 0);
+  transition:
+    opacity 0.3s ease,
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .hint-heading {
   display: flex;
   align-items: center;
   gap: 0.55rem;
   margin-bottom: 0.45rem;
+}
+
+.hint-legend-toggle {
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--gold-bright);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  text-shadow: 0 0 9px rgba(240, 213, 154, 0.52), 0 0 18px rgba(240, 213, 154, 0.24);
+  cursor: pointer;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.hint-legend-toggle:hover,
+.hint-legend-toggle:focus-visible {
+  color: #fff0c8;
+  text-shadow: 0 0 12px rgba(240, 213, 154, 0.82), 0 0 24px rgba(240, 213, 154, 0.42);
+}
+
+.hint-legend-toggle:focus-visible,
+.hint-restore:focus-visible {
+  outline: 2px solid #fff0c8;
+  outline-offset: 3px;
+}
+
+.hint-legend {
+  display: grid;
+  gap: 0.3rem;
+  max-height: min(44vh, 360px);
+  overflow: auto;
+  margin-top: 0.85rem;
+  padding: 0.65rem;
+  border: 1px solid rgba(212, 176, 106, 0.32);
+  border-radius: 16px;
+  background: rgba(3, 10, 22, 0.86);
+  box-shadow: inset 0 0 22px rgba(20, 42, 78, 0.38);
+  animation: hintLegendReveal 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hint-legend[hidden] {
+  display: none;
+}
+
+@keyframes hintLegendReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.hint-legend-item {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 48px;
+  padding: 0.25rem 0.1rem;
+  color: var(--ivory);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.hint-legend-pin {
+  position: relative;
+  display: block;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  overflow: visible;
+  opacity: 1;
+  cursor: default;
+  transform: none;
+  animation: none;
+  pointer-events: none;
+}
+
+.hint-legend-pin .pin-glow {
+  opacity: 0.75;
+}
+
+.tour-hint .hint-legend-pin .pin-glow {
+  animation: glowPulse 2.2s ease-in-out infinite;
+}
+
+.hint-legend-pin .pin-dot {
+  width: 18px;
+  height: 18px;
 }
 
 .hint-indicator {
@@ -2168,7 +2303,7 @@ body.modal-open {
 @media (hover: none) {
   .tour-hint {
     right: 0.45rem;
-    bottom: 0.65rem;
+    bottom: 5.25rem;
     width: min(78vw, 310px);
     padding: 0.75rem 1.9rem 0.85rem 0.85rem;
     border-radius: 16px 16px 6px 16px;
@@ -2179,6 +2314,21 @@ body.modal-open {
 
   .tour-hint.is-visible {
     transform: none;
+  }
+
+  .tour-hint.is-visible.is-collapsed {
+    transform: translate3d(calc(100% - 42px), 0, 0);
+  }
+
+  .hint-legend-item {
+    grid-template-columns: 40px minmax(0, 1fr);
+    gap: 0.45rem;
+    font-size: 0.73rem;
+  }
+
+  .hint-legend-pin {
+    width: 40px;
+    height: 40px;
   }
 
   .tour-hint::after {

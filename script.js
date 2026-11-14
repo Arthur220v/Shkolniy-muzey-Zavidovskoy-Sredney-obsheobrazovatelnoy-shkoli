@@ -303,7 +303,7 @@ const MAP_OBJECTS = [
   { id: "Flag_RF(2)", title: "Государственный флаг России", color: "gold", left: "88.2%", top: "11.1%", type: "exhibit" },
   { id: "Gerb_RF(3)", title: "Государственный герб России", color: "gold", left: "91.9%", top: "17.6%", type: "exhibit" },
   { id: "Hymn_RF(4)", title: "Государственный гимн России", color: "gold", left: "88.7%", top: "22.8%", type: "exhibit" },
-  { id: "kniga_pamyati(5)", title: "Книга памяти 1941–1945", color: "gold", left: "84.4%", top: "31.4%", type: "book" },
+  { id: "kniga_pamyati(5)", title: "Книга памяти 1941–1945", color: "orange", left: "84.4%", top: "31.4%", type: "book" },
   { id: "bratskiye_zakhoroneniya(6)", title: "Стенд «Братские захоронения»", color: "red", left: "75.0%", top: "16.2%", type: "scene" },
   { id: "Bessmertny_Polk(7)", title: "Стенд «Бессмертный полк»", color: "red", left: "51.3%", top: "12.0%", type: "scene" },
   { id: "Novay_School_vitrina(8)", title: "Витрина «Новая школа»", color: "red", left: "30.2%", top: "16.4%", type: "scene" },
@@ -507,6 +507,10 @@ const mapMarkers = document.getElementById("mapMarkers");
 const tourContinue = document.getElementById("tourContinue");
 const tourBack = document.getElementById("tourBack");
 const tourHint = document.getElementById("tourHint");
+const hintContent = document.getElementById("hintContent");
+const hintLegend = document.getElementById("hintLegend");
+const hintLegendToggle = document.getElementById("hintLegendToggle");
+const hintRestore = document.getElementById("restoreHint");
 const scene = document.getElementById("scene");
 const sceneViewport = document.getElementById("sceneViewport");
 const sceneWorld = document.getElementById("sceneWorld");
@@ -1405,12 +1409,26 @@ async function openTour() {
   tour.classList.remove("is-closing");
   document.body.classList.add("modal-open");
   fitImageFrame(tourViewport, mapFrame, mapImage, mapZoom);
+  setTourHintCollapsed(false);
+  hintLegend.hidden = true;
+  hintLegendToggle.setAttribute("aria-expanded", "false");
   requestAnimationFrame(() => {
     if (requestId !== tourOpenRequestId) return;
     tour.classList.add("is-open");
   });
   tourHint.hidden = false;
   requestAnimationFrame(() => tourHint.classList.add("is-visible"));
+}
+
+function setTourHintCollapsed(collapsed) {
+  tourHint.classList.toggle("is-collapsed", collapsed);
+  hintContent.setAttribute("aria-hidden", String(collapsed));
+  hintRestore.hidden = !collapsed;
+  hintRestore.setAttribute("aria-expanded", String(!collapsed));
+  if (collapsed) {
+    hintLegend.hidden = true;
+    hintLegendToggle.setAttribute("aria-expanded", "false");
+  }
 }
 
 function closeTour() {
@@ -1626,11 +1644,27 @@ document.getElementById("walkBtn").addEventListener("click", openTour);
 tourContinue.addEventListener("click", showLongitudinalMap);
 tourBack.addEventListener("click", () => showEntranceMap());
 document.getElementById("tourExit").addEventListener("click", closeTour);
-document.getElementById("closeHint").addEventListener("click", () => {
-  tourHint.classList.remove("is-visible");
-  window.setTimeout(() => {
-    tourHint.hidden = true;
-  }, 700);
+document.getElementById("closeHint").addEventListener("click", () => setTourHintCollapsed(true));
+hintRestore.addEventListener("click", () => setTourHintCollapsed(false));
+hintLegendToggle.addEventListener("click", () => {
+  hintLegend.hidden = !hintLegend.hidden;
+  hintLegendToggle.setAttribute("aria-expanded", String(!hintLegend.hidden));
+});
+
+let hintSwipeStartX = null;
+tourHint.addEventListener("pointerdown", (event) => {
+  if (!tourHint.classList.contains("is-collapsed") || event.pointerType === "mouse") return;
+  hintSwipeStartX = event.clientX;
+  tourHint.setPointerCapture(event.pointerId);
+});
+tourHint.addEventListener("pointerup", (event) => {
+  if (hintSwipeStartX === null) return;
+  const swipeDistance = event.clientX - hintSwipeStartX;
+  hintSwipeStartX = null;
+  if (swipeDistance > 40) setTourHintCollapsed(false);
+});
+tourHint.addEventListener("pointercancel", () => {
+  hintSwipeStartX = null;
 });
 document.getElementById("closeScene").addEventListener("click", closeScene);
 document.getElementById("closeBook").addEventListener("click", closeBook);

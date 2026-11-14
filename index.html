@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261114-7" />
+  <link rel="stylesheet" href="style.css?v=20261114-8" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -298,13 +298,40 @@
       </svg>
       <span>Выйти</span>
     </button>
-    <aside class="tour-hint" id="tourHint" aria-label="Подсказка музея" aria-live="polite" hidden>
-      <button class="hint-close" type="button" id="closeHint" aria-label="Закрыть подсказку">×</button>
-      <div class="hint-heading">
-        <span class="hint-indicator" aria-hidden="true"></span>
-        <strong>Подсказка музея</strong>
+    <aside class="tour-hint" id="tourHint" aria-label="Подсказка" aria-live="polite" hidden>
+      <div class="hint-content" id="hintContent">
+        <button class="hint-close" type="button" id="closeHint" aria-label="Свернуть подсказку">×</button>
+        <div class="hint-heading">
+          <span class="hint-indicator" aria-hidden="true"></span>
+          <button class="hint-legend-toggle" id="hintLegendToggle" type="button" aria-expanded="false" aria-controls="hintLegend">Подсказка</button>
+        </div>
+        <p>Чтобы узнать информацию об экспонате, нажмите на отметку.</p>
+        <div class="hint-legend" id="hintLegend" hidden>
+          <div class="hint-legend-item">
+            <span class="map-pin hint-legend-pin gold" aria-hidden="true"><span class="pin-glow"></span><span class="pin-dot"></span></span>
+            <span>Жёлтая отметка: Портрет президента и государственные атрибуты. Сведения о них.</span>
+          </div>
+          <div class="hint-legend-item">
+            <span class="map-pin hint-legend-pin orange" aria-hidden="true"><span class="pin-glow"></span><span class="pin-dot"></span></span>
+            <span>Оранжевая отметка: Книжные сведения.</span>
+          </div>
+          <div class="hint-legend-item">
+            <span class="map-pin hint-legend-pin blue" aria-hidden="true"><span class="pin-glow"></span><span class="pin-dot"></span></span>
+            <span>Голубая отметка: Макеты музея.</span>
+          </div>
+          <div class="hint-legend-item">
+            <span class="map-pin hint-legend-pin green" aria-hidden="true"><span class="pin-glow"></span><span class="pin-dot"></span></span>
+            <span>Зелёная отметка: Витрины музея.</span>
+          </div>
+          <div class="hint-legend-item">
+            <span class="map-pin hint-legend-pin red" aria-hidden="true"><span class="pin-glow"></span><span class="pin-dot"></span></span>
+            <span>Красная отметка: Стенды музея.</span>
+          </div>
+        </div>
       </div>
-      <p>Чтобы узнать информацию об экспонате, нажмите на отметку.</p>
+      <button class="hint-restore" id="restoreHint" type="button" aria-label="Вернуть подсказку" aria-expanded="false" hidden>
+        <span aria-hidden="true">❮</span>
+      </button>
     </aside>
   </div>
 
@@ -337,6 +364,6 @@
     <button class="book-nav next" type="button" id="bookNext" aria-label="Следующая страница"></button>
   </div>
 
-  <script src="script.js?v=20261114-4"></script>
+  <script src="script.js?v=20261114-5"></script>
 </body>
 </html>
