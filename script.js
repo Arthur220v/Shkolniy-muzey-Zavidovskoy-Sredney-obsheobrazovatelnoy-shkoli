@@ -1142,7 +1142,9 @@ async function loadAboutAndLinks() {
     const p = document.createElement("p");
     const withLinks = block
       .replace(/Валерий Ильин/g, '<a class="glow-link" href="https://tvereparhia.ru/about/clergy/valeriy-dmitrievich-ilin-protoierey/" target="_blank" rel="noopener noreferrer">Валерий Ильин</a>')
-      .replace(/Пётр Дубяго/g, '<a class="glow-link" href="https://tvereparhia.ru/about/clergy/petr-ivanovich-dubyago-protoierey/" target="_blank" rel="noopener noreferrer">Пётр Дубяго</a>');
+      .replace(/Пётр Дубяго/g, '<a class="glow-link" href="https://tvereparhia.ru/about/clergy/petr-ivanovich-dubyago-protoierey/" target="_blank" rel="noopener noreferrer">Пётр Дубяго</a>')
+      .replace(/музей был восстановлен и торжественно открыт 17 декабря 2019 года\./g, '<a class="glow-link" href="https://zavidovohram.ru/s-novym-muzeem/" target="_blank" rel="noopener noreferrer">музей был восстановлен и торжественно открыт 17 декабря 2019 года.</a>')
+      .replace(/в мае 2025 года школьный музей нашей школы села Завидово занял 1-е место в муниципальном конкурсе на лучший школьный музей, проходившем в Конаковском округе\.[\s\S]*?Награду присудило Управление образования администрации округа по итогам смотра, приуроченного к Году защитника Отечества и 80-летию Победы\./g, '<a class="glow-link" href="https://tverlife.ru/lenta/pobediteli-dvuh-konkursov-sobralis-v-administracii-konakovskogo-okruga/" target="_blank" rel="noopener noreferrer">в мае 2025 года школьный музей нашей школы села Завидово занял 1-е место в муниципальном конкурсе на лучший школьный музей, проходившем в Конаковском округе. Награду присудило Управление образования администрации округа по итогам смотра, приуроченного к Году защитника Отечества и 80-летию Победы.</a>');
     p.innerHTML = withLinks;
     (index === 0 ? aboutBox : aboutRemainder).appendChild(p);
   });
