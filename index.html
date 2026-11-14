@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261114-1" />
+  <link rel="stylesheet" href="style.css?v=20261114-2" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -180,13 +180,15 @@
     <section class="additional-info" aria-labelledby="additional-info-heading">
       <h2 id="additional-info-heading">Дополнительные сведения</h2>
       <div class="author-card">
-        <img
-          class="author-photo"
-          src="images/Arthur_Grigorian.jpg"
-          alt="Артур Григорян"
-          loading="lazy"
-          decoding="async"
-        />
+        <button class="author-photo-button" type="button" data-caption="Артур Григорян" aria-label="Открыть фотографию Артура Григоряна">
+          <img
+            class="author-photo"
+            src="images/Arthur_Grigorian.jpg"
+            alt="Артур Григорян"
+            loading="lazy"
+            decoding="async"
+          />
+        </button>
         <div class="author-copy">
           <h3>Сайт создан в 2026-м году будучи учащимся 10-го класса — Григорян Артуром</h3>
           <blockquote>
@@ -312,6 +314,6 @@
     <button class="book-nav next" type="button" id="bookNext" aria-label="Следующая страница"></button>
   </div>
 
-  <script src="script.js?v=20261113-3"></script>
+  <script src="script.js?v=20261114-1"></script>
 </body>
 </html>

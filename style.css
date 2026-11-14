@@ -775,17 +775,38 @@ footer {
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
 }
 
-.author-photo {
+.author-photo-button {
   display: block;
   width: 100%;
   max-width: 290px;
   aspect-ratio: 3 / 4;
   justify-self: center;
-  object-fit: cover;
-  object-position: center 38%;
+  overflow: hidden;
+  padding: 0;
   border: 3px solid rgba(212, 176, 106, 0.82);
   border-radius: 18px;
+  background: var(--navy);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.34), 0 0 22px rgba(212, 176, 106, 0.12);
+  cursor: zoom-in;
+}
+
+.author-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 38%;
+  transition: transform 0.25s ease;
+}
+
+.author-photo-button:hover .author-photo,
+.author-photo-button:focus-visible .author-photo {
+  transform: scale(1.035);
+}
+
+.author-photo-button:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 4px;
 }
 
 .author-copy h3 {
@@ -806,6 +827,7 @@ footer {
 .author-copy blockquote p {
   margin: 0;
   color: #e7edf6;
+  font-family: Arial, sans-serif;
   font-size: clamp(0.94rem, 1.6vw, 1.05rem);
   font-style: italic;
   line-height: 1.75;
@@ -1238,7 +1260,7 @@ body.modal-open {
     gap: 1.25rem;
   }
 
-  .author-photo {
+  .author-photo-button {
     width: min(72%, 250px);
   }
 

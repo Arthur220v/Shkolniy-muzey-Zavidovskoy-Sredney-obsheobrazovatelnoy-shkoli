@@ -1487,7 +1487,7 @@ document.getElementById("lightboxPrev").addEventListener("click", () => navigate
 document.getElementById("lightboxNext").addEventListener("click", () => navigateLightbox(1));
 document.getElementById("closeLightbox").addEventListener("click", closeLightbox);
 document.querySelector("[data-close-lightbox]").addEventListener("click", closeLightbox);
-document.querySelectorAll(".teacher-photo-button").forEach((button) => {
+document.querySelectorAll(".teacher-photo-button, .author-photo-button").forEach((button) => {
   const image = button.querySelector("img");
   button.addEventListener("click", () => {
     openImageLightbox(image.currentSrc || image.src, button.dataset.caption);
