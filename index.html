@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261114-15" />
+  <link rel="stylesheet" href="style.css?v=20261115-guestbook1" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -217,6 +217,72 @@
       </section>
     </section>
 
+    <section class="guestbook" aria-labelledby="guestbook-heading">
+      <header class="guestbook-header">
+        <h2 id="guestbook-heading">Книга отзывов</h2>
+        <p>Оставьте отзыв о школьном музее. Он появится здесь после проверки модератором.</p>
+      </header>
+      <div class="guestbook-grid">
+        <form class="guestbook-form" id="guestbookForm">
+          <div class="guestbook-name-fields">
+            <label class="guestbook-field">
+              <span>Имя</span>
+              <input id="guestbookFirstName" name="given-name" type="text" autocomplete="given-name" minlength="2" maxlength="40" required />
+            </label>
+            <label class="guestbook-field">
+              <span>Фамилия</span>
+              <input id="guestbookLastName" name="family-name" type="text" autocomplete="family-name" minlength="2" maxlength="40" required />
+            </label>
+          </div>
+          <fieldset class="guestbook-avatar-builder">
+            <legend>Создайте аватар</legend>
+            <div class="guestbook-avatar-preview" id="guestbookAvatarPreview" aria-label="Предварительный просмотр аватара"></div>
+            <span class="guestbook-option-label">Выберите значок</span>
+            <div class="guestbook-avatar-options" id="guestbookAvatarOptions" role="group" aria-label="Значок аватара"></div>
+            <span class="guestbook-option-label">Выберите цвет</span>
+            <div class="guestbook-color-options" id="guestbookColorOptions" role="group" aria-label="Цвет аватара"></div>
+          </fieldset>
+          <label class="guestbook-field">
+            <span>Ваш отзыв</span>
+            <textarea id="guestbookReview" name="review" rows="5" minlength="10" maxlength="1200" required></textarea>
+          </label>
+          <label class="guestbook-consent">
+            <input id="guestbookConsent" type="checkbox" required />
+            <span>Согласен на публикацию имени, аватара и отзыва после проверки модератором. Не указывайте адрес, телефон и другие личные данные.</span>
+          </label>
+          <button class="guestbook-submit" id="guestbookSubmit" type="submit">Отправить на проверку</button>
+          <p class="guestbook-feedback" id="guestbookFeedback" role="status" aria-live="polite"></p>
+        </form>
+        <div class="guestbook-public">
+          <div class="guestbook-review-list" id="guestbookReviewList" aria-live="polite"></div>
+          <p class="guestbook-feedback" id="guestbookLoadFeedback" role="status"></p>
+        </div>
+      </div>
+      <details class="guestbook-moderator" id="guestbookModerator">
+        <summary>Вход модератора</summary>
+        <form class="guestbook-login" id="guestbookLogin">
+          <label class="guestbook-field">
+            <span>Email модератора</span>
+            <input id="moderatorEmail" type="email" autocomplete="username" required />
+          </label>
+          <label class="guestbook-field">
+            <span>Пароль</span>
+            <input id="moderatorPassword" type="password" autocomplete="current-password" required />
+          </label>
+          <button class="guestbook-submit" id="moderatorLoginButton" type="submit">Войти</button>
+          <p class="guestbook-feedback" id="moderatorFeedback" role="status" aria-live="polite"></p>
+        </form>
+        <section class="guestbook-admin" id="guestbookAdmin" aria-label="Модерация отзывов" hidden>
+          <div class="guestbook-admin-heading">
+            <h3>Отзывы на модерации</h3>
+            <button class="guestbook-secondary-button" id="moderatorSignOut" type="button">Выйти</button>
+          </div>
+          <div class="guestbook-admin-list" id="guestbookAdminList"></div>
+          <p class="guestbook-feedback" id="moderatorAdminFeedback" role="status" aria-live="polite"></p>
+        </section>
+      </details>
+    </section>
+
     <aside class="site-notice" role="status">
       Сайт находится под редакцией и дорабатывается. Просим проявить терпение.
     </aside>
@@ -365,6 +431,8 @@
     <button class="book-nav next" type="button" id="bookNext" aria-label="Следующая страница"></button>
   </div>
 
+  <script src="guestbook-config.js?v=20261115-1"></script>
   <script src="script.js?v=20261115-3"></script>
+  <script type="module" src="guestbook.js?v=20261115-1"></script>
 </body>
 </html>

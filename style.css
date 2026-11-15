@@ -2419,3 +2419,402 @@ body.modal-open {
   }
 }
 
+.guestbook {
+  width: min(100% - 2rem, 1020px);
+  margin: 0 auto 3rem;
+  padding: clamp(1.1rem, 3vw, 2rem);
+  border: 1px solid rgba(212, 176, 106, 0.28);
+  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(16, 36, 69, 0.8), rgba(7, 20, 40, 0.88));
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
+}
+
+.guestbook-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.guestbook-header h2 {
+  margin: 0 0 0.35rem;
+  color: var(--gold-bright);
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 600;
+}
+
+.guestbook-header p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.guestbook-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: 1.25rem;
+}
+
+.guestbook-form,
+.guestbook-review,
+.guestbook-login,
+.guestbook-admin {
+  min-width: 0;
+  padding: 1.15rem;
+  border: 1px solid rgba(212, 176, 106, 0.22);
+  border-radius: 18px;
+  background: rgba(5, 13, 28, 0.54);
+}
+
+.guestbook-form,
+.guestbook-login {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.guestbook-name-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.guestbook-field {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--ivory);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.guestbook-field input,
+.guestbook-field textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(197, 208, 224, 0.3);
+  border-radius: 10px;
+  outline: 0;
+  background: rgba(4, 10, 22, 0.76);
+  color: var(--ivory);
+  font: 400 1rem/1.5 "Manrope", "Segoe UI", sans-serif;
+}
+
+.guestbook-field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.guestbook-field input:focus,
+.guestbook-field textarea:focus {
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 0 3px rgba(240, 213, 154, 0.13);
+}
+
+.guestbook-avatar-builder {
+  display: grid;
+  justify-items: start;
+  gap: 0.65rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0.85rem;
+  border: 1px solid rgba(212, 176, 106, 0.22);
+  border-radius: 14px;
+}
+
+.guestbook-avatar-builder legend {
+  padding: 0 0.35rem;
+  color: var(--gold-bright);
+  font-weight: 700;
+}
+
+.guestbook-avatar-preview {
+  display: grid;
+  width: 72px;
+  height: 72px;
+  place-items: center;
+  margin: 0 auto 0.2rem;
+}
+
+.guestbook-avatar {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  font-size: 1.55rem;
+  box-shadow: inset 0 1px 5px rgba(255, 255, 255, 0.2), 0 4px 14px rgba(0, 0, 0, 0.28);
+}
+
+.guestbook-avatar-preview .guestbook-avatar {
+  width: 68px;
+  height: 68px;
+  font-size: 2rem;
+}
+
+.guestbook-avatar--blue {
+  background: linear-gradient(145deg, #5686c4, #23466f);
+}
+
+.guestbook-avatar--gold {
+  background: linear-gradient(145deg, #d7b25f, #85602b);
+}
+
+.guestbook-avatar--green {
+  background: linear-gradient(145deg, #6ea783, #315c46);
+}
+
+.guestbook-avatar--burgundy {
+  background: linear-gradient(145deg, #b45d68, #682c3d);
+}
+
+.guestbook-avatar--violet {
+  background: linear-gradient(145deg, #9380bb, #51406e);
+}
+
+.guestbook-option-label {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.guestbook-avatar-options,
+.guestbook-color-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.guestbook-avatar-choice,
+.guestbook-color-choice {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(197, 208, 224, 0.25);
+  border-radius: 50%;
+  background: rgba(8, 18, 36, 0.84);
+  color: var(--ivory);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.guestbook-color-choice {
+  width: 34px;
+  height: 34px;
+}
+
+.guestbook-avatar-choice[aria-pressed="true"],
+.guestbook-color-choice[aria-pressed="true"] {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 2px;
+}
+
+.guestbook-avatar-choice:focus-visible,
+.guestbook-color-choice:focus-visible,
+.guestbook-submit:focus-visible,
+.guestbook-secondary-button:focus-visible,
+.guestbook-moderator summary:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 3px;
+}
+
+.guestbook-consent {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: start;
+  gap: 0.6rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.guestbook-consent input {
+  width: 18px;
+  height: 18px;
+  margin: 0.12rem 0 0;
+  accent-color: var(--gold);
+}
+
+.guestbook-submit,
+.guestbook-secondary-button {
+  min-height: 42px;
+  padding: 0.6rem 1rem;
+  border: 1px solid rgba(240, 213, 154, 0.55);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(36, 62, 108, 0.9), rgba(16, 32, 62, 0.95));
+  color: var(--gold-bright);
+  font: 700 0.9rem "Manrope", "Segoe UI", sans-serif;
+  cursor: pointer;
+}
+
+.guestbook-submit:disabled,
+.guestbook-secondary-button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.guestbook-feedback {
+  min-height: 1.4em;
+  margin: 0;
+  color: #b6e2c3;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.guestbook-feedback.is-error {
+  color: #ffb4a9;
+}
+
+.guestbook-review-list,
+.guestbook-admin-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.guestbook-review {
+  padding: 1rem;
+}
+
+.guestbook-review-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.guestbook-review-identity {
+  min-width: 0;
+}
+
+.guestbook-review-identity h3 {
+  margin: 0;
+  color: var(--gold-bright);
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.guestbook-review-identity time {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.guestbook-review-body {
+  margin: 0.8rem 0 0;
+  color: var(--ivory);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.guestbook-moderator {
+  margin-top: 1.35rem;
+  border-top: 1px solid rgba(212, 176, 106, 0.2);
+  padding-top: 1rem;
+}
+
+.guestbook-moderator summary {
+  width: fit-content;
+  color: var(--muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.guestbook-login,
+.guestbook-admin {
+  max-width: 640px;
+  margin-top: 0.9rem;
+}
+
+.guestbook-admin {
+  max-width: none;
+}
+
+.guestbook-admin-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.guestbook-admin-heading h3 {
+  margin: 0;
+  color: var(--gold-bright);
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  font-size: 1.5rem;
+}
+
+.guestbook-status {
+  margin-left: auto;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid rgba(212, 176, 106, 0.34);
+  border-radius: 999px;
+  color: var(--gold-bright);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.guestbook-status--approved {
+  border-color: rgba(110, 167, 131, 0.65);
+  color: #b6e2c3;
+}
+
+.guestbook-status--rejected {
+  border-color: rgba(180, 93, 104, 0.65);
+  color: #ffb4a9;
+}
+
+.guestbook-review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.guestbook-secondary-button {
+  min-height: 36px;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+.guestbook-secondary-button--danger {
+  border-color: rgba(224, 49, 49, 0.58);
+  color: #ffc0b8;
+}
+
+.guestbook [hidden] {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .guestbook-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .guestbook {
+    width: calc(100% - 1.2rem);
+    padding: 0.9rem;
+    border-radius: 18px;
+  }
+
+  .guestbook-form,
+  .guestbook-login,
+  .guestbook-admin {
+    padding: 0.85rem;
+  }
+
+  .guestbook-name-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .guestbook-status {
+    white-space: normal;
+  }
+}
+
