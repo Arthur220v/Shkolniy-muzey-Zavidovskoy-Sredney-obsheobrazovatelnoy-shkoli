@@ -2899,6 +2899,272 @@ body.modal-open {
   font-size: 0.78rem;
 }
 
+.guestbook-rating-builder {
+  display: grid;
+  justify-items: start;
+  gap: 0.55rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(212, 176, 106, 0.22);
+  border-radius: 14px;
+}
+
+.guestbook-rating-builder legend {
+  padding: 0 0.35rem;
+  color: var(--gold-bright);
+  font-weight: 700;
+}
+
+.guestbook-rating-options {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.1rem;
+}
+
+.guestbook-star-choice {
+  position: relative;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  cursor: pointer;
+}
+
+.guestbook-star-choice input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.guestbook-star-symbol {
+  color: rgba(212, 176, 106, 0.48);
+  font-size: 2rem;
+  line-height: 1;
+  transition: color 0.2s ease, transform 0.2s ease, text-shadow 0.2s ease;
+}
+
+.guestbook-star-choice.is-selected .guestbook-star-symbol {
+  color: var(--gold-bright);
+}
+
+.guestbook-star-choice.is-selected .guestbook-star-symbol {
+  animation: guestbookStarPop 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  text-shadow: 0 0 16px rgba(240, 213, 154, 0.55);
+}
+
+.guestbook-star-choice:focus-within {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.guestbook-rating-display {
+  display: flex;
+  gap: 0.12rem;
+  margin-top: 0.6rem;
+  color: var(--gold-bright);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+}
+
+.guestbook-public {
+  max-height: min(42rem, 75vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 0.3rem;
+  scrollbar-color: rgba(212, 176, 106, 0.55) rgba(5, 13, 28, 0.35);
+  scrollbar-width: thin;
+}
+
+.guestbook-review {
+  animation: guestbookReviewReveal 0.38s ease both;
+}
+
+.guestbook-moderator-reply {
+  margin-top: 0.9rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(212, 176, 106, 0.32);
+  border-radius: 14px;
+  background: rgba(212, 176, 106, 0.08);
+}
+
+.guestbook-moderator-reply-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.guestbook-moderator-reply-header time {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.guestbook-moderator-status {
+  display: block;
+  margin-top: 0.1rem;
+  color: var(--gold-bright);
+  font-size: 0.74rem;
+}
+
+.guestbook-moderator-reply-body {
+  margin: 0.7rem 0 0;
+  color: var(--ivory);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.guestbook-vote-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.guestbook-vote-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 36px;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(197, 208, 224, 0.25);
+  border-radius: 999px;
+  background: rgba(8, 18, 36, 0.72);
+  color: var(--ivory);
+  font: 600 0.82rem "Manrope", "Segoe UI", sans-serif;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+}
+
+.guestbook-vote-button:hover,
+.guestbook-vote-button[aria-pressed="true"] {
+  border-color: var(--gold-bright);
+  background: rgba(212, 176, 106, 0.16);
+  transform: translateY(-1px);
+}
+
+.guestbook-vote-button:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 3px;
+}
+
+.guestbook-vote-button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.guestbook-reply-editor {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.85rem;
+  padding: 0.8rem;
+  border: 1px solid rgba(212, 176, 106, 0.2);
+  border-radius: 14px;
+  background: rgba(4, 10, 22, 0.48);
+}
+
+.guestbook-reply-editor .guestbook-secondary-button {
+  justify-self: start;
+}
+
+.guestbook-profile-form {
+  display: grid;
+  max-width: 640px;
+  gap: 0.9rem;
+}
+
+.guestbook-profile-photo-preview {
+  display: grid;
+  width: 88px;
+  height: 88px;
+  place-items: center;
+  border: 1px solid rgba(212, 176, 106, 0.28);
+  border-radius: 50%;
+  background: rgba(5, 13, 28, 0.5);
+}
+
+.guestbook-profile-photo-preview .guestbook-avatar {
+  width: 76px;
+  height: 76px;
+  font-size: 2rem;
+}
+
+.guestbook-feedback.is-success {
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(110, 167, 131, 0.55);
+  border-radius: 12px;
+  background: rgba(110, 167, 131, 0.12);
+  color: #c6f0d1;
+  animation: guestbookSuccessReveal 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.guestbook-form.is-submitting .guestbook-submit {
+  animation: guestbookSubmitPulse 0.8s ease-in-out infinite alternate;
+}
+
+.guestbook-color-choice.guestbook-avatar--blue {
+  background: linear-gradient(145deg, #5686c4, #23466f);
+}
+
+.guestbook-color-choice.guestbook-avatar--gold {
+  background: linear-gradient(145deg, #d7b25f, #85602b);
+}
+
+.guestbook-color-choice.guestbook-avatar--green {
+  background: linear-gradient(145deg, #6ea783, #315c46);
+}
+
+.guestbook-color-choice.guestbook-avatar--burgundy {
+  background: linear-gradient(145deg, #b45d68, #682c3d);
+}
+
+.guestbook-color-choice.guestbook-avatar--violet {
+  background: linear-gradient(145deg, #9380bb, #51406e);
+}
+
+@keyframes guestbookStarPop {
+  0% { transform: scale(0.72) rotate(-12deg); }
+  70% { transform: scale(1.2) rotate(4deg); }
+  100% { transform: scale(1); }
+}
+
+@keyframes guestbookReviewReveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes guestbookSuccessReveal {
+  from { opacity: 0; transform: translateY(5px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes guestbookSubmitPulse {
+  to { box-shadow: 0 0 0 5px rgba(240, 213, 154, 0.12); }
+}
+
+@media (max-width: 760px) {
+  .guestbook-public {
+    max-height: 65vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guestbook-review,
+  .guestbook-feedback.is-success,
+  .guestbook-form.is-submitting .guestbook-submit,
+  .guestbook-star-choice.is-selected .guestbook-star-symbol {
+    animation: none;
+  }
+
+  .guestbook-star-symbol,
+  .guestbook-vote-button {
+    transition: none;
+  }
+}
+
 .guestbook-history-list {
   display: grid;
   gap: 0.75rem;

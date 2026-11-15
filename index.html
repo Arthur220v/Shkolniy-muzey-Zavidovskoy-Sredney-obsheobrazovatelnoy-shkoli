@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261115-guestbook2" />
+  <link rel="stylesheet" href="style.css?v=20261115-guestbook3" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -234,6 +234,10 @@
               <input id="guestbookLastName" name="family-name" type="text" autocomplete="family-name" minlength="2" maxlength="40" required />
             </label>
           </div>
+          <fieldset class="guestbook-rating-builder">
+            <legend>Оцените музей</legend>
+            <div class="guestbook-rating-options" id="guestbookRatingOptions" role="radiogroup" aria-label="Оценка музея от одной до пяти звёзд"></div>
+          </fieldset>
           <fieldset class="guestbook-avatar-builder">
             <legend>Создайте аватар</legend>
             <div class="guestbook-avatar-preview" id="guestbookAvatarPreview" aria-label="Предварительный просмотр аватара"></div>
@@ -295,6 +299,7 @@
           <nav class="guestbook-admin-menu" id="guestbookAdminMenu" aria-label="Разделы панели модератора" hidden>
             <button class="guestbook-secondary-button" id="moderatorMenuReviews" type="button">Отзывы</button>
             <button class="guestbook-secondary-button" id="moderatorMenuHistory" type="button">История</button>
+            <button class="guestbook-secondary-button" id="moderatorMenuProfile" type="button">Профиль</button>
             <button class="guestbook-secondary-button" id="moderatorSignOut" type="button">Выйти</button>
           </nav>
           <section id="guestbookAdminReviews" aria-labelledby="guestbookAdminReviewsHeading">
@@ -306,6 +311,29 @@
             <h4 class="guestbook-admin-section-heading" id="guestbookAdminHistoryHeading">История отзывов и решений</h4>
             <div class="guestbook-history-list" id="guestbookHistoryList"></div>
             <p class="guestbook-feedback" id="guestbookHistoryFeedback" role="status" aria-live="polite"></p>
+          </section>
+          <section id="guestbookAdminProfile" aria-labelledby="guestbookAdminProfileHeading" hidden>
+            <h4 class="guestbook-admin-section-heading" id="guestbookAdminProfileHeading">Профиль модератора</h4>
+            <form class="guestbook-profile-form" id="guestbookModeratorProfileForm">
+              <div class="guestbook-name-fields">
+                <label class="guestbook-field">
+                  <span>Имя</span>
+                  <input id="moderatorProfileFirstName" type="text" minlength="2" maxlength="40" required />
+                </label>
+                <label class="guestbook-field">
+                  <span>Фамилия</span>
+                  <input id="moderatorProfileLastName" type="text" minlength="2" maxlength="40" required />
+                </label>
+              </div>
+              <div class="guestbook-profile-photo-preview" id="moderatorProfilePhotoPreview" aria-label="Предварительный просмотр фото профиля"></div>
+              <label class="guestbook-field guestbook-avatar-upload">
+                <span>Фото профиля</span>
+                <input id="moderatorProfilePhoto" type="file" accept="image/jpeg,image/png,image/webp" />
+                <small>JPG, PNG или WebP, до 3 МБ.</small>
+              </label>
+              <button class="guestbook-submit" id="moderatorProfileSave" type="submit">Сохранить профиль</button>
+              <p class="guestbook-feedback" id="moderatorProfileFeedback" role="status" aria-live="polite"></p>
+            </form>
           </section>
         </section>
       </details>
@@ -461,6 +489,6 @@
 
   <script src="guestbook-config.js?v=20261115-1"></script>
   <script src="script.js?v=20261115-3"></script>
-  <script type="module" src="guestbook.js?v=20261115-3"></script>
+  <script type="module" src="guestbook.js?v=20261115-4"></script>
 </body>
 </html>
