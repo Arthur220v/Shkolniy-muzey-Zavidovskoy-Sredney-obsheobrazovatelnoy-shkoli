@@ -570,9 +570,12 @@ function encodePath(dir, file, preserveImageFormat = false) {
     /^vitrina_pamyati\(13\)(?:_hits_for_markers|_\(GX\)(?:_full_view_photo)?)?\.(?:jpe?g|webp)$/i.test(imageFile);
   const isUpdatedEntranceMap = dir === IMAGE_DIR &&
     /^interior_of_the_museum_entrance(?:_hits_for_markers)?\.(?:png|jpe?g|webp)$/i.test(imageFile);
+  const isUpdatedVaraksinoAudio = dir === AUDIO_DIR &&
+    file === "audio_for_Bratskaya_mogila_v_derevne_Varaksino_(I)_info_about_image.mp3";
   return isUpdatedMemoryDisplay
     ? `${path}?v=20261108-1`
-    : isUpdatedEntranceMap ? `${path}?v=20261108-2` : path;
+    : isUpdatedEntranceMap ? `${path}?v=20261108-2`
+      : isUpdatedVaraksinoAudio ? `${path}?v=20261115-1` : path;
 }
 
 function createPanZoom(viewport, world) {
