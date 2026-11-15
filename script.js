@@ -146,7 +146,7 @@ Object.assign(EXHIBITS, {
   "maket_boev(12)": makeExhibit("maket_boev(12)", "Макет уличных боёв"),
   "Bratskaya_mogila_v_derevne_Varaksino_(I)": makeExhibit(
     "Bratskaya_mogila_v_derevne_Varaksino_(I)",
-    "Братская могила в деревне Вараксино"
+    ""
   ),
   "Pamyatniy_znak_Bocharovu_N.P_(II)": makeExhibit(
     "Pamyatniy_znak_Bocharovu_N.P_(II)",
@@ -572,10 +572,12 @@ function encodePath(dir, file, preserveImageFormat = false) {
     /^interior_of_the_museum_entrance(?:_hits_for_markers)?\.(?:png|jpe?g|webp)$/i.test(imageFile);
   const isUpdatedVaraksinoAudio = dir === AUDIO_DIR &&
     file === "audio_for_Bratskaya_mogila_v_derevne_Varaksino_(I)_info_about_image.mp3";
+  const isUpdatedVaraksinoText = dir === TEXT_DIR &&
+    file === "Bratskaya_mogila_v_derevne_Varaksino_(I)_info_about_image.txt";
   return isUpdatedMemoryDisplay
     ? `${path}?v=20261108-1`
     : isUpdatedEntranceMap ? `${path}?v=20261108-2`
-      : isUpdatedVaraksinoAudio ? `${path}?v=20261115-1` : path;
+      : isUpdatedVaraksinoAudio || isUpdatedVaraksinoText ? `${path}?v=20261115-2` : path;
 }
 
 function createPanZoom(viewport, world) {
@@ -1110,6 +1112,7 @@ async function openExhibit(id, blurSrc) {
     exhibitPhoto.removeAttribute("aria-label");
   }
   exhibitTitle.textContent = data.title || "";
+  exhibitTitle.hidden = !data.title;
   exhibitBlur.style.backgroundImage = `url("${blurSrc}")`;
   exhibitText.textContent = data.textFile ? "Загрузка описания..." : "";
   exhibitMarkers.innerHTML = "";
