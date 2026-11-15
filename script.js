@@ -146,7 +146,7 @@ Object.assign(EXHIBITS, {
   "maket_boev(12)": makeExhibit("maket_boev(12)", "Макет уличных боёв"),
   "Bratskaya_mogila_v_derevne_Varaksino_(I)": makeExhibit(
     "Bratskaya_mogila_v_derevne_Varaksino_(I)",
-    ""
+    "Братская могила в деревне Вараксино"
   ),
   "Pamyatniy_znak_Bocharovu_N.P_(II)": makeExhibit(
     "Pamyatniy_znak_Bocharovu_N.P_(II)",
