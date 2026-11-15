@@ -1,4 +1,11 @@
 const SUPABASE_MODULE_URL = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+const AVATAR_BUCKET = "guestbook-avatars";
+const MAX_AVATAR_SIZE = 3 * 1024 * 1024;
+const AVATAR_EXTENSIONS = new Map([
+  ["image/jpeg", "jpg"],
+  ["image/png", "png"],
+  ["image/webp", "webp"],
+]);
 const AVATARS = ["📚", "⭐", "🕊️", "🌿", "🦉", "🏛️"];
 const AVATAR_COLORS = ["blue", "gold", "green", "burgundy", "violet"];
 
@@ -11,6 +18,8 @@ const guestbookSubmit = document.getElementById("guestbookSubmit");
 const guestbookAvatarOptions = document.getElementById("guestbookAvatarOptions");
 const guestbookColorOptions = document.getElementById("guestbookColorOptions");
 const guestbookAvatarPreview = document.getElementById("guestbookAvatarPreview");
+const guestbookAvatarFile = document.getElementById("guestbookAvatarFile");
+const guestbookUseEmoji = document.getElementById("guestbookUseEmoji");
 const guestbookFeedback = document.getElementById("guestbookFeedback");
 const guestbookLoadFeedback = document.getElementById("guestbookLoadFeedback");
 const guestbookReviewList = document.getElementById("guestbookReviewList");
@@ -23,10 +32,18 @@ const moderatorFeedback = document.getElementById("moderatorFeedback");
 const guestbookAdmin = document.getElementById("guestbookAdmin");
 const guestbookAdminList = document.getElementById("guestbookAdminList");
 const moderatorAdminFeedback = document.getElementById("moderatorAdminFeedback");
+const guestbookHistory = document.getElementById("guestbookAdminHistory");
+const guestbookHistoryList = document.getElementById("guestbookHistoryList");
+const guestbookHistoryFeedback = document.getElementById("guestbookHistoryFeedback");
+const guestbookAdminMenu = document.getElementById("guestbookAdminMenu");
+const moderatorMenuToggle = document.getElementById("moderatorMenuToggle");
+const guestbookAdminReviews = document.getElementById("guestbookAdminReviews");
 
 let supabase;
 let selectedEmoji = AVATARS[0];
 let selectedColor = AVATAR_COLORS[0];
+let selectedAvatarFile = null;
+let selectedAvatarPreviewUrl = null;
 
 function setMessage(element, message, isError = false) {
   element.textContent = message;
@@ -38,18 +55,63 @@ function reportError(element, message, error) {
   setMessage(element, message, true);
 }
 
-function makeAvatar(emoji, color, label) {
+function makeAvatar(emoji, color, label, photoUrl = null) {
   const avatar = document.createElement("span");
-  avatar.className = `guestbook-avatar guestbook-avatar--${color}`;
-  avatar.textContent = emoji;
+  avatar.className = `guestbook-avatar guestbook-avatar--${color}${photoUrl ? " guestbook-avatar--photo" : ""}`;
   avatar.setAttribute("aria-label", label);
+  if (photoUrl) {
+    const image = document.createElement("img");
+    image.src = photoUrl;
+    image.alt = "";
+    image.loading = "lazy";
+    image.addEventListener("error", () => {
+      image.remove();
+      avatar.textContent = emoji;
+    }, { once: true });
+    avatar.append(image);
+  } else {
+    avatar.textContent = emoji;
+  }
   return avatar;
 }
 
 function updateAvatarPreview() {
   guestbookAvatarPreview.replaceChildren(
-    makeAvatar(selectedEmoji, selectedColor, "Выбранный аватар")
+    makeAvatar(selectedEmoji, selectedColor, "Выбранный аватар", selectedAvatarPreviewUrl)
   );
+}
+
+function clearSelectedAvatarFile() {
+  if (selectedAvatarPreviewUrl) URL.revokeObjectURL(selectedAvatarPreviewUrl);
+  selectedAvatarFile = null;
+  selectedAvatarPreviewUrl = null;
+  guestbookAvatarFile.value = "";
+  guestbookUseEmoji.hidden = true;
+  updateAvatarPreview();
+}
+
+function handleAvatarFileSelection() {
+  const file = guestbookAvatarFile.files[0];
+  if (!file) return;
+
+  if (!AVATAR_EXTENSIONS.has(file.type)) {
+    clearSelectedAvatarFile();
+    setMessage(guestbookFeedback, "Выберите изображение JPG, PNG или WebP.", true);
+    return;
+  }
+
+  if (file.size > MAX_AVATAR_SIZE) {
+    clearSelectedAvatarFile();
+    setMessage(guestbookFeedback, "Размер фотографии не должен превышать 3 МБ.", true);
+    return;
+  }
+
+  if (selectedAvatarPreviewUrl) URL.revokeObjectURL(selectedAvatarPreviewUrl);
+  selectedAvatarFile = file;
+  selectedAvatarPreviewUrl = URL.createObjectURL(file);
+  guestbookUseEmoji.hidden = false;
+  setMessage(guestbookFeedback, "Фото выбрано. Оно будет показано после одобрения модератором.");
+  updateAvatarPreview();
 }
 
 function createAvatarChoices() {
@@ -61,6 +123,7 @@ function createAvatarChoices() {
     option.setAttribute("aria-label", `Аватар ${emoji}`);
     option.setAttribute("aria-pressed", String(emoji === selectedEmoji));
     option.addEventListener("click", () => {
+      if (selectedAvatarFile) clearSelectedAvatarFile();
       selectedEmoji = emoji;
       guestbookAvatarOptions.querySelectorAll("button").forEach((button) => {
         button.setAttribute("aria-pressed", String(button === option));
@@ -75,6 +138,7 @@ function createAvatarChoices() {
     option.type = "button";
     option.className = `guestbook-color-choice guestbook-avatar--${color}`;
     option.setAttribute("aria-label", `Цвет аватара: ${color}`);
+    option.title = color;
     option.setAttribute("aria-pressed", String(color === selectedColor));
     option.addEventListener("click", () => {
       selectedColor = color;
@@ -96,13 +160,27 @@ function formatReviewDate(value) {
     : date.toLocaleDateString("ru-RU", { year: "numeric", month: "long", day: "numeric" });
 }
 
-function createReviewCard(review, isModeration = false) {
+function formatHistoryDate(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? ""
+    : date.toLocaleString("ru-RU", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+}
+
+function createReviewCard(review, isModeration = false, photoUrl = null) {
   const card = document.createElement("article");
   card.className = `guestbook-review${isModeration ? " guestbook-review--moderation" : ""}`;
 
   const header = document.createElement("div");
   header.className = "guestbook-review-header";
-  header.append(makeAvatar(review.avatar_emoji, review.avatar_color, "Аватар автора отзыва"));
+  header.append(makeAvatar(review.avatar_emoji, review.avatar_color, "Аватар автора отзыва", photoUrl));
 
   const identity = document.createElement("div");
   identity.className = "guestbook-review-identity";
@@ -133,6 +211,28 @@ function createReviewCard(review, isModeration = false) {
   card.append(header, body);
 
   if (isModeration) {
+    if (review.avatar_image_path) {
+      const avatarActions = document.createElement("div");
+      avatarActions.className = "guestbook-avatar-moderation";
+      const avatarStatus = document.createElement("span");
+      avatarStatus.className = "guestbook-avatar-moderation-label";
+      avatarStatus.textContent = `Фото аватара: ${
+        {
+          pending: "на проверке",
+          approved: "одобрено",
+          rejected: "отклонено",
+        }[review.avatar_image_status]
+      }`;
+      avatarActions.append(avatarStatus);
+      if (review.avatar_image_status !== "approved") {
+        avatarActions.append(createAvatarStatusAction(review.id, "approved", "Одобрить фото"));
+      }
+      if (review.avatar_image_status !== "rejected") {
+        avatarActions.append(createAvatarStatusAction(review.id, "rejected", "Отклонить фото"));
+      }
+      card.append(avatarActions);
+    }
+
     const actions = document.createElement("div");
     actions.className = "guestbook-review-actions";
     if (review.status !== "approved") {
@@ -141,11 +241,20 @@ function createReviewCard(review, isModeration = false) {
     if (review.status !== "rejected") {
       actions.append(createReviewAction(review.id, "rejected", "Отклонить"));
     }
-    actions.append(createDeleteAction(review.id));
+    actions.append(createDeleteAction(review.id, review.avatar_image_path));
     card.append(actions);
   }
 
   return card;
+}
+
+function createAvatarStatusAction(id, status, label) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "guestbook-secondary-button";
+  button.textContent = label;
+  button.addEventListener("click", () => updateAvatarStatus(id, status));
+  return button;
 }
 
 function createReviewAction(id, status, label) {
@@ -157,13 +266,42 @@ function createReviewAction(id, status, label) {
   return button;
 }
 
-function createDeleteAction(id) {
+function createDeleteAction(id, avatarPath) {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "guestbook-secondary-button guestbook-secondary-button--danger";
   button.textContent = "Удалить";
-  button.addEventListener("click", () => deleteReview(id));
+  button.addEventListener("click", () => deleteReview(id, avatarPath));
   return button;
+}
+
+async function prepareReviewCards(reviews, isModeration, feedbackElement) {
+  let photoFailures = 0;
+  const cards = await Promise.all(reviews.map(async (review) => {
+    let photoUrl = null;
+    if (review.avatar_image_path && (isModeration || review.avatar_image_status === "approved")) {
+      try {
+        const { data, error } = await supabase.storage
+          .from(AVATAR_BUCKET)
+          .createSignedUrl(review.avatar_image_path, 300);
+        if (error) {
+          photoFailures += 1;
+          console.error("Не удалось открыть фото аватара.", error);
+        } else {
+          photoUrl = data.signedUrl;
+        }
+      } catch (error) {
+        photoFailures += 1;
+        console.error("Не удалось открыть фото аватара.", error);
+      }
+    }
+    return createReviewCard(review, isModeration, photoUrl);
+  }));
+
+  if (photoFailures) {
+    setMessage(feedbackElement, "Отзывы загружены, но некоторые фотографии аватаров открыть не удалось.", true);
+  }
+  return cards;
 }
 
 async function loadPublishedReviews() {
@@ -171,7 +309,7 @@ async function loadPublishedReviews() {
   try {
     const { data, error } = await supabase
       .from("guestbook_reviews")
-      .select("id, first_name, last_name, body, avatar_emoji, avatar_color, created_at")
+      .select("id, first_name, last_name, body, avatar_emoji, avatar_color, avatar_image_path, avatar_image_status, created_at")
       .eq("status", "approved")
       .order("created_at", { ascending: false })
       .limit(50);
@@ -187,8 +325,11 @@ async function loadPublishedReviews() {
       return;
     }
 
-    data.forEach((review) => guestbookReviewList.append(createReviewCard(review)));
-    setMessage(guestbookLoadFeedback, "");
+    const cards = await prepareReviewCards(data, false, guestbookLoadFeedback);
+    guestbookReviewList.replaceChildren(...cards);
+    if (!guestbookLoadFeedback.classList.contains("is-error")) {
+      setMessage(guestbookLoadFeedback, "");
+    }
   } catch (error) {
     reportError(guestbookLoadFeedback, "Не удалось загрузить отзывы. Проверьте подключение.", error);
   }
@@ -199,7 +340,7 @@ async function loadModerationReviews() {
   try {
     const { data, error } = await supabase
       .from("guestbook_reviews")
-      .select("id, first_name, last_name, body, avatar_emoji, avatar_color, status, created_at")
+      .select("id, first_name, last_name, body, avatar_emoji, avatar_color, avatar_image_path, avatar_image_status, status, created_at")
       .order("created_at", { ascending: false })
       .limit(100);
 
@@ -214,10 +355,83 @@ async function loadModerationReviews() {
       return;
     }
 
-    data.forEach((review) => guestbookAdminList.append(createReviewCard(review, true)));
-    setMessage(moderatorAdminFeedback, "");
+    const cards = await prepareReviewCards(data, true, moderatorAdminFeedback);
+    guestbookAdminList.replaceChildren(...cards);
+    if (!moderatorAdminFeedback.classList.contains("is-error")) {
+      setMessage(moderatorAdminFeedback, "");
+    }
   } catch (error) {
     reportError(moderatorAdminFeedback, "Не удалось загрузить отзывы для модерации.", error);
+  }
+}
+
+async function loadModerationHistory() {
+  setMessage(guestbookHistoryFeedback, "Загружаем историю…");
+  try {
+    const { data, error } = await supabase
+      .from("guestbook_moderation_history")
+      .select("id, reviewer_first_name, reviewer_last_name, review_body, action, previous_value, new_value, moderator_email, created_at")
+      .order("created_at", { ascending: false })
+      .limit(200);
+
+    if (error) {
+      reportError(guestbookHistoryFeedback, "Не удалось загрузить историю модерации.", error);
+      return;
+    }
+
+    guestbookHistoryList.replaceChildren();
+    if (!data.length) {
+      setMessage(guestbookHistoryFeedback, "История пока пуста.");
+      return;
+    }
+
+    const actionLabels = {
+      review_submitted: "Отзыв отправлен на проверку",
+      review_approved: "Отзыв одобрен",
+      review_rejected: "Отзыв отклонён",
+      review_reopened: "Статус отзыва изменён",
+      review_deleted: "Отзыв удалён",
+      avatar_approved: "Фото аватара одобрено",
+      avatar_rejected: "Фото аватара отклонено",
+      avatar_reset: "Статус фото аватара изменён",
+      avatar_submitted: "Фото аватара отправлено на проверку",
+    };
+
+    data.forEach((event) => {
+      const entry = document.createElement("article");
+      entry.className = "guestbook-history-entry";
+
+      const title = document.createElement("h5");
+      title.textContent = `${event.reviewer_first_name} ${event.reviewer_last_name}`;
+
+      const time = document.createElement("time");
+      time.dateTime = event.created_at;
+      time.textContent = formatHistoryDate(event.created_at);
+
+      const actor = document.createElement("span");
+      actor.className = "guestbook-history-actor";
+      actor.textContent = event.moderator_email
+        ? `Модератор: ${event.moderator_email}`
+        : "Посетитель без входа";
+
+      const action = document.createElement("p");
+      action.className = "guestbook-history-action";
+      action.textContent = actionLabels[event.action] || "Изменение отзыва";
+      if (event.previous_value || event.new_value) {
+        action.textContent += ` (${event.previous_value || "—"} → ${event.new_value || "—"})`;
+      }
+
+      const body = document.createElement("p");
+      body.className = "guestbook-history-body";
+      body.textContent = event.review_body;
+
+      entry.append(title, time, actor, action, body);
+      guestbookHistoryList.append(entry);
+    });
+
+    setMessage(guestbookHistoryFeedback, "");
+  } catch (error) {
+    reportError(guestbookHistoryFeedback, "Не удалось загрузить историю модерации.", error);
   }
 }
 
@@ -227,43 +441,97 @@ async function updateReviewStatus(id, status) {
     const { error } = await supabase
       .from("guestbook_reviews")
       .update({ status })
-      .eq("id", id);
+      .eq("id", id)
+      .select("id")
+      .single();
 
     if (error) {
       reportError(moderatorAdminFeedback, "Не удалось изменить статус отзыва.", error);
       return;
     }
 
-    await Promise.all([loadModerationReviews(), loadPublishedReviews()]);
+    await Promise.all([loadModerationReviews(), loadPublishedReviews(), loadModerationHistory()]);
   } catch (error) {
     reportError(moderatorAdminFeedback, "Не удалось изменить статус отзыва.", error);
   }
 }
 
-async function deleteReview(id) {
+async function updateAvatarStatus(id, status) {
+  setMessage(moderatorAdminFeedback, "Сохраняем решение по фото…");
+  try {
+    const { error } = await supabase
+      .from("guestbook_reviews")
+      .update({ avatar_image_status: status })
+      .eq("id", id)
+      .select("id")
+      .single();
+
+    if (error) {
+      reportError(moderatorAdminFeedback, "Не удалось изменить статус фото аватара.", error);
+      return;
+    }
+
+    await Promise.all([loadModerationReviews(), loadPublishedReviews(), loadModerationHistory()]);
+  } catch (error) {
+    reportError(moderatorAdminFeedback, "Не удалось изменить статус фото аватара.", error);
+  }
+}
+
+async function deleteReview(id, avatarPath) {
   if (!window.confirm("Удалить этот отзыв без возможности восстановления?")) return;
   setMessage(moderatorAdminFeedback, "Удаляем отзыв…");
   try {
     const { error } = await supabase
       .from("guestbook_reviews")
       .delete()
-      .eq("id", id);
+      .eq("id", id)
+      .select("id")
+      .single();
 
     if (error) {
       reportError(moderatorAdminFeedback, "Не удалось удалить отзыв.", error);
       return;
     }
 
-    await Promise.all([loadModerationReviews(), loadPublishedReviews()]);
+    let avatarCleanupError = null;
+    if (avatarPath) {
+      try {
+        const { error: storageError } = await supabase.storage
+          .from(AVATAR_BUCKET)
+          .remove([avatarPath]);
+        avatarCleanupError = storageError;
+      } catch (error) {
+        avatarCleanupError = error;
+      }
+    }
+
+    await Promise.all([loadModerationReviews(), loadPublishedReviews(), loadModerationHistory()]);
+    if (avatarCleanupError) {
+      reportError(moderatorAdminFeedback, "Отзыв удалён, но фото не удалось удалить из хранилища.", avatarCleanupError);
+    } else {
+      setMessage(moderatorAdminFeedback, "Отзыв удалён.");
+    }
   } catch (error) {
     reportError(moderatorAdminFeedback, "Не удалось удалить отзыв.", error);
   }
+}
+
+function setAdminSection(showHistory) {
+  guestbookAdminReviews.hidden = showHistory;
+  guestbookHistory.hidden = !showHistory;
+}
+
+function closeAdminMenu() {
+  guestbookAdminMenu.hidden = true;
+  moderatorMenuToggle.setAttribute("aria-expanded", "false");
+  moderatorMenuToggle.setAttribute("aria-label", "Открыть меню модератора");
 }
 
 async function verifyModerator(session) {
   if (!session) {
     guestbookAdmin.hidden = true;
     guestbookLogin.hidden = false;
+    closeAdminMenu();
     return;
   }
 
@@ -282,12 +550,15 @@ async function verifyModerator(session) {
       }
       guestbookAdmin.hidden = true;
       guestbookLogin.hidden = false;
+      closeAdminMenu();
       setMessage(moderatorFeedback, "У этого аккаунта нет прав модератора.", true);
       return;
     }
 
     guestbookLogin.hidden = true;
     guestbookAdmin.hidden = false;
+    setAdminSection(false);
+    closeAdminMenu();
     guestbookModerator.open = true;
     setMessage(moderatorFeedback, "");
     await loadModerationReviews();
@@ -310,19 +581,29 @@ async function initializeGuestbook() {
   supabase = createClient(config.supabaseUrl, config.publishableKey);
   await loadPublishedReviews();
 
+  guestbookAvatarFile.addEventListener("change", handleAvatarFileSelection);
+  guestbookUseEmoji.addEventListener("click", () => {
+    clearSelectedAvatarFile();
+    setMessage(guestbookFeedback, "Выберите один из смайликов для аватара.");
+  });
+
   guestbookForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!guestbookForm.reportValidity()) return;
 
     guestbookSubmit.disabled = true;
     setMessage(guestbookFeedback, "Отправляем отзыв на проверку…");
+    const reviewId = crypto.randomUUID();
     try {
       const { error } = await supabase.from("guestbook_reviews").insert({
+        id: reviewId,
         first_name: guestbookFirstName.value.trim(),
         last_name: guestbookLastName.value.trim(),
         body: guestbookReview.value.trim(),
         avatar_emoji: selectedEmoji,
         avatar_color: selectedColor,
+        avatar_image_path: null,
+        avatar_image_status: "none",
         consent: guestbookConsent.checked,
       });
 
@@ -331,7 +612,44 @@ async function initializeGuestbook() {
         return;
       }
 
+      let avatarUploadError = null;
+      let photoSaved = false;
+      if (selectedAvatarFile) {
+        const extension = AVATAR_EXTENSIONS.get(selectedAvatarFile.type);
+        const path = `${reviewId}/${crypto.randomUUID()}.${extension}`;
+        try {
+          const { error: uploadError } = await supabase.storage
+            .from(AVATAR_BUCKET)
+            .upload(path, selectedAvatarFile, {
+              cacheControl: "60",
+              contentType: selectedAvatarFile.type,
+              upsert: false,
+            });
+          if (uploadError) throw uploadError;
+
+          const { error: attachError } = await supabase.rpc("attach_guestbook_avatar", {
+            p_review_id: reviewId,
+            p_avatar_path: path,
+          });
+          if (attachError) throw attachError;
+          photoSaved = true;
+        } catch (error) {
+          avatarUploadError = error;
+          try {
+            const { error: cleanupError } = await supabase.storage
+              .from(AVATAR_BUCKET)
+              .remove([path]);
+            if (cleanupError) {
+              console.error("Не удалось удалить фото после ошибки загрузки аватара.", cleanupError);
+            }
+          } catch (cleanupError) {
+            console.error("Не удалось удалить фото после ошибки загрузки аватара.", cleanupError);
+          }
+        }
+      }
+
       guestbookForm.reset();
+      clearSelectedAvatarFile();
       selectedEmoji = AVATARS[0];
       selectedColor = AVATAR_COLORS[0];
       guestbookAvatarOptions.querySelectorAll("button").forEach((button) => {
@@ -341,7 +659,20 @@ async function initializeGuestbook() {
         button.setAttribute("aria-pressed", String(button.classList.contains(`guestbook-avatar--${selectedColor}`)));
       });
       updateAvatarPreview();
-      setMessage(guestbookFeedback, "Спасибо! Отзыв отправлен и появится после одобрения модератором.");
+      if (avatarUploadError) {
+        reportError(
+          guestbookFeedback,
+          "Отзыв отправлен, но фото не загрузилось. Отзыв останется на проверке со смайликом.",
+          avatarUploadError
+        );
+      } else {
+        setMessage(
+          guestbookFeedback,
+          photoSaved
+            ? "Спасибо! Отзыв и фото отправлены на проверку."
+            : "Спасибо! Отзыв отправлен и появится после одобрения модератором."
+        );
+      }
     } catch (error) {
       reportError(guestbookFeedback, "Не удалось отправить отзыв. Проверьте подключение.", error);
     } finally {
@@ -373,6 +704,28 @@ async function initializeGuestbook() {
     }
   });
 
+  moderatorMenuToggle.addEventListener("click", () => {
+    const shouldOpen = guestbookAdminMenu.hidden;
+    guestbookAdminMenu.hidden = !shouldOpen;
+    moderatorMenuToggle.setAttribute("aria-expanded", String(shouldOpen));
+    moderatorMenuToggle.setAttribute(
+      "aria-label",
+      shouldOpen ? "Закрыть меню модератора" : "Открыть меню модератора"
+    );
+  });
+
+  document.getElementById("moderatorMenuReviews").addEventListener("click", () => {
+    setAdminSection(false);
+    closeAdminMenu();
+    loadModerationReviews();
+  });
+
+  document.getElementById("moderatorMenuHistory").addEventListener("click", () => {
+    setAdminSection(true);
+    closeAdminMenu();
+    loadModerationHistory();
+  });
+
   document.getElementById("moderatorSignOut").addEventListener("click", async () => {
     try {
       const { error } = await supabase.auth.signOut();
@@ -382,6 +735,7 @@ async function initializeGuestbook() {
       }
       guestbookAdmin.hidden = true;
       guestbookLogin.hidden = false;
+      closeAdminMenu();
       setMessage(moderatorFeedback, "Вы вышли из панели модерации.");
     } catch (error) {
       reportError(moderatorAdminFeedback, "Не удалось завершить сеанс модератора.", error);
@@ -392,6 +746,7 @@ async function initializeGuestbook() {
     if (event === "SIGNED_OUT") {
       guestbookAdmin.hidden = true;
       guestbookLogin.hidden = false;
+      closeAdminMenu();
     } else if (event === "INITIAL_SESSION" && session) {
       window.setTimeout(() => verifyModerator(session), 0);
     }

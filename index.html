@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261115-guestbook1" />
+  <link rel="stylesheet" href="style.css?v=20261115-guestbook2" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -239,6 +239,14 @@
             <div class="guestbook-avatar-preview" id="guestbookAvatarPreview" aria-label="Предварительный просмотр аватара"></div>
             <span class="guestbook-option-label">Выберите значок</span>
             <div class="guestbook-avatar-options" id="guestbookAvatarOptions" role="group" aria-label="Значок аватара"></div>
+            <label class="guestbook-field guestbook-avatar-upload">
+              <span>Или загрузите своё фото</span>
+              <input id="guestbookAvatarFile" type="file" accept="image/jpeg,image/png,image/webp" />
+              <small>JPG, PNG или WebP, до 3 МБ. Фото станет видимым только после одобрения.</small>
+            </label>
+            <button class="guestbook-secondary-button guestbook-use-emoji" id="guestbookUseEmoji" type="button" hidden>
+              Использовать смайлик
+            </button>
             <span class="guestbook-option-label">Выберите цвет</span>
             <div class="guestbook-color-options" id="guestbookColorOptions" role="group" aria-label="Цвет аватара"></div>
           </fieldset>
@@ -274,11 +282,31 @@
         </form>
         <section class="guestbook-admin" id="guestbookAdmin" aria-label="Модерация отзывов" hidden>
           <div class="guestbook-admin-heading">
-            <h3>Отзывы на модерации</h3>
-            <button class="guestbook-secondary-button" id="moderatorSignOut" type="button">Выйти</button>
+            <h3>Панель модератора</h3>
+            <button
+              class="guestbook-menu-toggle"
+              id="moderatorMenuToggle"
+              type="button"
+              aria-label="Открыть меню модератора"
+              aria-expanded="false"
+              aria-controls="guestbookAdminMenu"
+            >☰</button>
           </div>
-          <div class="guestbook-admin-list" id="guestbookAdminList"></div>
-          <p class="guestbook-feedback" id="moderatorAdminFeedback" role="status" aria-live="polite"></p>
+          <nav class="guestbook-admin-menu" id="guestbookAdminMenu" aria-label="Разделы панели модератора" hidden>
+            <button class="guestbook-secondary-button" id="moderatorMenuReviews" type="button">Отзывы</button>
+            <button class="guestbook-secondary-button" id="moderatorMenuHistory" type="button">История</button>
+            <button class="guestbook-secondary-button" id="moderatorSignOut" type="button">Выйти</button>
+          </nav>
+          <section id="guestbookAdminReviews" aria-labelledby="guestbookAdminReviewsHeading">
+            <h4 class="guestbook-admin-section-heading" id="guestbookAdminReviewsHeading">Отзывы на модерации</h4>
+            <div class="guestbook-admin-list" id="guestbookAdminList"></div>
+            <p class="guestbook-feedback" id="moderatorAdminFeedback" role="status" aria-live="polite"></p>
+          </section>
+          <section id="guestbookAdminHistory" aria-labelledby="guestbookAdminHistoryHeading" hidden>
+            <h4 class="guestbook-admin-section-heading" id="guestbookAdminHistoryHeading">История отзывов и решений</h4>
+            <div class="guestbook-history-list" id="guestbookHistoryList"></div>
+            <p class="guestbook-feedback" id="guestbookHistoryFeedback" role="status" aria-live="polite"></p>
+          </section>
         </section>
       </details>
     </section>
@@ -433,6 +461,6 @@
 
   <script src="guestbook-config.js?v=20261115-1"></script>
   <script src="script.js?v=20261115-3"></script>
-  <script type="module" src="guestbook.js?v=20261115-1"></script>
+  <script type="module" src="guestbook.js?v=20261115-2"></script>
 </body>
 </html>

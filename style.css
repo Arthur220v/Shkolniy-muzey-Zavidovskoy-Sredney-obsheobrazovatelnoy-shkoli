@@ -2818,3 +2818,128 @@ body.modal-open {
   }
 }
 
+.guestbook-avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
+.guestbook-avatar--photo {
+  overflow: hidden;
+}
+
+.guestbook-avatar-upload small {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.guestbook-avatar-upload input[type="file"] {
+  min-height: 42px;
+  padding: 0.45rem;
+  font-size: 0.82rem;
+}
+
+.guestbook-use-emoji {
+  justify-self: start;
+}
+
+.guestbook-menu-toggle {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid rgba(240, 213, 154, 0.55);
+  border-radius: 12px;
+  background: rgba(8, 18, 36, 0.84);
+  color: var(--gold-bright);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.guestbook-menu-toggle:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 3px;
+}
+
+.guestbook-admin-menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(212, 176, 106, 0.22);
+  border-radius: 14px;
+  background: rgba(4, 10, 22, 0.76);
+}
+
+.guestbook-admin-section-heading {
+  margin: 0 0 0.85rem;
+  color: var(--gold-bright);
+  font-size: 1.05rem;
+}
+
+.guestbook-avatar-moderation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(212, 176, 106, 0.2);
+}
+
+.guestbook-avatar-moderation-label {
+  flex-basis: 100%;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.guestbook-history-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.guestbook-history-entry {
+  min-width: 0;
+  padding: 0.9rem;
+  border: 1px solid rgba(212, 176, 106, 0.22);
+  border-radius: 14px;
+  background: rgba(5, 13, 28, 0.54);
+}
+
+.guestbook-history-entry h5 {
+  margin: 0;
+  color: var(--gold-bright);
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.guestbook-history-entry time,
+.guestbook-history-actor {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.guestbook-history-action {
+  margin: 0.65rem 0 0;
+  color: #b6e2c3;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.guestbook-history-body {
+  margin: 0.45rem 0 0;
+  color: var(--ivory);
+  font-size: 0.84rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
