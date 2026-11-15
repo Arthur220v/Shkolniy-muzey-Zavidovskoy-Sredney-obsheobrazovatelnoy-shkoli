@@ -55,6 +55,22 @@ function reportError(element, message, error) {
   setMessage(element, message, true);
 }
 
+function getModeratorSignInErrorMessage(error) {
+  if (error.code === "email_not_confirmed") {
+    return "Email не подтверждён. Подтвердите адрес в Supabase → Authentication → Users и войдите снова.";
+  }
+  if (error.code === "invalid_credentials") {
+    return "Supabase не принял email и пароль. Проверьте, что пользователь создан в Authentication → Users именно этого проекта; если нужно, отправьте ему письмо для сброса пароля.";
+  }
+  if (error.code === "email_provider_disabled") {
+    return "В Supabase отключён вход по email и паролю. Включите провайдер Email в Authentication → Sign In / Providers.";
+  }
+  if (error.code === "over_request_rate_limit") {
+    return "Слишком много попыток входа. Подождите и попробуйте ещё раз.";
+  }
+  return `Supabase отклонил вход (код: ${error.code || "не указан"}). Проверьте аккаунт в Authentication → Users.`;
+}
+
 function makeAvatar(emoji, color, label, photoUrl = null) {
   const avatar = document.createElement("span");
   avatar.className = `guestbook-avatar guestbook-avatar--${color}${photoUrl ? " guestbook-avatar--photo" : ""}`;
@@ -691,7 +707,7 @@ async function initializeGuestbook() {
       });
 
       if (error) {
-        reportError(moderatorFeedback, "Не удалось войти. Проверьте email и пароль.", error);
+        reportError(moderatorFeedback, getModeratorSignInErrorMessage(error), error);
         return;
       }
 
