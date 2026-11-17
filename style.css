@@ -3351,11 +3351,11 @@ body.modal-open {
 }
 
 html[data-theme="light"] {
-  --navy: #f4f6fa;
-  --navy-deep: #e8edf4;
-  --navy-soft: #dce5ef;
-  --ivory: #263449;
-  --muted: #596a80;
+  --navy: #e9ebef;
+  --navy-deep: #dce1e8;
+  --navy-soft: #d1d9e3;
+  --ivory: #222d3e;
+  --muted: #4f5c70;
   --glass: rgba(255, 255, 255, 0.88);
   --theme-heading: #78531e;
 }
@@ -3367,8 +3367,8 @@ html[data-theme="light"] body {
 
 html[data-theme="light"] .page-glow {
   background:
-    radial-gradient(1200px 500px at 50% -10%, rgba(114, 147, 191, 0.16), transparent 60%),
-    radial-gradient(800px 400px at 100% 80%, rgba(177, 194, 216, 0.22), transparent 55%);
+    radial-gradient(1200px 500px at 50% -10%, rgba(114, 147, 191, 0.12), transparent 60%),
+    radial-gradient(800px 400px at 100% 80%, rgba(177, 194, 216, 0.18), transparent 55%);
 }
 
 .theme-toggle {
@@ -3427,7 +3427,7 @@ html[data-theme="light"] .page-glow {
 
 html[data-theme="light"] .theme-toggle {
   border-color: rgba(120, 83, 30, 0.35);
-  background: rgba(255, 255, 255, 0.86);
+  background: rgba(233, 237, 242, 0.94);
   color: #78531e;
   box-shadow: 0 8px 22px rgba(30, 45, 65, 0.14);
 }
@@ -3496,7 +3496,7 @@ html[data-theme="light"] .author-copy blockquote p {
 }
 
 html[data-theme="light"] .social-card {
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(237, 240, 244, 0.94);
   border-color: rgba(65, 84, 108, 0.2);
   box-shadow: 0 8px 24px rgba(30, 45, 65, 0.08);
 }
@@ -3507,7 +3507,7 @@ html[data-theme="light"] .social-card:hover {
 
 html[data-theme="light"] .author-card {
   border-color: rgba(120, 83, 30, 0.24);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(232, 237, 244, 0.92));
+  background: linear-gradient(135deg, #edf0f3, #e1e6ed);
   box-shadow: 0 18px 42px rgba(30, 45, 65, 0.12);
 }
 
@@ -3522,7 +3522,7 @@ html[data-theme="light"] .guestbook-submit,
 html[data-theme="light"] .guestbook-secondary-button,
 html[data-theme="light"] .audio-toggle {
   border-color: rgba(120, 83, 30, 0.38);
-  background: linear-gradient(180deg, #fffefa, #e9edf3);
+  background: linear-gradient(180deg, #f2f1eb, #e1e5eb);
   color: #654516;
   box-shadow: 0 10px 26px rgba(30, 45, 65, 0.12);
 }
@@ -3532,7 +3532,7 @@ html[data-theme="light"] .guestbook-submit:hover,
 html[data-theme="light"] .guestbook-secondary-button:hover,
 html[data-theme="light"] .audio-toggle:hover:not(:disabled) {
   border-color: #9b702b;
-  background: linear-gradient(180deg, #fff, #e2e8f0);
+  background: linear-gradient(180deg, #f6f5f0, #dce2e9);
 }
 
 html[data-theme="light"] .audio-controls,
@@ -3543,19 +3543,19 @@ html[data-theme="light"] .guestbook-login,
 html[data-theme="light"] .guestbook-admin,
 html[data-theme="light"] .guestbook-history-entry {
   border-color: rgba(65, 84, 108, 0.18);
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(237, 240, 244, 0.92);
   box-shadow: 0 12px 30px rgba(30, 45, 65, 0.07);
 }
 
 html[data-theme="light"] .guestbook {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(232, 237, 244, 0.94));
+  background: linear-gradient(145deg, #edf0f3, #e1e6ed);
   box-shadow: 0 18px 44px rgba(30, 45, 65, 0.12);
 }
 
 html[data-theme="light"] .guestbook-field input,
 html[data-theme="light"] .guestbook-field textarea {
   border-color: rgba(65, 84, 108, 0.28);
-  background: #fff;
+  background: #f5f6f8;
   color: #263449;
 }
 
@@ -3564,13 +3564,13 @@ html[data-theme="light"] .guestbook-color-choice,
 html[data-theme="light"] .guestbook-vote-button,
 html[data-theme="light"] .guestbook-menu-toggle {
   border-color: rgba(65, 84, 108, 0.22);
-  background: rgba(244, 246, 250, 0.96);
+  background: rgba(232, 236, 241, 0.98);
   color: #263449;
 }
 
 html[data-theme="light"] .guestbook-admin-menu {
   border-color: rgba(65, 84, 108, 0.18);
-  background: rgba(237, 241, 246, 0.9);
+  background: rgba(228, 233, 239, 0.96);
 }
 
 html[data-theme="light"] .guestbook-moderator-reply {
@@ -3581,7 +3581,7 @@ html[data-theme="light"] .guestbook-moderator-reply {
 html[data-theme="light"] .guestbook-reply-editor,
 html[data-theme="light"] .guestbook-profile-photo-preview {
   border-color: rgba(65, 84, 108, 0.18);
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(237, 240, 244, 0.94);
 }
 
 html[data-theme="light"] .guestbook-status {
@@ -3621,7 +3621,7 @@ html[data-theme="light"] .guestbook-star-choice.is-selected .guestbook-star-symb
 
 html[data-theme="light"] .exhibit-card {
   border-color: rgba(65, 84, 108, 0.24);
-  background: rgba(248, 250, 253, 0.96);
+  background: rgba(236, 239, 243, 0.97);
   box-shadow: 0 20px 55px rgba(0, 0, 0, 0.24);
 }
 
