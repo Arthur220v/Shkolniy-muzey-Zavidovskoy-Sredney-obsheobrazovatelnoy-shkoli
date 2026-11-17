@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261115-guestbook3" />
+  <link rel="stylesheet" href="style.css?v=20261117-audio-player" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -375,16 +375,29 @@
       <div class="exhibit-copy">
         <h3 class="exhibit-title" id="exhibitTitle"></h3>
         <p class="exhibit-text" id="exhibitText"></p>
-        <button class="audio-toggle" id="audioToggle" type="button" aria-label="Слушать аудиозапись" aria-pressed="false" hidden>
-          <svg class="audio-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-            <path class="audio-speaker" d="M4 12h6l7-6v20l-7-6H4z" />
-            <path class="audio-wave" d="M22 11a7 7 0 0 1 0 10m3-14a12 12 0 0 1 0 18" />
-            <path class="audio-play" d="m13 12 7 4-7 4z" />
-            <path class="audio-stop" d="M13 12h7v8h-7z" />
-          </svg>
-          <span id="audioToggleLabel">Слушать аудио</span>
-        </button>
-        <audio class="exhibit-audio" id="exhibitAudio" preload="metadata" hidden aria-label="Аудиозапись экспоната"></audio>
+        <div class="audio-player" id="audioPlayer" hidden>
+          <button class="audio-toggle" id="audioToggle" type="button" aria-label="Слушать аудиозапись" aria-pressed="false">
+            <svg class="audio-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+              <path class="audio-speaker" d="M4 12h6l7-6v20l-7-6H4z" />
+              <path class="audio-wave" d="M22 11a7 7 0 0 1 0 10m3-14a12 12 0 0 1 0 18" />
+              <path class="audio-play" d="m13 12 7 4-7 4z" />
+              <path class="audio-pause" d="M14 11v10m6-10v10" />
+            </svg>
+            <span id="audioToggleLabel">Слушать аудио</span>
+          </button>
+          <div class="audio-controls">
+            <div class="audio-seek-row">
+              <input class="audio-seek" id="audioSeek" type="range" min="0" max="1000" step="1" value="0" aria-label="Перемотка аудиозаписи" disabled />
+              <span class="audio-time" id="audioTime" aria-live="off">0:00 / --:--</span>
+            </div>
+            <label class="audio-speed-control" for="audioSpeed">
+              <span>Скорость</span>
+              <input class="audio-speed" id="audioSpeed" type="range" min="0.2" max="2" step="0.1" value="1" />
+              <output class="audio-speed-value" id="audioSpeedValue" for="audioSpeed">1×</output>
+            </label>
+          </div>
+          <audio class="exhibit-audio" id="exhibitAudio" preload="metadata" hidden aria-label="Аудиозапись экспоната"></audio>
+        </div>
         <p class="audio-status" id="audioStatus" role="status" hidden>Аудиодорожка недоступна.</p>
       </div>
     </article>
@@ -488,7 +501,7 @@
   </div>
 
   <script src="guestbook-config.js?v=20261115-1"></script>
-  <script src="script.js?v=20261117-1"></script>
+  <script src="script.js?v=20261117-2"></script>
   <script type="module" src="guestbook.js?v=20261115-4"></script>
 </body>
 </html>

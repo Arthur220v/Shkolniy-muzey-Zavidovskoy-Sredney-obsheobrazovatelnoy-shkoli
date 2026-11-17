@@ -496,8 +496,13 @@ const exhibitTitle = document.getElementById("exhibitTitle");
 const exhibitBlur = document.getElementById("exhibitBlur");
 const exhibitMarkers = document.getElementById("exhibitMarkers");
 const exhibitAudio = document.getElementById("exhibitAudio");
+const audioPlayer = document.getElementById("audioPlayer");
 const audioToggle = document.getElementById("audioToggle");
 const audioToggleLabel = document.getElementById("audioToggleLabel");
+const audioSeek = document.getElementById("audioSeek");
+const audioTime = document.getElementById("audioTime");
+const audioSpeed = document.getElementById("audioSpeed");
+const audioSpeedValue = document.getElementById("audioSpeedValue");
 const audioStatus = document.getElementById("audioStatus");
 const tour = document.getElementById("tour");
 const tourViewport = document.getElementById("tourViewport");
@@ -1132,8 +1137,13 @@ async function openExhibit(id, blurSrc) {
   stopAudio();
   audioStatus.hidden = true;
   audioStatus.textContent = "Аудиодорожка недоступна.";
-  audioToggle.hidden = !audioFile;
+  audioPlayer.hidden = !audioFile;
   audioToggle.disabled = false;
+  audioSeek.disabled = true;
+  audioSeek.value = "0";
+  audioSpeed.value = "1";
+  updateAudioSpeed();
+  updateAudioControls();
 
   if (data.innerMarkers) {
     renderNestedMarkers(
@@ -1194,15 +1204,57 @@ function closeExhibit() {
 function stopAudio() {
   exhibitAudio.pause();
   if (Number.isFinite(exhibitAudio.duration)) exhibitAudio.currentTime = 0;
-  updateAudioToggle();
+  updateAudioControls();
 }
 
 function updateAudioToggle() {
   const isPlaying = !exhibitAudio.paused && !exhibitAudio.ended;
+  const canResume = exhibitAudio.currentTime > 0 && !exhibitAudio.ended;
   audioToggle.classList.toggle("is-playing", isPlaying);
   audioToggle.setAttribute("aria-pressed", String(isPlaying));
-  audioToggle.setAttribute("aria-label", isPlaying ? "Остановить аудиозапись" : "Слушать аудиозапись");
-  audioToggleLabel.textContent = isPlaying ? "Остановить аудио" : "Слушать аудио";
+  audioToggle.setAttribute(
+    "aria-label",
+    isPlaying ? "Приостановить аудиозапись" : canResume ? "Продолжить аудиозапись" : "Слушать аудиозапись"
+  );
+  audioToggleLabel.textContent = isPlaying ? "Пауза" : canResume ? "Продолжить" : "Слушать аудио";
+}
+
+function formatAudioTime(value) {
+  if (!Number.isFinite(value) || value < 0) return "--:--";
+  const totalSeconds = Math.floor(value);
+  const seconds = String(totalSeconds % 60).padStart(2, "0");
+  const minutes = Math.floor(totalSeconds / 60);
+  return minutes >= 60
+    ? `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2, "0")}:${seconds}`
+    : `${minutes}:${seconds}`;
+}
+
+function updateAudioControls() {
+  updateAudioToggle();
+  const duration = exhibitAudio.duration;
+  const hasDuration = Number.isFinite(duration) && duration > 0;
+  audioSeek.disabled = !hasDuration;
+  if (hasDuration) {
+    const progress = Math.min(1, Math.max(0, exhibitAudio.currentTime / duration));
+    audioSeek.value = String(Math.round(progress * Number(audioSeek.max)));
+    audioSeek.style.setProperty("--audio-progress", `${progress * 100}%`);
+  } else {
+    audioSeek.value = "0";
+    audioSeek.style.setProperty("--audio-progress", "0%");
+  }
+  audioSeek.setAttribute(
+    "aria-valuetext",
+    `${formatAudioTime(exhibitAudio.currentTime)} / ${formatAudioTime(duration)}`
+  );
+  audioTime.textContent = `${formatAudioTime(exhibitAudio.currentTime)} / ${formatAudioTime(duration)}`;
+}
+
+function updateAudioSpeed() {
+  const rate = Number(audioSpeed.value);
+  exhibitAudio.playbackRate = rate;
+  audioSpeed.style.setProperty("--audio-progress", `${((rate - 0.2) / 1.8) * 100}%`);
+  audioSpeed.setAttribute("aria-valuetext", `${rate.toFixed(1).replace(/\.0$/, "")}×`);
+  audioSpeedValue.value = `${rate.toFixed(1).replace(/\.0$/, "")}×`;
 }
 
 function parseLinks(raw) {
@@ -1624,11 +1676,12 @@ exhibitPhoto.addEventListener("keydown", (event) => {
 });
 audioToggle.addEventListener("click", async () => {
   if (!exhibitAudio.paused) {
-    stopAudio();
+    exhibitAudio.pause();
     return;
   }
   audioStatus.hidden = true;
   try {
+    if (exhibitAudio.ended) exhibitAudio.currentTime = 0;
     await exhibitAudio.play();
   } catch (error) {
     audioStatus.textContent = "Не удалось запустить аудиозапись.";
@@ -1636,11 +1689,21 @@ audioToggle.addEventListener("click", async () => {
     console.error("Не удалось запустить аудиозапись экспоната.", error);
   }
 });
-exhibitAudio.addEventListener("play", updateAudioToggle);
-exhibitAudio.addEventListener("pause", updateAudioToggle);
-exhibitAudio.addEventListener("ended", stopAudio);
+audioSeek.addEventListener("input", () => {
+  if (!Number.isFinite(exhibitAudio.duration) || exhibitAudio.duration <= 0) return;
+  exhibitAudio.currentTime = (Number(audioSeek.value) / Number(audioSeek.max)) * exhibitAudio.duration;
+  updateAudioControls();
+});
+audioSpeed.addEventListener("input", updateAudioSpeed);
+exhibitAudio.addEventListener("loadedmetadata", updateAudioControls);
+exhibitAudio.addEventListener("durationchange", updateAudioControls);
+exhibitAudio.addEventListener("timeupdate", updateAudioControls);
+exhibitAudio.addEventListener("play", updateAudioControls);
+exhibitAudio.addEventListener("pause", updateAudioControls);
+exhibitAudio.addEventListener("ended", updateAudioControls);
 exhibitAudio.addEventListener("error", () => {
   audioToggle.disabled = true;
+  audioSeek.disabled = true;
   audioStatus.textContent = "Не удалось загрузить аудиозапись.";
   audioStatus.hidden = false;
 });
