@@ -6,6 +6,11 @@
   <meta name="color-scheme" content="only light" />
   <title>Музей МБОУ СОШ с.Завидово</title>
   <script>
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    window.addEventListener("pageshow", () => {
+      window.setTimeout(() => window.scrollTo(0, 0), 0);
+    });
+
     try {
       document.documentElement.dataset.theme =
         localStorage.getItem("museum-site-theme") === "light" ? "light" : "dark";
