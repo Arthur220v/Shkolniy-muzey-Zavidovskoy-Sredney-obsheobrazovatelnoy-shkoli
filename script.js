@@ -1786,6 +1786,40 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+const themeToggle = document.getElementById("themeToggle");
+const themeToggleLabel = document.getElementById("themeToggleLabel");
+let themeAnimationTimer = 0;
+
+function updateThemeToggle() {
+  const isLightTheme = document.documentElement.dataset.theme === "light";
+  const nextThemeLabel = isLightTheme ? "Тёмная тема" : "Светлая тема";
+  const nextThemeAction = isLightTheme ? "Включить тёмную тему" : "Включить светлую тему";
+  themeToggleLabel.textContent = nextThemeLabel;
+  themeToggle.setAttribute("aria-label", nextThemeAction);
+  themeToggle.title = nextThemeAction;
+}
+
+updateThemeToggle();
+themeToggle.addEventListener("click", () => {
+  const nextTheme = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+  document.documentElement.dataset.theme = nextTheme;
+  updateThemeToggle();
+
+  document.documentElement.classList.remove("theme-is-changing");
+  void document.documentElement.offsetWidth;
+  document.documentElement.classList.add("theme-is-changing");
+  window.clearTimeout(themeAnimationTimer);
+  themeAnimationTimer = window.setTimeout(() => {
+    document.documentElement.classList.remove("theme-is-changing");
+  }, 620);
+
+  try {
+    localStorage.setItem("museum-site-theme", nextTheme);
+  } catch (error) {
+    console.error("Не удалось сохранить выбранную тему оформления.", error);
+  }
+});
+
 renderGallery();
 initializeEventGallery();
 renderMapMarkers();
