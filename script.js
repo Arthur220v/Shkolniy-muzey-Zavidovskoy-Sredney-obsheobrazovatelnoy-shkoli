@@ -1,6 +1,7 @@
 const IMAGE_DIR = "images/";
 const TEXT_DIR = "Texts/";
 const AUDIO_DIR = "Audio/";
+const TEXT_CACHE_VERSION = "20261117-1";
 
 const GALLERY = [
   { file: "school_photo.jpg", caption: "Завидовская школа" },
@@ -1034,7 +1035,9 @@ async function decodeImage(image, description) {
 async function readTextFile(path, fallback) {
   if (textCache[path]) return textCache[path];
   try {
-    const response = await fetch(path);
+    const textUrl = new URL(path, document.baseURI);
+    textUrl.searchParams.set("v", TEXT_CACHE_VERSION);
+    const response = await fetch(textUrl, { cache: "no-store" });
     if (!response.ok) throw new Error("fetch failed");
     const text = (await response.text()).trim();
     textCache[path] = text || fallback;
