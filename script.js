@@ -156,7 +156,7 @@ Object.assign(EXHIBITS, {
       innerMarkers: [
         {
           id: "Pamyatniy_znak_Bocharovu_N.P_(II)_(XXXVI)",
-          title: "Биография Н. П. Бочарова",
+          title: "Н.П.Бочаров",
           left: "38%",
           top: "40%",
           width: "14%",
