@@ -445,8 +445,9 @@ const SCENES = {
               .filter((page) => page !== 7)
               .map((page, i) => ({
                 file: `Stend_about_Chechnya_Afghanistan_WWII(1)_(IX)_page_${page}.jpg`,
-                label: `Страница ${i + 1} из 10`,
+                label: `Страница ${i + 1} из 11`,
               })),
+            { file: "Stend_about_Chechnya_Afghanistan_WWII(1)_(IX)_page_12.png", label: "Страница 11 из 11" },
           ],
         },
       },
