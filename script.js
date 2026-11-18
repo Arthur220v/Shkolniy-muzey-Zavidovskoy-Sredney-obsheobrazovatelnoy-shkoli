@@ -441,10 +441,12 @@ const SCENES = {
           title: "Я знаю и горжусь",
           pages: [
             { file: "Stend_about_Chechnya_Afghanistan_WWII(1)_(IX).jpg", label: "Обложка" },
-            ...Array.from({ length: 11 }, (_, i) => ({
-              file: `Stend_about_Chechnya_Afghanistan_WWII(1)_(IX)_page_${i + 1}.jpg`,
-              label: `Страница ${i + 1} из 11`,
-            })),
+            ...Array.from({ length: 11 }, (_, i) => i + 1)
+              .filter((page) => page !== 7)
+              .map((page, i) => ({
+                file: `Stend_about_Chechnya_Afghanistan_WWII(1)_(IX)_page_${page}.jpg`,
+                label: `Страница ${i + 1} из 10`,
+              })),
           ],
         },
       },
