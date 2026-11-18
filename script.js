@@ -533,6 +533,7 @@ const book3d = document.getElementById("book3d");
 const bookFrontImg = document.getElementById("bookFrontImg");
 const bookPageLabel = document.getElementById("bookPageLabel");
 const bookTitle = document.querySelector(".book-title");
+const bookPagePicker = document.getElementById("bookPagePicker");
 
 const DEFAULT_LINKS = {
   max: "https://max.ru/id6911016133_gos",
@@ -1553,6 +1554,35 @@ function updateBookChrome() {
   bookPageLabel.textContent = currentBookPages[bookPage].label;
   document.getElementById("bookPrev").disabled = bookPage === 0 || bookBusy;
   document.getElementById("bookNext").disabled = bookPage === currentBookPages.length - 1 || bookBusy;
+  bookPagePicker.querySelectorAll("[data-book-page]").forEach((button) => {
+    const isCurrentPage = Number(button.dataset.bookPage) === bookPage;
+    button.setAttribute("aria-current", isCurrentPage ? "page" : "false");
+    button.disabled = bookBusy;
+    if (isCurrentPage) button.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
+  });
+}
+
+function renderBookPagePicker() {
+  bookPagePicker.replaceChildren();
+  currentBookPages.forEach((page, pageIndex) => {
+    const button = document.createElement("button");
+    button.className = "book-page-choice";
+    button.type = "button";
+    button.dataset.bookPage = String(pageIndex);
+    button.setAttribute("aria-label", `Открыть ${page.label}`);
+
+    const thumbnail = document.createElement("img");
+    thumbnail.src = bookSrc(pageIndex);
+    thumbnail.alt = "";
+    thumbnail.loading = "lazy";
+    thumbnail.decoding = "async";
+
+    const label = document.createElement("span");
+    label.textContent = page.label;
+    button.append(thumbnail, label);
+    button.addEventListener("click", () => goToBookPage(pageIndex));
+    bookPagePicker.append(button);
+  });
 }
 
 function openBook(pages = MEMORY_BOOK_PAGES, title = "Книга памяти 1941–1945") {
@@ -1567,6 +1597,7 @@ function openBook(pages = MEMORY_BOOK_PAGES, title = "Книга памяти 19
   bookZoom.setPosition(0, 0, 1);
   bookFrontImg.src = bookSrc(0);
   bookFrontImg.alt = currentBookPages[0].label;
+  renderBookPagePicker();
   updateBookChrome();
   bookView.setAttribute("aria-hidden", "false");
   bookView.classList.remove("is-closing");
@@ -1588,10 +1619,10 @@ function closeBook() {
   bookCloseTimer = window.setTimeout(() => bookView.classList.remove("is-closing"), 500);
 }
 
-async function flipBook(direction) {
+async function goToBookPage(next) {
   if (bookBusy) return;
-  const next = bookPage + direction;
-  if (next < 0 || next >= currentBookPages.length) return;
+  if (next < 0 || next >= currentBookPages.length || next === bookPage) return;
+  const direction = next > bookPage ? 1 : -1;
   const transitionId = ++bookTransitionId;
   const nextSrc = bookSrc(next);
   bookBusy = true;
@@ -1629,6 +1660,10 @@ async function flipBook(direction) {
   bookFrontImg.style.setProperty("--book-enter-x", direction > 0 ? "1rem" : "-1rem");
   bookFrontImg.classList.add("is-changing");
   bookTransitionTimer = window.setTimeout(showNextPage, 240);
+}
+
+function flipBook(direction) {
+  goToBookPage(bookPage + direction);
 }
 
 mapImage.addEventListener("load", () => {
