@@ -580,6 +580,8 @@ function encodePath(dir, file, preserveImageFormat = false) {
     /^vitrina_pamyati\(13\)(?:_hits_for_markers|_\(GX\)(?:_full_view_photo)?)?\.(?:jpe?g|webp)$/i.test(imageFile);
   const isUpdatedEntranceMap = dir === IMAGE_DIR &&
     /^interior_of_the_museum_entrance(?:_hits_for_markers)?\.(?:png|jpe?g|webp)$/i.test(imageFile);
+  const isUpdatedMotovilinAudio = dir === AUDIO_DIR &&
+    file === "audio_for_museum_entrance_left_soviet_soldier_photo_info_about_image.mp3";
   const isUpdatedVaraksinoAudio = dir === AUDIO_DIR &&
     file === "audio_for_Bratskaya_mogila_v_derevne_Varaksino_(I)_info_about_image.mp3";
   const isUpdatedVaraksinoText = dir === TEXT_DIR &&
@@ -587,7 +589,8 @@ function encodePath(dir, file, preserveImageFormat = false) {
   return isUpdatedMemoryDisplay
     ? `${path}?v=20261108-1`
     : isUpdatedEntranceMap ? `${path}?v=20261108-2`
-      : isUpdatedVaraksinoAudio || isUpdatedVaraksinoText ? `${path}?v=20261115-2` : path;
+      : isUpdatedMotovilinAudio ? `${path}?v=20261118-1`
+        : isUpdatedVaraksinoAudio || isUpdatedVaraksinoText ? `${path}?v=20261115-2` : path;
 }
 
 function createPanZoom(viewport, world) {
