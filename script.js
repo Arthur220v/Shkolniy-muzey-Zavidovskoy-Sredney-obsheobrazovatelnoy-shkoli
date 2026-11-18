@@ -1,7 +1,7 @@
 const IMAGE_DIR = "images/";
 const TEXT_DIR = "Texts/";
 const AUDIO_DIR = "Audio/";
-const TEXT_CACHE_VERSION = "20261117-2";
+const TEXT_CACHE_VERSION = "20261118-1";
 
 const GALLERY = [
   { file: "school_photo.jpg", caption: "Завидовская школа" },
