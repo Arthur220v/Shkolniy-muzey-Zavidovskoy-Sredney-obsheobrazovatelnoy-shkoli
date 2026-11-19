@@ -3697,6 +3697,11 @@ html[data-theme="light"] .guestbook-color-choice,
 html[data-theme="light"] .guestbook-vote-button,
 html[data-theme="light"] .guestbook-menu-toggle {
   border-color: rgba(65, 84, 108, 0.22);
+}
+
+html[data-theme="light"] .guestbook-avatar-choice,
+html[data-theme="light"] .guestbook-vote-button,
+html[data-theme="light"] .guestbook-menu-toggle {
   background: rgba(232, 236, 241, 0.98);
   color: #263449;
 }
