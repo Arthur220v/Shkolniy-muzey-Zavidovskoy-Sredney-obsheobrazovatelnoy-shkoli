@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -38,6 +39,27 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+
+      - name: Wait for the Pages artifact to become available
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          for attempt in 1 2 3 4 5 6 7; do
+            if artifact_id=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts" --jq '.artifacts[] | select(.name == "github-pages") | .id'); then
+              if [[ -n "$artifact_id" ]]; then
+                echo "Pages artifact $artifact_id is available."
+                exit 0
+              fi
+            else
+              echo "Artifact listing failed on attempt ${attempt}/7." >&2
+            fi
+            if [[ "$attempt" -lt 7 ]]; then
+              sleep 5
+            fi
+          done
+          echo "::error::The Pages artifact was not available after 30 seconds."
+          exit 1
 
       - name: Deploy to GitHub Pages
         id: deployment
