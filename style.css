@@ -7,6 +7,12 @@
   --gold-bright: #f0d59a;
   --ivory: #f4efe4;
   --muted: #c5d0e0;
+  --blue-rect-button-background: rgba(10, 18, 32, 0.94);
+  --blue-rect-button-background-hover: rgba(16, 36, 69, 0.96);
+  --blue-rect-button-border: rgba(212, 176, 106, 0.58);
+  --blue-rect-button-border-hover: rgba(212, 176, 106, 0.9);
+  --blue-rect-button-radius: 0.7rem;
+  --blue-rect-button-transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   --red-pin: #e03131;
   --glass: rgba(10, 24, 48, 0.72);
   --theme-heading: var(--gold-bright);
@@ -2135,18 +2141,29 @@ body.modal-open {
   width: 126px;
   height: 48px;
   padding: 0 0.75rem;
-  border: 1px solid rgba(212, 176, 106, 0.55);
+  border: 1px solid var(--blue-rect-button-border);
   border-left: 0;
-  border-radius: 0 14px 14px 0;
-  background: linear-gradient(145deg, rgba(20, 42, 78, 0.98), rgba(8, 18, 36, 0.98));
-  color: var(--gold-bright);
+  border-radius: 0 var(--blue-rect-button-radius) var(--blue-rect-button-radius) 0;
+  background: var(--blue-rect-button-background);
+  color: var(--ivory);
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  text-shadow: 0 0 9px rgba(240, 213, 154, 0.52), 0 0 18px rgba(240, 213, 154, 0.24);
   cursor: pointer;
   transform: translateY(-50%);
   box-shadow: 0 8px 26px rgba(0, 0, 0, 0.38);
+  transition: var(--blue-rect-button-transition);
+}
+
+.hint-restore:hover,
+.hint-restore:focus-visible {
+  border-color: var(--blue-rect-button-border-hover);
+  background: var(--blue-rect-button-background-hover);
+  transform: translateY(-50%) scale(1.06);
+}
+
+.hint-restore:active {
+  transform: translateY(-50%) scale(0.96);
 }
 
 .hint-restore-label {
@@ -2320,23 +2337,23 @@ body.modal-open {
   min-height: clamp(2.2rem, 3vw, 2.7rem);
   place-items: center;
   padding: 0.25rem 0.55rem;
-  border: 1px solid rgba(212, 176, 106, 0.58);
-  border-radius: 0.7rem;
-  background: rgba(10, 18, 32, 0.94);
-  color: #f4ecdc;
+  border: 1px solid var(--blue-rect-button-border);
+  border-radius: var(--blue-rect-button-radius);
+  background: var(--blue-rect-button-background);
+  color: var(--ivory);
   font: 600 clamp(0.62rem, 0.9vw, 0.78rem)/1.35 "Manrope", "Segoe UI", sans-serif;
   white-space: nowrap;
   pointer-events: auto;
   user-select: none;
   cursor: pointer;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.42);
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  transition: var(--blue-rect-button-transition);
 }
 
 .scene-numeral-button:hover,
 .scene-numeral-button:focus-visible {
-  border-color: rgba(212, 176, 106, 0.9);
-  background: rgba(16, 36, 69, 0.96);
+  border-color: var(--blue-rect-button-border-hover);
+  background: var(--blue-rect-button-background-hover);
   transform: translate(-50%, -50%) scale(1.06);
 }
 
@@ -3063,12 +3080,24 @@ body.modal-open {
   width: 44px;
   height: 44px;
   place-items: center;
-  border: 1px solid rgba(240, 213, 154, 0.55);
-  border-radius: 12px;
-  background: rgba(8, 18, 36, 0.84);
-  color: var(--gold-bright);
+  border: 1px solid var(--blue-rect-button-border);
+  border-radius: var(--blue-rect-button-radius);
+  background: var(--blue-rect-button-background);
+  color: var(--ivory);
   font-size: 1.5rem;
   cursor: pointer;
+  transition: var(--blue-rect-button-transition);
+}
+
+.guestbook-menu-toggle:hover,
+.guestbook-menu-toggle:focus-visible {
+  border-color: var(--blue-rect-button-border-hover);
+  background: var(--blue-rect-button-background-hover);
+  transform: scale(1.06);
+}
+
+.guestbook-menu-toggle:active {
+  transform: scale(0.96);
 }
 
 .guestbook-menu-toggle:focus-visible {
