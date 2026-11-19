@@ -3547,6 +3547,10 @@ html[data-theme="light"] {
   --scrollbar-thumb: #9c722e;
   --scrollbar-thumb-hover: #78531e;
   --scrollbar-track: rgba(65, 84, 108, 0.12);
+  --tour-control-ink: #263449;
+  --tour-control-border: rgba(65, 84, 108, 0.28);
+  --tour-control-background: linear-gradient(180deg, #f5f6f8, #e1e6ed);
+  --tour-control-hover-background: linear-gradient(180deg, #fff, #dce2e9);
 }
 
 html[data-theme="light"] body {
@@ -3825,15 +3829,59 @@ html[data-theme="light"] .audio-speed-value {
 }
 
 html[data-theme="light"] .tour-hint,
-html[data-theme="light"] .hint-legend-item,
-html[data-theme="light"] .hint-close {
-  color: #f4efe4;
+html[data-theme="light"] .hint-legend-item {
+  color: var(--tour-control-ink);
 }
 
 html[data-theme="light"] .tour-direction,
 html[data-theme="light"] .tour-exit,
 html[data-theme="light"] .hint-restore {
-  color: #f0d59a;
+  border-color: var(--tour-control-border);
+  background: var(--tour-control-background);
+  color: var(--tour-control-ink);
+  box-shadow: 0 8px 22px rgba(30, 45, 65, 0.14);
+}
+
+html[data-theme="light"] .hint-legend-toggle,
+html[data-theme="light"] .hint-close {
+  color: var(--tour-control-ink);
+}
+
+html[data-theme="light"] .tour-hint {
+  border-color: var(--tour-control-border);
+  background: linear-gradient(145deg, #f5f6f8, #e1e6ed);
+  box-shadow: 0 16px 42px rgba(30, 45, 65, 0.16);
+}
+
+html[data-theme="light"] .tour-hint::after {
+  border-color: var(--tour-control-border);
+  background: #e1e6ed;
+}
+
+html[data-theme="light"] .tour-direction:hover,
+html[data-theme="light"] .tour-direction:focus-visible,
+html[data-theme="light"] .tour-exit:hover,
+html[data-theme="light"] .tour-exit:focus-visible,
+html[data-theme="light"] .hint-restore:hover,
+html[data-theme="light"] .hint-restore:focus-visible {
+  border-color: #9b702b;
+  background: var(--tour-control-hover-background);
+  color: var(--tour-control-ink);
+  box-shadow: 0 10px 26px rgba(30, 45, 65, 0.2);
+}
+
+html[data-theme="light"] .hint-legend-toggle:hover,
+html[data-theme="light"] .hint-legend-toggle:focus-visible {
+  color: var(--tour-control-ink);
+  text-shadow: none;
+}
+
+html[data-theme="light"] .tour-direction:focus-visible,
+html[data-theme="light"] .tour-exit:focus-visible,
+html[data-theme="light"] .hint-restore:focus-visible,
+html[data-theme="light"] .hint-legend-toggle:focus-visible,
+html[data-theme="light"] .hint-close:focus-visible {
+  outline-color: var(--tour-control-ink);
 }
 
 html[data-theme="light"] .pin-label,
