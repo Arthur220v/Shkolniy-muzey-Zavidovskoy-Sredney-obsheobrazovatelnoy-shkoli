@@ -142,7 +142,7 @@ Object.assign(EXHIBITS, {
   "Flag_RF(2)": makeExhibit("Flag_RF(2)", "Государственный флаг России"),
   "Gerb_RF(3)": makeExhibit("Gerb_RF(3)", "Государственный герб России"),
   "Hymn_RF(4)": makeExhibit("Hymn_RF(4)", "Государственный гимн России"),
-  "sunduk_N2(3)": makeExhibit("sunduk_N2(3)", "Сундук № 2", {
+  "sunduk_N2(3)": makeExhibit("sunduk_N2(3)", "Немецкий сундук", {
     preserveImageFormat: true,
   }),
   "vitrina_tankov(10)": makeExhibit("vitrina_tankov(10)", "Витрина военной техники"),
@@ -338,7 +338,7 @@ const LONGITUDINAL_OBJECTS = [
   },
   {
     id: "sunduk_N2(3)",
-    title: "Сундук № 2",
+    title: "Немецкий сундук",
     number: "3",
     color: "blue",
     left: "61%",
