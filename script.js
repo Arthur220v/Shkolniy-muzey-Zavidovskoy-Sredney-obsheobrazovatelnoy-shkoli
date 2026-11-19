@@ -1117,6 +1117,7 @@ function renderNestedMarkers(container, spots, blurSrc) {
 
     if (!spot.disabled) {
       area.addEventListener("click", (event) => {
+        if (!isVisibleMarkerClick(event, ".hot-area-label")) return;
         event.stopPropagation();
         if (spot.book) {
           openBook(spot.book.pages, spot.book.title);
@@ -1127,6 +1128,11 @@ function renderNestedMarkers(container, spots, blurSrc) {
     }
     container.appendChild(area);
   });
+}
+
+function isVisibleMarkerClick(event, targetSelector) {
+  return event.detail === 0 ||
+    (event.target instanceof Element && event.target.closest(targetSelector) !== null);
 }
 
 function renderSceneNumerals(container, numerals) {
@@ -1396,6 +1402,7 @@ function renderMapMarkers() {
     pin.appendChild(label);
 
     pin.addEventListener("click", (event) => {
+      if (!isVisibleMarkerClick(event, ".pin-dot, .pin-label")) return;
       event.stopPropagation();
       openMapObject(item);
     });
@@ -1430,6 +1437,7 @@ function renderLongitudinalMarkers() {
 
     if (!item.disabled) {
       pin.addEventListener("click", (event) => {
+        if (!isVisibleMarkerClick(event, ".pin-dot, .pin-label")) return;
         event.stopPropagation();
         if (item.type === "exhibit") {
           openExhibit(

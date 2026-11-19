@@ -1051,6 +1051,7 @@ footer {
 .lightbox.is-closing,
 .exhibit.is-closing {
   opacity: 0;
+  pointer-events: none;
 }
 
 .lightbox {
@@ -1675,6 +1676,7 @@ body.modal-open {
 .scene.is-closing,
 .book-view.is-closing {
   opacity: 0;
+  pointer-events: none;
 }
 
 .tour {
@@ -1786,6 +1788,7 @@ body.modal-open {
   padding: 0;
   background: transparent;
   cursor: pointer;
+  pointer-events: none;
   z-index: 3;
   transform: translate(-50%, -50%);
   overflow: visible;
@@ -1901,7 +1904,7 @@ body.modal-open {
   letter-spacing: 0.01em;
   white-space: normal;
   text-align: center;
-  pointer-events: none;
+  pointer-events: auto;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.42);
   opacity: 0;
   visibility: hidden;
@@ -1977,6 +1980,7 @@ body.modal-open {
   inset: -10px;
   border-radius: 50%;
   opacity: 0.55;
+  pointer-events: none;
   animation: glowPulse 2.2s ease-in-out infinite;
 }
 
@@ -1990,6 +1994,10 @@ body.modal-open {
   transform: translate(-50%, -50%);
   border: 2px solid rgba(255, 255, 255, 0.92);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+}
+
+#mapMarkers .map-pin .pin-dot {
+  pointer-events: auto;
 }
 
 .map-pin.gold .pin-dot { background: #f0d24a; }
@@ -2026,6 +2034,7 @@ body.modal-open {
   background: transparent;
   cursor: pointer;
   overflow: visible;
+  pointer-events: none;
 }
 
 .hot-area-label {
@@ -2043,8 +2052,9 @@ body.modal-open {
   letter-spacing: 0.01em;
   text-align: center;
   white-space: normal;
-  pointer-events: none;
+  pointer-events: auto;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease, scale 0.2s ease;
 }
 
@@ -2053,6 +2063,11 @@ body.modal-open {
   border-color: var(--blue-rect-button-border-hover);
   background: var(--blue-rect-button-background-hover);
   scale: 1.06;
+}
+
+.hot-area:focus-visible .hot-area-label {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
 }
 
 .hot-area-label.is-above {
@@ -2077,6 +2092,8 @@ body.modal-open {
 
 .hot-area.is-disabled .hot-area-label {
   opacity: 0.55;
+  pointer-events: none;
+  cursor: not-allowed;
 }
 
 .tour-exit {
@@ -2382,10 +2399,6 @@ body.modal-open {
 
 .scene-numeral-button:active {
   transform: translate(-50%, -50%) scale(0.96);
-}
-
-.hot-area {
-  pointer-events: auto;
 }
 
 .book-toolbar {
