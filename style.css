@@ -2375,7 +2375,7 @@ body.modal-open {
   border: 1px solid var(--blue-rect-button-border);
   border-radius: var(--blue-rect-button-radius);
   background: var(--blue-rect-button-background);
-  color: var(--ivory);
+  color: #fff;
   font: 600 clamp(0.62rem, 0.9vw, 0.78rem)/1.35 "Manrope", "Segoe UI", sans-serif;
   white-space: nowrap;
   pointer-events: auto;
