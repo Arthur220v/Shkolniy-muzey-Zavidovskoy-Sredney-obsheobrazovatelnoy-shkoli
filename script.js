@@ -1127,13 +1127,15 @@ function renderNestedMarkers(container, spots, blurSrc) {
 
 function renderSceneNumerals(container, numerals) {
   (numerals || []).forEach(({ numeral, left, top }) => {
-    const label = document.createElement("span");
-    label.className = "scene-roman-numeral";
-    label.textContent = numeral;
-    label.style.left = left;
-    label.style.top = top;
-    label.setAttribute("aria-hidden", "true");
-    container.appendChild(label);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "scene-numeral-button";
+    button.textContent = numeral;
+    button.style.left = left;
+    button.style.top = top;
+    button.setAttribute("aria-disabled", "true");
+    button.setAttribute("aria-label", `Раздел ${numeral} пока недоступен`);
+    container.appendChild(button);
   });
 }
 
