@@ -2312,6 +2312,20 @@ body.modal-open {
   pointer-events: none;
 }
 
+.scene-roman-numeral {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  color: #ffd21f;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(0.75rem, 2vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
 .hot-area {
   pointer-events: auto;
 }

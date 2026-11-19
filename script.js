@@ -325,16 +325,16 @@ const LONGITUDINAL_OBJECTS = [
     top: "14%",
   },
   {
-    title: "Стенд «История Завидово» — раздел готовится",
+    id: "Stend_about_Zavidovo_history(2)",
+    title: "Стенд «История Завидово»",
     number: "2",
     color: "red",
     left: "23%",
     top: "80%",
-    disabled: true,
     labelPosition: "above",
   },
   {
-    title: "Раздел готовится",
+    title: "Стенд № 3",
     number: "3",
     color: "blue",
     left: "61%",
@@ -452,6 +452,37 @@ const SCENES = {
         },
       },
       { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(X)", title: "Рисунок Пети Помозкова", left: "39%", top: "72%", width: "20%", height: "17%", labelPosition: "above" },
+    ],
+  },
+  "Stend_about_Zavidovo_history(2)": {
+    image: "Stend_about_Zavidovo_history(2).jpg",
+    title: "Стенд «История Завидово»",
+    preserveImageFormat: true,
+    spots: [],
+    romanNumerals: [
+      { numeral: "XI", left: "26.5%", top: "35.3%" },
+      { numeral: "XVI", left: "43.3%", top: "35.3%" },
+      { numeral: "XXI", left: "59.0%", top: "35.3%" },
+      { numeral: "XXVI", left: "75.7%", top: "35.3%" },
+      { numeral: "XII", left: "27.1%", top: "49.7%" },
+      { numeral: "XVII", left: "44.8%", top: "49.7%" },
+      { numeral: "XXII", left: "60.5%", top: "49.7%" },
+      { numeral: "XXVII", left: "77.1%", top: "49.7%" },
+      { numeral: "XIII", left: "27.7%", top: "59.5%" },
+      { numeral: "XVIII", left: "46.0%", top: "59.5%" },
+      { numeral: "XXIII", left: "62.0%", top: "59.5%" },
+      { numeral: "XXVIII", left: "78.9%", top: "59.5%" },
+      { numeral: "XIV", left: "25.7%", top: "68.1%" },
+      { numeral: "XIX", left: "43.8%", top: "68.1%" },
+      { numeral: "XXIV", left: "62.0%", top: "68.1%" },
+      { numeral: "XXIX", left: "76.0%", top: "68.1%" },
+      { numeral: "XV", left: "24.9%", top: "76.4%" },
+      { numeral: "XX", left: "41.4%", top: "76.4%" },
+      { numeral: "XXV", left: "57.8%", top: "76.4%" },
+      { numeral: "XXXI", left: "75.2%", top: "76.4%" },
+      { numeral: "XXXII", left: "27.6%", top: "83.1%" },
+      { numeral: "XXXIV", left: "52.6%", top: "83.1%" },
+      { numeral: "XXXIII", left: "40.4%", top: "86.6%" },
     ],
   },
 };
@@ -1094,6 +1125,18 @@ function renderNestedMarkers(container, spots, blurSrc) {
   });
 }
 
+function renderSceneNumerals(container, numerals) {
+  (numerals || []).forEach(({ numeral, left, top }) => {
+    const label = document.createElement("span");
+    label.className = "scene-roman-numeral";
+    label.textContent = numeral;
+    label.style.left = left;
+    label.style.top = top;
+    label.setAttribute("aria-hidden", "true");
+    container.appendChild(label);
+  });
+}
+
 async function openExhibit(id, blurSrc) {
   const data = EXHIBITS[id];
   if (!data) return;
@@ -1528,6 +1571,7 @@ function openScene(id) {
     data.spots,
     encodePath(IMAGE_DIR, data.image, data.preserveImageFormat)
   );
+  renderSceneNumerals(sceneMarkers, data.romanNumerals);
   scene.setAttribute("aria-hidden", "false");
   scene.classList.remove("is-closing");
   decodeImage(scenePhoto, data.image).then(() => {
