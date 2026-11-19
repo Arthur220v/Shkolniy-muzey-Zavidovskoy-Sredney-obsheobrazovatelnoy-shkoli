@@ -142,6 +142,9 @@ Object.assign(EXHIBITS, {
   "Flag_RF(2)": makeExhibit("Flag_RF(2)", "Государственный флаг России"),
   "Gerb_RF(3)": makeExhibit("Gerb_RF(3)", "Государственный герб России"),
   "Hymn_RF(4)": makeExhibit("Hymn_RF(4)", "Государственный гимн России"),
+  "sunduk_N2(3)": makeExhibit("sunduk_N2(3)", "Сундук № 2", {
+    preserveImageFormat: true,
+  }),
   "vitrina_tankov(10)": makeExhibit("vitrina_tankov(10)", "Витрина военной техники"),
   "medicinskaya_vitrina(11)": makeExhibit("medicinskaya_vitrina(11)", "Медицинская витрина"),
   "maket_boev(12)": makeExhibit("maket_boev(12)", "Макет уличных боёв"),
@@ -334,12 +337,13 @@ const LONGITUDINAL_OBJECTS = [
     labelPosition: "above",
   },
   {
-    title: "Стенд № 3",
+    id: "sunduk_N2(3)",
+    title: "Сундук № 2",
     number: "3",
     color: "blue",
     left: "61%",
     top: "94%",
-    disabled: true,
+    type: "exhibit",
     labelPosition: "above",
   },
 ];
@@ -1427,7 +1431,14 @@ function renderLongitudinalMarkers() {
     if (!item.disabled) {
       pin.addEventListener("click", (event) => {
         event.stopPropagation();
-        openScene(item.id);
+        if (item.type === "exhibit") {
+          openExhibit(
+            item.id,
+            encodePath(IMAGE_DIR, "facing_two_longitudinal_(interactive).png")
+          );
+        } else {
+          openScene(item.id);
+        }
       });
     }
     mapMarkers.appendChild(pin);
