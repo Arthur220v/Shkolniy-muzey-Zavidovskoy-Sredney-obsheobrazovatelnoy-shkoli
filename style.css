@@ -446,7 +446,12 @@ footer {
   cursor: pointer;
   z-index: 4;
   backdrop-filter: blur(8px);
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .nav-btn:hover {
@@ -467,8 +472,8 @@ footer {
   width: 12px;
   height: 12px;
   margin: 0 auto;
-  border-right: 2px solid var(--gold-bright);
-  border-bottom: 2px solid var(--gold-bright);
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
 }
 
 .nav-btn.prev span {
@@ -493,6 +498,12 @@ footer {
   font-size: 1.2rem;
   cursor: pointer;
   backdrop-filter: blur(8px);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .dots {
@@ -3547,10 +3558,10 @@ html[data-theme="light"] {
   --scrollbar-thumb: #9c722e;
   --scrollbar-thumb-hover: #78531e;
   --scrollbar-track: rgba(65, 84, 108, 0.12);
-  --tour-control-ink: #263449;
-  --tour-control-border: rgba(65, 84, 108, 0.28);
-  --tour-control-background: linear-gradient(180deg, #f5f6f8, #e1e6ed);
-  --tour-control-hover-background: linear-gradient(180deg, #fff, #dce2e9);
+  --light-control-ink: #263449;
+  --light-control-border: rgba(65, 84, 108, 0.28);
+  --light-control-background: linear-gradient(180deg, #f5f6f8, #e1e6ed);
+  --light-control-hover-background: linear-gradient(180deg, #fff, #dce2e9);
 }
 
 html[data-theme="light"] body {
@@ -3830,31 +3841,31 @@ html[data-theme="light"] .audio-speed-value {
 
 html[data-theme="light"] .tour-hint,
 html[data-theme="light"] .hint-legend-item {
-  color: var(--tour-control-ink);
+  color: var(--light-control-ink);
 }
 
 html[data-theme="light"] .tour-direction,
 html[data-theme="light"] .tour-exit,
 html[data-theme="light"] .hint-restore {
-  border-color: var(--tour-control-border);
-  background: var(--tour-control-background);
-  color: var(--tour-control-ink);
+  border-color: var(--light-control-border);
+  background: var(--light-control-background);
+  color: var(--light-control-ink);
   box-shadow: 0 8px 22px rgba(30, 45, 65, 0.14);
 }
 
 html[data-theme="light"] .hint-legend-toggle,
 html[data-theme="light"] .hint-close {
-  color: var(--tour-control-ink);
+  color: var(--light-control-ink);
 }
 
 html[data-theme="light"] .tour-hint {
-  border-color: var(--tour-control-border);
+  border-color: var(--light-control-border);
   background: linear-gradient(145deg, #f5f6f8, #e1e6ed);
   box-shadow: 0 16px 42px rgba(30, 45, 65, 0.16);
 }
 
 html[data-theme="light"] .tour-hint::after {
-  border-color: var(--tour-control-border);
+  border-color: var(--light-control-border);
   background: #e1e6ed;
 }
 
@@ -3865,14 +3876,14 @@ html[data-theme="light"] .tour-exit:focus-visible,
 html[data-theme="light"] .hint-restore:hover,
 html[data-theme="light"] .hint-restore:focus-visible {
   border-color: #9b702b;
-  background: var(--tour-control-hover-background);
-  color: var(--tour-control-ink);
+  background: var(--light-control-hover-background);
+  color: var(--light-control-ink);
   box-shadow: 0 10px 26px rgba(30, 45, 65, 0.2);
 }
 
 html[data-theme="light"] .hint-legend-toggle:hover,
 html[data-theme="light"] .hint-legend-toggle:focus-visible {
-  color: var(--tour-control-ink);
+  color: var(--light-control-ink);
   text-shadow: none;
 }
 
@@ -3881,7 +3892,36 @@ html[data-theme="light"] .tour-exit:focus-visible,
 html[data-theme="light"] .hint-restore:focus-visible,
 html[data-theme="light"] .hint-legend-toggle:focus-visible,
 html[data-theme="light"] .hint-close:focus-visible {
-  outline-color: var(--tour-control-ink);
+  outline-color: var(--light-control-ink);
+}
+
+html[data-theme="light"] .nav-btn,
+html[data-theme="light"] .fullscreen-btn {
+  border-color: var(--light-control-border);
+  background: var(--light-control-background);
+  color: var(--light-control-ink);
+  box-shadow: 0 8px 22px rgba(30, 45, 65, 0.14);
+}
+
+html[data-theme="light"] .nav-btn:hover,
+html[data-theme="light"] .nav-btn:focus-visible,
+html[data-theme="light"] .fullscreen-btn:hover,
+html[data-theme="light"] .fullscreen-btn:focus-visible {
+  border-color: #9b702b;
+  background: var(--light-control-hover-background);
+  color: var(--light-control-ink);
+  box-shadow: 0 10px 26px rgba(30, 45, 65, 0.2);
+}
+
+html[data-theme="light"] .fullscreen-btn:hover,
+html[data-theme="light"] .fullscreen-btn:focus-visible {
+  transform: scale(1.06);
+}
+
+html[data-theme="light"] .nav-btn:focus-visible,
+html[data-theme="light"] .fullscreen-btn:focus-visible {
+  outline: 2px solid var(--light-control-ink);
+  outline-offset: 3px;
 }
 
 html[data-theme="light"] .pin-label,
