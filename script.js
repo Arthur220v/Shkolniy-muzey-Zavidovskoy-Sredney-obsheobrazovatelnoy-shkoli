@@ -325,16 +325,16 @@ const LONGITUDINAL_OBJECTS = [
     top: "14%",
   },
   {
-    title: "Стенд «История Завидово» — раздел готовится",
+    id: "Stend_about_Zavidovo_history(2)",
+    title: "Стенд «История Завидово»",
     number: "2",
     color: "red",
     left: "23%",
     top: "80%",
-    disabled: true,
     labelPosition: "above",
   },
   {
-    title: "Раздел готовится",
+    title: "Стенд № 3",
     number: "3",
     color: "blue",
     left: "61%",
@@ -453,6 +453,12 @@ const SCENES = {
       },
       { id: "Stend_about_Chechnya_Afghanistan_WWII(1)_(X)", title: "Рисунок Пети Помозкова", left: "39%", top: "72%", width: "20%", height: "17%", labelPosition: "above" },
     ],
+  },
+  "Stend_about_Zavidovo_history(2)": {
+    image: "Stend_about_Zavidovo_history(2)_hits_for_markers.jpg",
+    title: "Стенд «История Завидово»",
+    preserveImageFormat: true,
+    spots: [],
   },
 };
 
