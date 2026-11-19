@@ -2316,33 +2316,32 @@ body.modal-open {
   position: absolute;
   transform: translate(-50%, -50%);
   display: grid;
-  min-width: clamp(2rem, 3.4vw, 3rem);
-  min-height: clamp(2rem, 3.4vw, 3rem);
+  min-width: clamp(2.4rem, 3.2vw, 3rem);
+  min-height: clamp(2.2rem, 3vw, 2.7rem);
   place-items: center;
-  padding: 0.15rem clamp(0.35rem, 0.7vw, 0.65rem);
-  border: 1px solid rgba(228, 235, 244, 0.72);
-  border-radius: 999px;
-  background: linear-gradient(145deg, rgba(43, 59, 79, 0.96), rgba(20, 33, 50, 0.96));
-  color: #f0f3f6;
-  font: 700 clamp(0.62rem, 1.15vw, 0.92rem)/1 "Manrope", "Segoe UI", sans-serif;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid rgba(212, 176, 106, 0.58);
+  border-radius: 0.7rem;
+  background: rgba(10, 18, 32, 0.94);
+  color: #f4ecdc;
+  font: 600 clamp(0.62rem, 0.9vw, 0.78rem)/1.35 "Manrope", "Segoe UI", sans-serif;
   white-space: nowrap;
   pointer-events: auto;
   user-select: none;
   cursor: pointer;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.42);
-  transition: border-color 0.18s ease, filter 0.18s ease, transform 0.18s ease;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.42);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .scene-numeral-button:hover,
 .scene-numeral-button:focus-visible {
-  border-color: rgba(255, 255, 255, 0.95);
-  background: linear-gradient(145deg, rgba(61, 78, 101, 0.98), rgba(31, 47, 68, 0.98));
-  filter: brightness(1.12);
+  border-color: rgba(212, 176, 106, 0.9);
+  background: rgba(16, 36, 69, 0.96);
   transform: translate(-50%, -50%) scale(1.06);
 }
 
 .scene-numeral-button:focus-visible {
-  outline: 2px solid rgba(240, 243, 246, 0.9);
+  outline: 2px solid rgba(255, 255, 255, 0.9);
   outline-offset: 3px;
 }
 
