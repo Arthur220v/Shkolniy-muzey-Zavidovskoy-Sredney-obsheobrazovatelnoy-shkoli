@@ -591,6 +591,7 @@ let exhibitCloseTimer = 0;
 let tourCloseTimer = 0;
 let tourOpenRequestId = 0;
 let mobileMapWarningTimer = 0;
+let mobileMapWarningCloseTimer = 0;
 let sceneCloseTimer = 0;
 let sceneRequestId = 0;
 let bookCloseTimer = 0;
@@ -1570,7 +1571,9 @@ function openMapObject(item) {
 async function openTour() {
   const requestId = ++tourOpenRequestId;
   clearTimeout(mobileMapWarningTimer);
+  clearTimeout(mobileMapWarningCloseTimer);
   mobileMapWarning.classList.remove("is-visible");
+  mobileMapWarning.classList.remove("is-closing");
   mobileMapWarning.hidden = true;
   showEntranceMap(true);
   const imageReady = await entranceMapReady;
@@ -1590,13 +1593,15 @@ async function openTour() {
     if (document.body.classList.contains("touch-device")) {
       mobileMapWarningTimer = window.setTimeout(() => {
         if (requestId !== tourOpenRequestId || !isTourOpen()) return;
+        clearTimeout(mobileMapWarningCloseTimer);
+        mobileMapWarning.classList.remove("is-closing");
         mobileMapWarning.hidden = false;
         requestAnimationFrame(() => {
           if (requestId === tourOpenRequestId && isTourOpen()) {
             mobileMapWarning.classList.add("is-visible");
           }
         });
-      }, 2000);
+      }, 1000);
     }
   });
   tourHint.hidden = false;
@@ -1617,7 +1622,9 @@ function setTourHintCollapsed(collapsed) {
 function closeTour() {
   tourOpenRequestId += 1;
   clearTimeout(mobileMapWarningTimer);
+  clearTimeout(mobileMapWarningCloseTimer);
   mobileMapWarning.classList.remove("is-visible");
+  mobileMapWarning.classList.remove("is-closing");
   mobileMapWarning.hidden = true;
   exhibitStack = [];
   closeExhibit();
@@ -1879,7 +1886,12 @@ document.getElementById("tourExit").addEventListener("click", closeTour);
 document.getElementById("mobileMapWarningClose").addEventListener("click", () => {
   clearTimeout(mobileMapWarningTimer);
   mobileMapWarning.classList.remove("is-visible");
-  mobileMapWarning.hidden = true;
+  mobileMapWarning.classList.add("is-closing");
+  clearTimeout(mobileMapWarningCloseTimer);
+  mobileMapWarningCloseTimer = window.setTimeout(() => {
+    mobileMapWarning.hidden = true;
+    mobileMapWarning.classList.remove("is-closing");
+  }, 360);
 });
 document.getElementById("closeHint").addEventListener("click", () => setTourHintCollapsed(true));
 hintRestore.addEventListener("click", () => setTourHintCollapsed(false));
