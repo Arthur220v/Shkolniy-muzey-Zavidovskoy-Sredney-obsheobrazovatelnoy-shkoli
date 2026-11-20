@@ -40,7 +40,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261120-zavidovo-left-and-fullscreen-1" />
+  <link rel="stylesheet" href="style.css?v=20261120-guestbook-layout-featured-1" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -296,6 +296,11 @@
         </form>
         <div class="guestbook-public">
           <div class="guestbook-review-list" id="guestbookReviewList" aria-live="polite"></div>
+          <nav class="guestbook-pagination" id="guestbookPagination" aria-label="Страницы отзывов" hidden>
+            <button class="guestbook-secondary-button" id="guestbookPreviousPage" type="button" aria-label="Предыдущая страница отзывов">←</button>
+            <div class="guestbook-page-numbers" id="guestbookPageNumbers"></div>
+            <button class="guestbook-secondary-button" id="guestbookNextPage" type="button" aria-label="Следующая страница отзывов">→</button>
+          </nav>
           <p class="guestbook-feedback" id="guestbookLoadFeedback" role="status"></p>
         </div>
       </div>
@@ -536,6 +541,6 @@
 
   <script src="guestbook-config.js?v=20261115-1"></script>
   <script src="script.js?v=20261120-voennie-trofei-1"></script>
-  <script type="module" src="guestbook.js?v=20261115-4"></script>
+  <script type="module" src="guestbook.js?v=20261120-guestbook-moderation-pages-1"></script>
 </body>
 </html>
