@@ -137,6 +137,7 @@ EXHIBITS[ZAVIDOVO_VILLAGE_EXHIBIT_ID] = makeExhibit(
   "Село Завидово",
   {
     image: "Stend_about_Zavidovo_history(2)_(XI).jpg",
+    preserveImageFormat: true,
     textFile: null,
     audioFile: "audio_for_Stend_about_Zavidovo_history(2)_(XI).mp3",
   }
