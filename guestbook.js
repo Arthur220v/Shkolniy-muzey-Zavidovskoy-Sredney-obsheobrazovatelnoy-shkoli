@@ -1,7 +1,11 @@
 const SUPABASE_MODULE_URL = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 const AVATAR_BUCKET = "guestbook-avatars";
 const MODERATOR_PROFILE_BUCKET = "guestbook-moderator-profile";
+const MUSEUM_NEWS_BUCKET = "museum-news";
 const MAX_AVATAR_SIZE = 3 * 1024 * 1024;
+const MAX_NEWS_PHOTO_SIZE = 3 * 1024 * 1024;
+const MAX_NEWS_PHOTOS = 6;
+const MAX_NEWS_BODY_LENGTH = 6000;
 const MAX_REVIEW_LENGTH = 1200;
 const PUBLISHED_REVIEWS_PER_PAGE = 7;
 const AVATAR_EXTENSIONS = new Map([
@@ -55,6 +59,30 @@ const moderatorProfileLastName = document.getElementById("moderatorProfileLastNa
 const moderatorProfilePhoto = document.getElementById("moderatorProfilePhoto");
 const moderatorProfilePhotoPreview = document.getElementById("moderatorProfilePhotoPreview");
 const moderatorProfileFeedback = document.getElementById("moderatorProfileFeedback");
+const museumNewsList = document.getElementById("museumNewsList");
+const museumNewsEmpty = document.getElementById("museumNewsEmpty");
+const museumNewsPublicCreateButton = document.getElementById("museumNewsPublicCreateButton");
+const museumNewsFeedback = document.getElementById("museumNewsFeedback");
+const guestbookAdminNews = document.getElementById("guestbookAdminNews");
+const guestbookAdminNewsArchive = document.getElementById("guestbookAdminNewsArchive");
+const museumNewsAdminCreateButton = document.getElementById("museumNewsAdminCreateButton");
+const museumNewsEditor = document.getElementById("museumNewsEditor");
+const museumNewsBody = document.getElementById("museumNewsBody");
+const museumNewsPhotosInput = document.getElementById("museumNewsPhotosInput");
+const museumNewsPhotoPreviews = document.getElementById("museumNewsPhotoPreviews");
+const museumNewsPublishButton = document.getElementById("museumNewsPublishButton");
+const museumNewsCancelButton = document.getElementById("museumNewsCancelButton");
+const museumNewsAdminList = document.getElementById("museumNewsAdminList");
+const museumNewsAdminFeedback = document.getElementById("museumNewsAdminFeedback");
+const museumNewsAdminListFeedback = document.getElementById("museumNewsAdminListFeedback");
+const museumNewsArchiveList = document.getElementById("museumNewsArchiveList");
+const museumNewsArchiveFeedback = document.getElementById("museumNewsArchiveFeedback");
+const museumNewsLightbox = document.getElementById("museumNewsLightbox");
+const museumNewsLightboxClose = document.getElementById("museumNewsLightboxClose");
+const museumNewsLightboxImage = document.getElementById("museumNewsLightboxImage");
+const museumNewsLightboxCaption = document.getElementById("museumNewsLightboxCaption");
+const museumNewsLightboxPrev = document.getElementById("museumNewsLightboxPrev");
+const museumNewsLightboxNext = document.getElementById("museumNewsLightboxNext");
 
 let supabase;
 let selectedEmoji = AVATARS[0];
@@ -68,6 +96,9 @@ let moderatorUserId = null;
 let moderatorProfile = null;
 let moderatorProfilePhotoPreviewUrl = null;
 let publicModeratorProfiles = new Map();
+let selectedNewsPhotos = [];
+let museumNewsGalleryPhotos = [];
+let museumNewsGalleryIndex = 0;
 
 function setMessage(element, message, isError = false, isSuccess = false) {
   if (isSuccess) element.classList.remove("is-success");
@@ -318,12 +349,116 @@ function formatModeratorLastSeen(value) {
   }).format(date)}`;
 }
 
+function moderatorDisplayName(profile) {
+  return profile?.firstName && profile?.lastName
+    ? `${profile.firstName} ${profile.lastName}`
+    : "Модератор";
+}
+
+function createModeratorProfileWidget(profile) {
+  const fullName = moderatorDisplayName(profile);
+  const widget = document.createElement("div");
+  widget.className = "guestbook-moderator-profile";
+
+  const trigger = document.createElement("button");
+  trigger.type = "button";
+  trigger.className = "guestbook-moderator-profile-trigger";
+  trigger.textContent = fullName;
+  trigger.setAttribute("aria-haspopup", "dialog");
+  trigger.setAttribute("aria-expanded", "false");
+  trigger.setAttribute("aria-label", `${fullName}, модератор. ${formatModeratorLastSeen(profile?.lastSeenAt)}`);
+
+  const card = document.createElement("div");
+  card.className = "guestbook-moderator-profile-card";
+  card.setAttribute("role", "dialog");
+  card.setAttribute("aria-label", `Профиль модератора: ${fullName}`);
+  card.setAttribute("aria-hidden", "true");
+
+  const photo = document.createElement(profile?.photoUrl ? "img" : "span");
+  photo.className = "guestbook-moderator-profile-photo";
+  if (profile?.photoUrl) {
+    photo.src = profile.photoUrl;
+    photo.alt = `Фото ${fullName}`;
+    photo.loading = "lazy";
+  } else {
+    photo.setAttribute("aria-hidden", "true");
+    photo.textContent = "🛡️";
+  }
+
+  const details = document.createElement("div");
+  details.className = "guestbook-moderator-profile-details";
+  const name = document.createElement("strong");
+  name.textContent = fullName;
+  const status = document.createElement("span");
+  status.textContent = "Модератор";
+  const lastSeen = document.createElement("time");
+  lastSeen.textContent = formatModeratorLastSeen(profile?.lastSeenAt);
+  if (profile?.lastSeenAt) lastSeen.dateTime = profile.lastSeenAt;
+  details.append(name, status, lastSeen);
+
+  const closeButton = document.createElement("button");
+  closeButton.type = "button";
+  closeButton.className = "guestbook-moderator-profile-close";
+  closeButton.textContent = "×";
+  closeButton.setAttribute("aria-label", "Закрыть профиль модератора");
+  card.append(photo, details, closeButton);
+  widget.append(trigger, card);
+
+  const setOpen = (open, dismissed = false) => {
+    widget.classList.toggle("is-open", open);
+    widget.classList.toggle("is-dismissed", dismissed);
+    trigger.setAttribute("aria-expanded", String(open));
+    card.setAttribute("aria-hidden", String(!open));
+  };
+  trigger.addEventListener("click", () => {
+    const opening = !widget.classList.contains("is-open");
+    setOpen(opening);
+  });
+  closeButton.addEventListener("click", () => setOpen(false, true));
+  widget.addEventListener("pointerenter", (event) => {
+    if (event.pointerType === "mouse" && !widget.classList.contains("is-dismissed")) {
+      trigger.setAttribute("aria-expanded", "true");
+      card.setAttribute("aria-hidden", "false");
+    }
+  });
+  trigger.addEventListener("focus", () => {
+    if (!widget.classList.contains("is-open")) {
+      widget.classList.remove("is-dismissed");
+      trigger.setAttribute("aria-expanded", "true");
+      card.setAttribute("aria-hidden", "false");
+    }
+  });
+  widget.addEventListener("focusout", (event) => {
+    if (!widget.contains(event.relatedTarget) && !widget.classList.contains("is-open")) {
+      trigger.setAttribute("aria-expanded", "false");
+      card.setAttribute("aria-hidden", "true");
+    }
+  });
+  widget.addEventListener("pointerleave", (event) => {
+    if (event.pointerType === "mouse") {
+      widget.classList.remove("is-dismissed");
+      if (!widget.classList.contains("is-open") && !widget.contains(document.activeElement)) {
+        trigger.setAttribute("aria-expanded", "false");
+        card.setAttribute("aria-hidden", "true");
+      }
+    }
+  });
+  widget.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && (widget.classList.contains("is-open") || widget.matches(":hover"))) {
+      setOpen(false, true);
+      trigger.focus();
+    }
+  });
+  return widget;
+}
+
 function createReviewCard(review, isModeration = false, photoUrl = null) {
   const card = document.createElement("article");
   card.className = [
     "guestbook-review",
     isModeration ? "guestbook-review--moderation" : "",
     review.is_featured ? "guestbook-review--featured" : "",
+    review.is_first_review ? "guestbook-review--first" : "",
   ].filter(Boolean).join(" ");
 
   const header = document.createElement("div");
@@ -436,32 +571,10 @@ function createPublicModeratorReply(review) {
 
   const identity = document.createElement("div");
   identity.className = "guestbook-review-identity";
-  const fullName = profile?.firstName && profile?.lastName
-    ? `${profile.firstName} ${profile.lastName}`
-    : "Модератор";
-  const profileTrigger = document.createElement("span");
-  profileTrigger.className = "guestbook-moderator-profile";
-  profileTrigger.tabIndex = 0;
-  profileTrigger.setAttribute("aria-label", `${fullName}, модератор. ${formatModeratorLastSeen(profile?.lastSeenAt)}`);
-  const name = document.createElement("span");
-  name.className = "guestbook-moderator-name";
-  name.textContent = fullName;
-  const profileCard = document.createElement("span");
-  profileCard.className = "guestbook-moderator-profile-card";
-  profileCard.setAttribute("role", "tooltip");
-  const profileName = document.createElement("strong");
-  profileName.textContent = fullName;
   const profileStatus = document.createElement("span");
+  profileStatus.className = "guestbook-moderator-status";
   profileStatus.textContent = "Модератор";
-  const profileLastSeen = document.createElement("time");
-  profileLastSeen.textContent = formatModeratorLastSeen(profile?.lastSeenAt);
-  if (profile?.lastSeenAt) profileLastSeen.dateTime = profile.lastSeenAt;
-  profileCard.append(profileName, profileStatus, profileLastSeen);
-  profileTrigger.append(name, profileCard);
-  const status = document.createElement("span");
-  status.className = "guestbook-moderator-status";
-  status.textContent = "— Модератор 🛡️";
-  identity.append(profileTrigger, status);
+  identity.append(createModeratorProfileWidget(profile), profileStatus);
 
   header.append(identity);
   if (review.moderator_reply) {
@@ -699,6 +812,34 @@ function createDeleteAction(id, avatarPath) {
   return button;
 }
 
+async function fetchModeratorProfiles(moderatorIds) {
+  const ids = [...new Set(moderatorIds)].filter(Boolean);
+  if (!ids.length) return new Map();
+
+  const { data, error } = await supabase
+    .from("guestbook_moderator_profile")
+    .select("profile_first_name, profile_last_name, profile_image_path, user_id, last_seen_at")
+    .in("user_id", ids);
+  if (error) throw error;
+
+  const profiles = new Map((data || []).map((profile) => [profile.user_id, {
+    firstName: profile.profile_first_name,
+    lastName: profile.profile_last_name,
+    photoPath: profile.profile_image_path,
+    photoUrl: null,
+    lastSeenAt: profile.last_seen_at,
+  }]));
+  for (const profile of profiles.values()) {
+    if (!profile.photoPath) continue;
+    const { data: signedPhoto, error: photoError } = await supabase.storage
+      .from(MODERATOR_PROFILE_BUCKET)
+      .createSignedUrl(profile.photoPath, 3600);
+    if (photoError) throw photoError;
+    profile.photoUrl = signedPhoto.signedUrl;
+  }
+  return profiles;
+}
+
 async function prepareReviewCards(reviews, isModeration, feedbackElement) {
   let photoFailures = 0;
   if (!isModeration) {
@@ -709,27 +850,7 @@ async function prepareReviewCards(reviews, isModeration, feedbackElement) {
     if (moderatorUserId) moderatorIds.add(moderatorUserId);
     if (moderatorIds.size) {
       try {
-        const { data, error } = await supabase
-          .from("guestbook_moderator_profile")
-          .select("profile_first_name, profile_last_name, profile_image_path, user_id, last_seen_at")
-          .in("user_id", [...moderatorIds]);
-        if (error) throw error;
-
-        publicModeratorProfiles = new Map((data || []).map((profile) => [profile.user_id, {
-          firstName: profile.profile_first_name,
-          lastName: profile.profile_last_name,
-          photoPath: profile.profile_image_path,
-          photoUrl: null,
-          lastSeenAt: profile.last_seen_at,
-        }]));
-        for (const profile of publicModeratorProfiles.values()) {
-          if (!profile.photoPath) continue;
-          const { data: signedPhoto, error: photoError } = await supabase.storage
-            .from(MODERATOR_PROFILE_BUCKET)
-            .createSignedUrl(profile.photoPath, 3600);
-          if (photoError) throw photoError;
-          profile.photoUrl = signedPhoto.signedUrl;
-        }
+        publicModeratorProfiles = await fetchModeratorProfiles(moderatorIds);
       } catch (error) {
         photoFailures += 1;
         console.error("Не удалось загрузить публичный профиль модератора.", error);
@@ -762,6 +883,652 @@ async function prepareReviewCards(reviews, isModeration, feedbackElement) {
     setMessage(feedbackElement, "Отзывы загружены, но некоторые фото профиля или аватары открыть не удалось.", true);
   }
   return cards;
+}
+
+function formatMuseumNewsDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat("ru-RU", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function appendMuseumNewsText(container, text) {
+  const hashtagPattern = /#[\p{L}\p{N}_]+/gu;
+  let currentIndex = 0;
+  for (const match of text.matchAll(hashtagPattern)) {
+    if (match.index > currentIndex) {
+      container.append(document.createTextNode(text.slice(currentIndex, match.index)));
+    }
+    const hashtag = document.createElement("span");
+    hashtag.className = "museum-news-hashtag";
+    hashtag.textContent = match[0];
+    container.append(hashtag);
+    currentIndex = match.index + match[0].length;
+  }
+  if (currentIndex < text.length) {
+    container.append(document.createTextNode(text.slice(currentIndex)));
+  }
+}
+
+function createMuseumNewsReactionIcon(reaction) {
+  const namespace = "http://www.w3.org/2000/svg";
+  const icon = document.createElementNS(namespace, "svg");
+  icon.setAttribute("viewBox", "0 0 24 24");
+  icon.setAttribute("aria-hidden", "true");
+  const appendShape = (tagName, attributes) => {
+    const shape = document.createElementNS(namespace, tagName);
+    Object.entries(attributes).forEach(([name, value]) => shape.setAttribute(name, value));
+    icon.append(shape);
+  };
+
+  if (reaction === "heart") {
+    appendShape("path", {
+      d: "M20.8 4.7a5.6 5.6 0 0 0-7.9 0L12 5.6l-.9-.9a5.6 5.6 0 0 0-7.9 7.9l.9.9L12 21l7.9-7.5.9-.9a5.6 5.6 0 0 0 0-7.9Z",
+      fill: "currentColor",
+    });
+  } else if (reaction === "surprised") {
+    appendShape("circle", {
+      cx: "12",
+      cy: "12",
+      r: "9.2",
+      fill: "none",
+      stroke: "currentColor",
+      "stroke-width": "1.8",
+    });
+    appendShape("circle", { cx: "9", cy: "10", r: "1.15", fill: "currentColor" });
+    appendShape("circle", { cx: "15", cy: "10", r: "1.15", fill: "currentColor" });
+    appendShape("ellipse", {
+      cx: "12",
+      cy: "15",
+      rx: "1.25",
+      ry: "1.8",
+      fill: "none",
+      stroke: "currentColor",
+      "stroke-width": "1.6",
+    });
+  } else {
+    appendShape("path", {
+      d: "M3 14.5c2.4-.2 4.4-1.3 6-3.1l1.5-1.8 1.2-5.3 2.4 4.2 6.7.7-4.9 2.6 2.5 6.6-5.3-3.2-3.4 4.1-.6-4.1-6.1-.7Zm6.2-3.1 4.1 2.2",
+      fill: "currentColor",
+    });
+  }
+  return icon;
+}
+
+function getStoredMuseumNewsReaction(newsId) {
+  try {
+    const value = window.localStorage.getItem(`museumNewsReaction:${newsId}`);
+    return ["heart", "surprised", "dove"].includes(value) ? value : null;
+  } catch (error) {
+    console.error("Не удалось прочитать сохранённую реакцию на новость.", error);
+    return null;
+  }
+}
+
+function createMuseumNewsReactionControls(news, counts) {
+  const controls = document.createElement("div");
+  controls.className = "museum-news-reactions";
+  controls.setAttribute("aria-label", "Реакции на новость");
+  const currentReaction = getStoredMuseumNewsReaction(news.id);
+
+  [
+    { reaction: "heart", label: "Сердце", count: counts.hearts || 0 },
+    { reaction: "surprised", label: "Удивление", count: counts.surprised || 0 },
+    { reaction: "dove", label: "Белый голубь", count: counts.doves || 0 },
+  ].forEach(({ reaction, label, count }) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "museum-news-reaction";
+    button.dataset.reaction = reaction;
+    button.setAttribute("aria-label", `${label}: ${count}`);
+    button.setAttribute("aria-pressed", String(currentReaction === reaction));
+    const amount = document.createElement("span");
+    amount.textContent = String(count);
+    button.append(createMuseumNewsReactionIcon(reaction), amount);
+    button.addEventListener("click", () => updateMuseumNewsReaction(news.id, reaction, currentReaction, controls));
+    controls.append(button);
+  });
+  return controls;
+}
+
+function createMuseumNewsManageActions(news, archived) {
+  const actions = document.createElement("div");
+  actions.className = "museum-news-manage-actions";
+  const statusButton = document.createElement("button");
+  statusButton.type = "button";
+  statusButton.className = "guestbook-secondary-button";
+  statusButton.textContent = archived ? "Опубликовать снова" : "В архив";
+  statusButton.addEventListener("click", () => setMuseumNewsStatus(
+    news.id,
+    archived ? "published" : "archived",
+    archived
+  ));
+  const deleteButton = document.createElement("button");
+  deleteButton.type = "button";
+  deleteButton.className = "guestbook-secondary-button guestbook-secondary-button--danger";
+  deleteButton.textContent = "Удалить";
+  deleteButton.addEventListener("click", () => deleteMuseumNews(news.id, archived));
+  actions.append(statusButton, deleteButton);
+  return actions;
+}
+
+function createMuseumNewsCard(news, {
+  photos = [],
+  counts = {},
+  profile = null,
+  archived = false,
+  manage = false,
+  showReactions = true,
+} = {}) {
+  const card = document.createElement("article");
+  card.className = `museum-news-card${archived ? " museum-news-card--archived" : ""}`;
+
+  const header = document.createElement("header");
+  header.className = "museum-news-card-header";
+  const publicationTime = document.createElement("time");
+  publicationTime.dateTime = news.published_at;
+  publicationTime.textContent = formatMuseumNewsDate(news.published_at);
+  header.append(publicationTime);
+  if (archived) {
+    const archivedLabel = document.createElement("span");
+    archivedLabel.className = "museum-news-archived-label";
+    archivedLabel.textContent = "В архиве";
+    header.append(archivedLabel);
+  }
+
+  const photoGallery = document.createElement("div");
+  photoGallery.className = "museum-news-photo-gallery";
+  photos.forEach((photo, index) => {
+    const photoButton = document.createElement("button");
+    photoButton.type = "button";
+    photoButton.className = "museum-news-photo";
+    photoButton.setAttribute("aria-label", `Открыть фотографию ${index + 1} в полном размере`);
+    const image = document.createElement("img");
+    image.src = photo.signedUrl;
+    image.alt = `Фотография новости, ${index + 1}`;
+    image.loading = "lazy";
+    photoButton.append(image);
+    photoButton.addEventListener("click", () => openMuseumNewsLightbox(photos, index));
+    photoGallery.append(photoButton);
+  });
+
+  const body = document.createElement("p");
+  body.className = "museum-news-body";
+  appendMuseumNewsText(body, news.body);
+  card.append(header);
+  if (photos.length) card.append(photoGallery);
+  card.append(body);
+  if (!archived && showReactions) card.append(createMuseumNewsReactionControls(news, counts));
+  if (manage) card.append(createMuseumNewsManageActions(news, archived));
+
+  const author = document.createElement("footer");
+  author.className = "museum-news-author";
+  const authorLabel = document.createElement("span");
+  authorLabel.textContent = "Автор:";
+  author.append(authorLabel, createModeratorProfileWidget(profile));
+  card.append(author);
+  return card;
+}
+
+async function fetchMuseumNewsPhotos(newsIds) {
+  if (!newsIds.length) return new Map();
+  const { data, error } = await supabase
+    .from("museum_news_photos")
+    .select("news_id, storage_path, sort_order")
+    .in("news_id", newsIds)
+    .order("sort_order", { ascending: true });
+  if (error) throw error;
+
+  const photosByNewsId = new Map(newsIds.map((id) => [id, []]));
+  for (const photo of data || []) {
+    const { data: signedPhoto, error: photoError } = await supabase.storage
+      .from(MUSEUM_NEWS_BUCKET)
+      .createSignedUrl(photo.storage_path, 3600);
+    if (photoError) throw photoError;
+    photosByNewsId.get(photo.news_id).push({
+      signedUrl: signedPhoto.signedUrl,
+      sortOrder: photo.sort_order,
+    });
+  }
+  return photosByNewsId;
+}
+
+async function fetchMuseumNewsCounts(newsIds) {
+  if (!newsIds.length) return new Map();
+  const { data, error } = await supabase
+    .from("museum_news_reaction_counts")
+    .select("news_id, hearts, surprised, doves")
+    .in("news_id", newsIds);
+  if (error) throw error;
+  return new Map((data || []).map((counts) => [counts.news_id, counts]));
+}
+
+function getMuseumNewsVoterId() {
+  const storageKey = "museumNewsVoterId";
+  try {
+    let voterId = window.localStorage.getItem(storageKey);
+    if (!voterId) {
+      voterId = crypto.randomUUID();
+      window.localStorage.setItem(storageKey, voterId);
+    }
+    return voterId;
+  } catch (error) {
+    throw new Error("Не удалось сохранить идентификатор реакции в этом браузере.", { cause: error });
+  }
+}
+
+async function updateMuseumNewsReaction(newsId, reaction, currentReaction, controls) {
+  controls.querySelectorAll("button").forEach((button) => {
+    button.disabled = true;
+  });
+  let reactionSaved = false;
+  try {
+    const nextReaction = currentReaction === reaction ? null : reaction;
+    const { error } = await supabase.rpc("set_museum_news_reaction", {
+      p_news_id: newsId,
+      p_voter_id: getMuseumNewsVoterId(),
+      p_reaction: nextReaction,
+    });
+    if (error) throw error;
+    reactionSaved = true;
+
+    const key = `museumNewsReaction:${newsId}`;
+    try {
+      if (nextReaction) window.localStorage.setItem(key, nextReaction);
+      else window.localStorage.removeItem(key);
+    } catch (error) {
+      console.error("Реакция сохранена на сервере, но выбор не удалось сохранить в этом браузере.", error);
+      await loadPublishedMuseumNews();
+      setMessage(
+        museumNewsFeedback,
+        "Реакция сохранена, но браузер не запомнил ваш выбор. В этом браузере не получится снять её повторным нажатием.",
+        true
+      );
+      controls.querySelectorAll("button").forEach((button) => {
+        button.disabled = false;
+      });
+      return;
+    }
+    await loadPublishedMuseumNews();
+  } catch (error) {
+    reportError(
+      museumNewsFeedback,
+      reactionSaved ? "Реакция сохранена, но не удалось обновить список новостей." : "Не удалось сохранить реакцию на новость.",
+      error
+    );
+    controls.querySelectorAll("button").forEach((button) => {
+      button.disabled = false;
+    });
+  }
+}
+
+async function loadPublishedMuseumNews() {
+  setMessage(museumNewsFeedback, "Загружаем новости…");
+  try {
+    const { data: news, error } = await supabase
+      .from("museum_news")
+      .select("id, body, moderator_user_id, published_at")
+      .eq("status", "published")
+      .order("published_at", { ascending: false });
+    if (error) throw error;
+
+    museumNewsList.replaceChildren();
+    museumNewsEmpty.hidden = Boolean(news?.length);
+    museumNewsPublicCreateButton.hidden = Boolean(!moderatorUserId || news?.length);
+    if (!news?.length) {
+      setMessage(museumNewsFeedback, "");
+      return;
+    }
+
+    const newsIds = news.map((item) => item.id);
+    const moderatorIds = news.map((item) => item.moderator_user_id).filter(Boolean);
+    const [photosByNewsId, countsByNewsId, profiles] = await Promise.all([
+      fetchMuseumNewsPhotos(newsIds),
+      fetchMuseumNewsCounts(newsIds),
+      fetchModeratorProfiles(moderatorIds),
+    ]);
+    museumNewsList.replaceChildren(...news.map((item) => createMuseumNewsCard(item, {
+      photos: photosByNewsId.get(item.id) || [],
+      counts: countsByNewsId.get(item.id) || {},
+      profile: profiles.get(item.moderator_user_id) || null,
+    })));
+    setMessage(museumNewsFeedback, "");
+  } catch (error) {
+    reportError(museumNewsFeedback, "Не удалось загрузить новости музея.", error);
+  }
+}
+
+async function loadModeratorMuseumNews(status = "published") {
+  const isArchived = status === "archived";
+  const newsList = isArchived ? museumNewsArchiveList : museumNewsAdminList;
+  const feedback = isArchived ? museumNewsArchiveFeedback : museumNewsAdminListFeedback;
+  setMessage(feedback, "Загружаем новости…");
+  try {
+    const { data: news, error } = await supabase
+      .from("museum_news")
+      .select("id, body, moderator_user_id, published_at")
+      .eq("status", status)
+      .order("published_at", { ascending: false });
+    if (error) throw error;
+    newsList.replaceChildren();
+    if (!news?.length) {
+      setMessage(feedback, isArchived ? "Архив новостей пуст." : "Опубликованных новостей пока нет.");
+      return;
+    }
+
+    const newsIds = news.map((item) => item.id);
+    const [photosByNewsId, profiles] = await Promise.all([
+      fetchMuseumNewsPhotos(newsIds),
+      fetchModeratorProfiles(news.map((item) => item.moderator_user_id).filter(Boolean)),
+    ]);
+    newsList.replaceChildren(...news.map((item) => createMuseumNewsCard(item, {
+      photos: photosByNewsId.get(item.id) || [],
+      profile: profiles.get(item.moderator_user_id) || null,
+      archived: isArchived,
+      manage: true,
+      showReactions: false,
+    })));
+    setMessage(feedback, "");
+  } catch (error) {
+    reportError(feedback, "Не удалось загрузить список новостей для модератора.", error);
+  }
+}
+
+async function setMuseumNewsStatus(newsId, status, wasArchived = false) {
+  const feedback = wasArchived ? museumNewsArchiveFeedback : museumNewsAdminListFeedback;
+  setMessage(feedback, status === "archived" ? "Переносим новость в архив…" : "Публикуем новость…");
+  try {
+    const update = { status };
+    if (status === "published") update.published_at = new Date().toISOString();
+    const { error } = await supabase
+      .from("museum_news")
+      .update(update)
+      .eq("id", newsId)
+      .select("id")
+      .single();
+    if (error) throw error;
+    await Promise.all([
+      loadPublishedMuseumNews(),
+      loadModeratorMuseumNews("published"),
+      loadModeratorMuseumNews("archived"),
+    ]);
+  } catch (error) {
+    reportError(feedback, "Не удалось изменить публикацию новости.", error);
+  }
+}
+
+async function deleteMuseumNews(newsId, wasArchived = false) {
+  if (!window.confirm("Удалить новость и её фотографии без возможности восстановления?")) return;
+  const feedback = wasArchived ? museumNewsArchiveFeedback : museumNewsAdminListFeedback;
+  setMessage(feedback, "Удаляем новость…");
+  try {
+    const { data: photos, error: photosError } = await supabase
+      .from("museum_news_photos")
+      .select("storage_path")
+      .eq("news_id", newsId);
+    if (photosError) throw photosError;
+
+    const { error } = await supabase
+      .from("museum_news")
+      .delete()
+      .eq("id", newsId)
+      .select("id")
+      .single();
+    if (error) throw error;
+
+    let storageError = null;
+    if (photos?.length) {
+      try {
+        const { error: removeError } = await supabase.storage
+          .from(MUSEUM_NEWS_BUCKET)
+          .remove(photos.map((photo) => photo.storage_path));
+        storageError = removeError;
+      } catch (error) {
+        storageError = error;
+      }
+    }
+    await Promise.all([
+      loadPublishedMuseumNews(),
+      loadModeratorMuseumNews("published"),
+      loadModeratorMuseumNews("archived"),
+    ]);
+    if (storageError) {
+      reportError(feedback, "Новость удалена, но не все её фотографии удалось удалить из хранилища.", storageError);
+    } else {
+      setMessage(feedback, "Новость удалена.");
+    }
+  } catch (error) {
+    reportError(feedback, "Не удалось удалить новость.", error);
+  }
+}
+
+function openMuseumNewsLightbox(photos, index) {
+  museumNewsGalleryPhotos = photos;
+  museumNewsGalleryIndex = index;
+  updateMuseumNewsLightbox();
+  if (!museumNewsLightbox.open) museumNewsLightbox.showModal();
+}
+
+function updateMuseumNewsLightbox() {
+  const photo = museumNewsGalleryPhotos[museumNewsGalleryIndex];
+  if (!photo) return;
+  museumNewsLightboxImage.src = photo.signedUrl;
+  museumNewsLightboxImage.alt = `Фотография ${museumNewsGalleryIndex + 1} из ${museumNewsGalleryPhotos.length}`;
+  museumNewsLightboxCaption.textContent = `${museumNewsGalleryIndex + 1} / ${museumNewsGalleryPhotos.length}`;
+  const hasMultiple = museumNewsGalleryPhotos.length > 1;
+  museumNewsLightboxPrev.hidden = !hasMultiple;
+  museumNewsLightboxNext.hidden = !hasMultiple;
+}
+
+function moveMuseumNewsLightbox(direction) {
+  if (museumNewsGalleryPhotos.length < 2) return;
+  museumNewsGalleryIndex = (
+    museumNewsGalleryIndex + direction + museumNewsGalleryPhotos.length
+  ) % museumNewsGalleryPhotos.length;
+  updateMuseumNewsLightbox();
+}
+
+function clearMuseumNewsPhotoSelection() {
+  selectedNewsPhotos.forEach((photo) => URL.revokeObjectURL(photo.previewUrl));
+  selectedNewsPhotos = [];
+  museumNewsPhotosInput.value = "";
+  museumNewsPhotoPreviews.replaceChildren();
+}
+
+function renderMuseumNewsPhotoPreviews() {
+  museumNewsPhotoPreviews.replaceChildren();
+  selectedNewsPhotos.forEach((photo, index) => {
+    const item = document.createElement("div");
+    item.className = "museum-news-photo-preview";
+    const image = document.createElement("img");
+    image.src = photo.previewUrl;
+    image.alt = `Выбранная фотография ${index + 1}`;
+    const removeButton = document.createElement("button");
+    removeButton.type = "button";
+    removeButton.textContent = "×";
+    removeButton.setAttribute("aria-label", `Убрать фотографию ${index + 1}`);
+    removeButton.addEventListener("click", () => {
+      URL.revokeObjectURL(photo.previewUrl);
+      selectedNewsPhotos.splice(index, 1);
+      renderMuseumNewsPhotoPreviews();
+    });
+    item.append(image, removeButton);
+    museumNewsPhotoPreviews.append(item);
+  });
+}
+
+function handleMuseumNewsPhotoSelection() {
+  const files = Array.from(museumNewsPhotosInput.files || []);
+  clearMuseumNewsPhotoSelection();
+  if (files.length > MAX_NEWS_PHOTOS) {
+    setMessage(museumNewsAdminFeedback, `Можно выбрать не более ${MAX_NEWS_PHOTOS} фотографий.`, true);
+    return;
+  }
+  const invalidFile = files.find((file) => !AVATAR_EXTENSIONS.has(file.type) || file.size > MAX_NEWS_PHOTO_SIZE);
+  if (invalidFile) {
+    const message = AVATAR_EXTENSIONS.has(invalidFile.type)
+      ? "Размер одной фотографии не должен превышать 3 МБ."
+      : "Для новостей подходят фотографии JPG, PNG или WebP.";
+    setMessage(museumNewsAdminFeedback, message, true);
+    return;
+  }
+
+  selectedNewsPhotos = files.map((file) => ({
+    file,
+    previewUrl: URL.createObjectURL(file),
+  }));
+  renderMuseumNewsPhotoPreviews();
+  setMessage(
+    museumNewsAdminFeedback,
+    files.length ? `Выбрано фотографий: ${files.length}.` : ""
+  );
+}
+
+function openMuseumNewsComposer() {
+  if (!moderatorUserId) return;
+  guestbookModerator.open = true;
+  setAdminSection("news");
+  museumNewsEditor.hidden = false;
+  museumNewsBody.value = "";
+  clearMuseumNewsPhotoSelection();
+  setMessage(museumNewsAdminFeedback, "");
+  guestbookAdmin.scrollIntoView({ behavior: "smooth", block: "start" });
+  window.setTimeout(() => museumNewsBody.focus(), 0);
+}
+
+function closeMuseumNewsComposer() {
+  museumNewsEditor.hidden = true;
+  museumNewsBody.value = "";
+  clearMuseumNewsPhotoSelection();
+  setMessage(museumNewsAdminFeedback, "");
+}
+
+async function publishMuseumNews(event) {
+  event.preventDefault();
+  if (!moderatorUserId) return;
+  if (!museumNewsEditor.reportValidity()) return;
+
+  const body = museumNewsBody.value.trim();
+  if (!body || body.length > MAX_NEWS_BODY_LENGTH) {
+    setMessage(museumNewsAdminFeedback, "Добавьте текст новости длиной не более 6000 символов.", true);
+    return;
+  }
+
+  museumNewsPublishButton.disabled = true;
+  museumNewsCancelButton.disabled = true;
+  museumNewsBody.disabled = true;
+  museumNewsPhotosInput.disabled = true;
+  museumNewsPhotoPreviews.querySelectorAll("button").forEach((button) => {
+    button.disabled = true;
+  });
+  setMessage(museumNewsAdminFeedback, "Публикуем новость и фотографии…");
+  let newsId = null;
+  const uploadedPaths = [];
+  const photosToPublish = [...selectedNewsPhotos];
+  try {
+    newsId = crypto.randomUUID();
+    const { error: insertError } = await supabase
+      .from("museum_news")
+      .insert({
+        id: newsId,
+        body,
+        moderator_user_id: moderatorUserId,
+        status: "draft",
+      });
+    if (insertError) throw insertError;
+
+    const photoRows = [];
+    for (const [index, photo] of photosToPublish.entries()) {
+      const extension = AVATAR_EXTENSIONS.get(photo.file.type);
+      const path = `${newsId}/${crypto.randomUUID()}.${extension}`;
+      const { error: uploadError } = await supabase.storage
+        .from(MUSEUM_NEWS_BUCKET)
+        .upload(path, photo.file, {
+          cacheControl: "300",
+          contentType: photo.file.type,
+          upsert: false,
+        });
+      if (uploadError) throw uploadError;
+      uploadedPaths.push(path);
+      photoRows.push({
+        news_id: newsId,
+        storage_path: path,
+        sort_order: index,
+      });
+    }
+
+    if (photoRows.length) {
+      const { error: photosError } = await supabase
+        .from("museum_news_photos")
+        .insert(photoRows);
+      if (photosError) throw photosError;
+    }
+
+    const { error: publishError } = await supabase
+      .from("museum_news")
+      .update({
+        status: "published",
+        published_at: new Date().toISOString(),
+      })
+      .eq("id", newsId)
+      .select("id")
+      .single();
+    if (publishError) throw publishError;
+
+    closeMuseumNewsComposer();
+    setMessage(museumNewsAdminFeedback, "Новость опубликована.", false, true);
+    await Promise.all([
+      loadPublishedMuseumNews(),
+      loadModeratorMuseumNews("published"),
+    ]);
+  } catch (error) {
+    const cleanupFailures = [];
+    if (uploadedPaths.length) {
+      try {
+        const { error: removeError } = await supabase.storage
+          .from(MUSEUM_NEWS_BUCKET)
+          .remove(uploadedPaths);
+        if (removeError) cleanupFailures.push(removeError);
+      } catch (removeError) {
+        cleanupFailures.push(removeError);
+      }
+    }
+    if (newsId) {
+      try {
+        const { error: deleteError } = await supabase
+          .from("museum_news")
+          .delete()
+          .eq("id", newsId)
+          .eq("status", "draft");
+        if (deleteError) cleanupFailures.push(deleteError);
+      } catch (deleteError) {
+        cleanupFailures.push(deleteError);
+      }
+    }
+    if (cleanupFailures.length) {
+      console.error("Не удалось полностью очистить неудачную публикацию новости.", cleanupFailures);
+      reportError(
+        museumNewsAdminFeedback,
+        "Публикация не удалась; не все временные данные удалось очистить. Проверьте панель модератора.",
+        { error, cleanupFailures }
+      );
+    } else {
+      reportError(museumNewsAdminFeedback, "Не удалось опубликовать новость.", error);
+    }
+  } finally {
+    museumNewsPublishButton.disabled = false;
+    museumNewsCancelButton.disabled = false;
+    museumNewsBody.disabled = false;
+    museumNewsPhotosInput.disabled = false;
+    museumNewsPhotoPreviews.querySelectorAll("button").forEach((button) => {
+      button.disabled = false;
+    });
+  }
 }
 
 function renderGuestbookPagination(pageCount) {
@@ -1128,6 +1895,8 @@ function setAdminSection(section = "reviews") {
   guestbookAdminReviews.hidden = section !== "reviews";
   guestbookHistory.hidden = section !== "history";
   guestbookAdminProfile.hidden = section !== "profile";
+  guestbookAdminNews.hidden = section !== "news";
+  guestbookAdminNewsArchive.hidden = section !== "newsArchive";
 }
 
 function renderModeratorProfilePhoto(photoUrl = null) {
@@ -1307,7 +2076,14 @@ async function verifyModerator(session) {
     setAdminSection("reviews");
     closeAdminMenu();
     guestbookModerator.open = true;
-    await Promise.all([loadModerationReviews(), loadModeratorProfile(), loadPublishedReviews()]);
+    await Promise.all([
+      loadModerationReviews(),
+      loadModeratorProfile(),
+      loadPublishedReviews(),
+      loadPublishedMuseumNews(),
+      loadModeratorMuseumNews("published"),
+      loadModeratorMuseumNews("archived"),
+    ]);
     if (lastSeenError) {
       reportError(moderatorFeedback, "Вход выполнен, но время последнего посещения не удалось обновить.", lastSeenError);
     } else {
@@ -1331,13 +2107,34 @@ async function initializeGuestbook() {
 
   const { createClient } = await import(SUPABASE_MODULE_URL);
   supabase = createClient(config.supabaseUrl, config.publishableKey);
-  await loadPublishedReviews();
+  await Promise.all([loadPublishedReviews(), loadPublishedMuseumNews()]);
 
   guestbookPreviousPage.addEventListener("click", () => {
     if (publishedReviewPage > 1) loadPublishedReviews(publishedReviewPage - 1);
   });
   guestbookNextPage.addEventListener("click", () => loadPublishedReviews(publishedReviewPage + 1));
   guestbookAvatarFile.addEventListener("change", handleAvatarFileSelection);
+  museumNewsPhotosInput.addEventListener("change", handleMuseumNewsPhotoSelection);
+  museumNewsEditor.addEventListener("submit", publishMuseumNews);
+  museumNewsCancelButton.addEventListener("click", closeMuseumNewsComposer);
+  museumNewsAdminCreateButton.addEventListener("click", openMuseumNewsComposer);
+  museumNewsPublicCreateButton.addEventListener("click", openMuseumNewsComposer);
+  museumNewsLightboxClose.addEventListener("click", () => museumNewsLightbox.close());
+  museumNewsLightboxPrev.addEventListener("click", () => moveMuseumNewsLightbox(-1));
+  museumNewsLightboxNext.addEventListener("click", () => moveMuseumNewsLightbox(1));
+  museumNewsLightbox.addEventListener("close", () => {
+    museumNewsLightboxImage.removeAttribute("src");
+    museumNewsGalleryPhotos = [];
+  });
+  museumNewsLightbox.addEventListener("click", (event) => {
+    if (event.target === museumNewsLightbox) museumNewsLightbox.close();
+  });
+  museumNewsLightbox.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      event.preventDefault();
+      moveMuseumNewsLightbox(event.key === "ArrowLeft" ? -1 : 1);
+    }
+  });
   moderatorProfilePhoto.addEventListener("change", () => {
     const file = moderatorProfilePhoto.files[0];
     if (!file) return;
@@ -1524,6 +2321,18 @@ async function initializeGuestbook() {
     loadModeratorProfile();
   });
 
+  document.getElementById("moderatorMenuNews").addEventListener("click", () => {
+    setAdminSection("news");
+    closeAdminMenu();
+    loadModeratorMuseumNews("published");
+  });
+
+  document.getElementById("moderatorMenuNewsArchive").addEventListener("click", () => {
+    setAdminSection("newsArchive");
+    closeAdminMenu();
+    loadModeratorMuseumNews("archived");
+  });
+
   document.getElementById("moderatorSignOut").addEventListener("click", async () => {
     try {
       const { error } = await supabase.auth.signOut();
@@ -1550,6 +2359,7 @@ async function initializeGuestbook() {
       setAdminSection("reviews");
       closeAdminMenu();
       loadPublishedReviews();
+      loadPublishedMuseumNews();
     } else if (event === "INITIAL_SESSION" && session) {
       window.setTimeout(() => verifyModerator(session), 0);
     }

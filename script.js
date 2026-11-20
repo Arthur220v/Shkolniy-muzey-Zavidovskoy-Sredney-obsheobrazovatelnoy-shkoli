@@ -2129,6 +2129,7 @@ carousel.addEventListener("pointerup", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
+  if (document.getElementById("museumNewsLightbox")?.open) return;
   if (event.key === "Escape") {
     if (isLightboxOpen()) closeLightbox();
     else if (isExhibitOpen()) closeExhibit();

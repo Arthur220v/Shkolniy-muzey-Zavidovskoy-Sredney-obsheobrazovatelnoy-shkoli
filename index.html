@@ -40,7 +40,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261120-guestbook-profiles-2" />
+  <link rel="stylesheet" href="style.css?v=20261121-museum-news-1" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -244,6 +244,13 @@
         </div>
         <div class="event-dots" id="eventDots" role="tablist" aria-label="Выбор фотографии мероприятия"></div>
       </section>
+      <section class="museum-news-section" aria-labelledby="museum-news-heading">
+        <h3 id="museum-news-heading">Новости музея</h3>
+        <div class="museum-news-list" id="museumNewsList" aria-live="polite"></div>
+        <p class="museum-news-empty" id="museumNewsEmpty" hidden>Пока новостей нет!</p>
+        <button class="museum-news-create-button" id="museumNewsPublicCreateButton" type="button" aria-label="Создать новость" hidden>+</button>
+        <p class="guestbook-feedback" id="museumNewsFeedback" role="status" aria-live="polite"></p>
+      </section>
     </section>
 
     <section class="guestbook" aria-labelledby="guestbook-heading">
@@ -339,6 +346,8 @@
             <button class="guestbook-secondary-button" id="moderatorMenuReviews" type="button">Отзывы</button>
             <button class="guestbook-secondary-button" id="moderatorMenuHistory" type="button">История</button>
             <button class="guestbook-secondary-button" id="moderatorMenuProfile" type="button">Профиль</button>
+            <button class="guestbook-secondary-button" id="moderatorMenuNews" type="button">Новости</button>
+            <button class="guestbook-secondary-button" id="moderatorMenuNewsArchive" type="button">Архив новостей</button>
             <button class="guestbook-secondary-button" id="moderatorSignOut" type="button">Выйти</button>
           </nav>
           <section id="guestbookAdminReviews" aria-labelledby="guestbookAdminReviewsHeading">
@@ -374,6 +383,34 @@
               <p class="guestbook-feedback" id="moderatorProfileFeedback" role="status" aria-live="polite"></p>
             </form>
           </section>
+          <section id="guestbookAdminNews" aria-labelledby="guestbookAdminNewsHeading" hidden>
+            <h4 class="guestbook-admin-section-heading" id="guestbookAdminNewsHeading">Новости музея</h4>
+            <button class="museum-news-admin-create" id="museumNewsAdminCreateButton" type="button">+ Создать новость</button>
+            <form class="museum-news-editor" id="museumNewsEditor" hidden>
+              <label class="guestbook-field">
+                <span>Текст новости</span>
+                <textarea id="museumNewsBody" rows="6" maxlength="6000" required></textarea>
+                <small>Хэштеги вроде #музей и #школьная_жизнь будут выделены автоматически.</small>
+              </label>
+              <label class="guestbook-field">
+                <span>Фотографии (до 6, JPG/PNG/WebP, до 3 МБ каждая)</span>
+                <input id="museumNewsPhotosInput" type="file" accept="image/jpeg,image/png,image/webp" multiple />
+              </label>
+              <div class="museum-news-photo-previews" id="museumNewsPhotoPreviews" aria-live="polite"></div>
+              <div class="museum-news-editor-actions">
+                <button class="guestbook-submit" id="museumNewsPublishButton" type="submit">Опубликовать новость</button>
+                <button class="guestbook-secondary-button" id="museumNewsCancelButton" type="button">Отмена</button>
+              </div>
+              <p class="guestbook-feedback" id="museumNewsAdminFeedback" role="status" aria-live="polite"></p>
+            </form>
+            <div class="museum-news-admin-list" id="museumNewsAdminList"></div>
+            <p class="guestbook-feedback" id="museumNewsAdminListFeedback" role="status" aria-live="polite"></p>
+          </section>
+          <section id="guestbookAdminNewsArchive" aria-labelledby="guestbookAdminNewsArchiveHeading" hidden>
+            <h4 class="guestbook-admin-section-heading" id="guestbookAdminNewsArchiveHeading">Архив новостей</h4>
+            <div class="museum-news-admin-list" id="museumNewsArchiveList"></div>
+            <p class="guestbook-feedback" id="museumNewsArchiveFeedback" role="status" aria-live="polite"></p>
+          </section>
         </section>
         </details>
       </div>
@@ -400,6 +437,14 @@
     </button>
     <p class="lightbox-caption" id="lightboxCaption"></p>
   </div>
+
+  <dialog class="museum-news-lightbox" id="museumNewsLightbox" aria-label="Фотография новости">
+    <button class="museum-news-lightbox-close" id="museumNewsLightboxClose" type="button" aria-label="Закрыть фото">×</button>
+    <button class="museum-news-lightbox-nav museum-news-lightbox-prev" id="museumNewsLightboxPrev" type="button" aria-label="Предыдущее фото">←</button>
+    <img id="museumNewsLightboxImage" alt="" />
+    <button class="museum-news-lightbox-nav museum-news-lightbox-next" id="museumNewsLightboxNext" type="button" aria-label="Следующее фото">→</button>
+    <p id="museumNewsLightboxCaption"></p>
+  </dialog>
 
   <div class="exhibit" id="exhibit" aria-hidden="true">
     <div class="exhibit-blur" id="exhibitBlur"></div>
@@ -546,7 +591,7 @@
   </div>
 
   <script src="guestbook-config.js?v=20261115-1"></script>
-  <script src="script.js?v=20261120-voennie-trofei-1"></script>
-  <script type="module" src="guestbook.js?v=20261120-guestbook-profiles-2"></script>
+  <script src="script.js?v=20261121-museum-news-1"></script>
+  <script type="module" src="guestbook.js?v=20261121-museum-news-1"></script>
 </body>
 </html>
