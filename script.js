@@ -621,25 +621,25 @@ const SCENES = {
     spots: [],
     romanNumerals: [
       { numeral: "XI", title: "Село Завидово", exhibitId: ZAVIDOVO_VILLAGE_EXHIBIT_ID, left: "24.0%", top: "35.3%" },
-      { numeral: "XVI", title: "Дорога двух столиц", exhibitId: ZAVIDOVO_ROAD_EXHIBIT_ID, left: "43.3%", top: "35.3%" },
-      { numeral: "XXI", title: "Сведения о Храмовом комплексе", exhibitId: ZAVIDOVO_TEMPLE_INFO_EXHIBIT_ID, left: "59.0%", top: "35.3%" },
+      { numeral: "XVI", title: "Дорога двух столиц", exhibitId: ZAVIDOVO_ROAD_EXHIBIT_ID, left: "40.8%", top: "35.3%" },
+      { numeral: "XXI", title: "Сведения о Храмовом комплексе", exhibitId: ZAVIDOVO_TEMPLE_INFO_EXHIBIT_ID, left: "56.5%", top: "35.3%" },
       { numeral: "XXVI", title: "Храмовый комплекс", exhibitId: ZAVIDOVO_TEMPLE_EXHIBIT_ID, left: "75.7%", top: "35.3%" },
-      { numeral: "XII", title: "Завидовская конюшня", exhibitId: ZAVIDOVO_STABLE_EXHIBIT_ID, left: "24.6%", top: "49.7%" },
+      { numeral: "XII", title: "Завидовская конюшня", exhibitId: ZAVIDOVO_STABLE_EXHIBIT_ID, left: "22.1%", top: "49.7%" },
       { numeral: "XVII", title: "Ямщики", exhibitId: ZAVIDOVO_COACHMEN_EXHIBIT_ID, left: "44.8%", top: "49.7%" },
       { numeral: "XXII", title: "Клинский уезд", exhibitId: ZAVIDOVO_KLIN_DISTRICT_EXHIBIT_ID, left: "60.5%", top: "49.7%" },
       { numeral: "XXVII", title: "Река Дойбица", exhibitId: ZAVIDOVO_RIVER_EXHIBIT_ID, left: "77.1%", top: "49.7%" },
-      { numeral: "XIII", title: "Перепись населения", exhibitId: ZAVIDOVO_CENSUS_EXHIBIT_ID, left: "25.2%", top: "59.5%" },
+      { numeral: "XIII", title: "Перепись населения", exhibitId: ZAVIDOVO_CENSUS_EXHIBIT_ID, left: "22.7%", top: "59.5%" },
       { numeral: "XVIII", title: "улица Ленинградская", exhibitId: ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID, left: "43.5%", top: "59.5%" },
-      { numeral: "XXIII", title: "Троицкая церковь", exhibitId: ZAVIDOVO_TRINITY_CHURCH_EXHIBIT_ID, left: "62.0%", top: "59.5%" },
-      { numeral: "XXVIII", title: "Рядом с храмом..", exhibitId: ZAVIDOVO_TEMPLE_SIDE_EXHIBIT_ID, left: "78.9%", top: "59.5%" },
-      { numeral: "XIV", title: "Николаевская железная дорога", exhibitId: ZAVIDOVO_RAILWAY_EXHIBIT_ID, left: "25.7%", top: "68.1%" },
+      { numeral: "XXIII", title: "Троицкая церковь", exhibitId: ZAVIDOVO_TRINITY_CHURCH_EXHIBIT_ID, left: "59.5%", top: "59.5%" },
+      { numeral: "XXVIII", title: "Рядом с храмом..", exhibitId: ZAVIDOVO_TEMPLE_SIDE_EXHIBIT_ID, left: "76.4%", top: "59.5%" },
+      { numeral: "XIV", title: "Николаевская железная дорога", exhibitId: ZAVIDOVO_RAILWAY_EXHIBIT_ID, left: "23.2%", top: "68.1%" },
       { numeral: "XIX", title: "Клуб", exhibitId: ZAVIDOVO_CLUB_EXHIBIT_ID, left: "43.8%", top: "68.1%" },
-      { numeral: "XXIV", title: "Плетельная фабрика", exhibitId: ZAVIDOVO_FACTORY_EXHIBIT_ID, left: "62.0%", top: "68.1%" },
+      { numeral: "XXIV", title: "Плетельная фабрика", exhibitId: ZAVIDOVO_FACTORY_EXHIBIT_ID, left: "59.5%", top: "68.1%" },
       { numeral: "XXIX", title: "Детский сад", exhibitId: ZAVIDOVO_KINDERGARTEN_EXHIBIT_ID, left: "76.0%", top: "68.1%" },
       { numeral: "XV", title: "Общежитие N1", exhibitId: ZAVIDOVO_DORMITORY_EXHIBIT_ID, left: "22.4%", top: "76.4%" },
       { numeral: "XX", title: "Общежитие N2", exhibitId: ZAVIDOVO_DORMITORY_2_EXHIBIT_ID, left: "41.4%", top: "76.4%" },
       { numeral: "XXV", title: "Общежитие N3", exhibitId: ZAVIDOVO_DORMITORY_3_EXHIBIT_ID, left: "57.8%", top: "76.4%" },
-      { numeral: "XXXI", title: "Общежитие N4", exhibitId: ZAVIDOVO_DORMITORY_4_EXHIBIT_ID, left: "75.2%", top: "76.4%" },
+      { numeral: "XXXI", title: "Общежитие N4", exhibitId: ZAVIDOVO_DORMITORY_4_EXHIBIT_ID, left: "72.7%", top: "76.4%" },
       { numeral: "XXXII", title: "Книга 1", exhibitId: ZAVIDOVO_BOOK_1_EXHIBIT_ID, left: "27.6%", top: "83.1%" },
       { numeral: "XXXIV", title: "Книга 2", exhibitId: ZAVIDOVO_BOOK_2_EXHIBIT_ID, left: "52.6%", top: "83.1%" },
       { numeral: "XXXIII", title: "Фильм-1,2", exhibitId: ZAVIDOVO_FILMS_EXHIBIT_ID, left: "40.4%", top: "86.6%" },
@@ -1367,7 +1367,8 @@ async function openExhibit(id, blurSrc) {
   currentExhibitId = id;
   const isHeroPortrait = id === "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)";
   const isStandPhoto = id.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_");
-  const canOpenFullView = isStandPhoto || Boolean(data.fullViewImage);
+  const isZavidovoHistoryPhoto = id.startsWith("Stend_about_Zavidovo_history(2)_");
+  const canOpenFullView = isStandPhoto || isZavidovoHistoryPhoto || Boolean(data.fullViewImage);
   exhibit.classList.toggle("is-symbol-detail", id === "Gerb_RF(3)" || id === "Hymn_RF(4)");
   exhibit.classList.toggle("is-hymn-detail", id === "Hymn_RF(4)");
   exhibit.classList.toggle("is-flag-detail", id === "Flag_RF(2)");
@@ -2005,7 +2006,8 @@ document.getElementById("closeExhibit").addEventListener("click", closeExhibit);
 function openCurrentExhibitFullView() {
   const data = EXHIBITS[currentExhibitId];
   const isStandPhoto = currentExhibitId?.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_");
-  if (!data?.fullViewImage && !isStandPhoto) return;
+  const isZavidovoHistoryPhoto = currentExhibitId?.startsWith("Stend_about_Zavidovo_history(2)_");
+  if (!data?.fullViewImage && !isStandPhoto && !isZavidovoHistoryPhoto) return;
   const src = data.fullViewImage
     ? encodePath(IMAGE_DIR, data.fullViewImage)
     : exhibitPhoto.src;
