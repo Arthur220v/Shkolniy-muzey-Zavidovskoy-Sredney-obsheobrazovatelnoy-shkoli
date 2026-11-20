@@ -40,7 +40,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261120-guestbook-mobile-layout-3" />
+  <link rel="stylesheet" href="style.css?v=20261120-guestbook-profiles-1" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -281,7 +281,13 @@
               Использовать смайлик
             </button>
             <span class="guestbook-option-label">Выберите цвет</span>
-            <div class="guestbook-color-options" id="guestbookColorOptions" role="group" aria-label="Цвет аватара"></div>
+            <div class="guestbook-color-options" id="guestbookColorOptions" role="group" aria-label="Цвет аватара">
+              <label class="guestbook-custom-color-choice" id="guestbookCustomColorChoice">
+                <input id="guestbookCustomColorPicker" type="color" value="#5686c4" aria-label="Выбрать собственный цвет аватара" />
+                <span aria-hidden="true">🎨</span>
+                <span>Свой цвет!</span>
+              </label>
+            </div>
           </fieldset>
           <label class="guestbook-field">
             <span>Ваш отзыв</span>
@@ -541,6 +547,6 @@
 
   <script src="guestbook-config.js?v=20261115-1"></script>
   <script src="script.js?v=20261120-voennie-trofei-1"></script>
-  <script type="module" src="guestbook.js?v=20261120-guestbook-moderation-pages-1"></script>
+  <script type="module" src="guestbook.js?v=20261120-guestbook-profiles-1"></script>
 </body>
 </html>

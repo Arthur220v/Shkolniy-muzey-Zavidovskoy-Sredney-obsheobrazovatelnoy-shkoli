@@ -21,6 +21,8 @@ const guestbookConsent = document.getElementById("guestbookConsent");
 const guestbookSubmit = document.getElementById("guestbookSubmit");
 const guestbookAvatarOptions = document.getElementById("guestbookAvatarOptions");
 const guestbookColorOptions = document.getElementById("guestbookColorOptions");
+const guestbookCustomColorChoice = document.getElementById("guestbookCustomColorChoice");
+const guestbookCustomColorPicker = document.getElementById("guestbookCustomColorPicker");
 const guestbookAvatarPreview = document.getElementById("guestbookAvatarPreview");
 const guestbookAvatarFile = document.getElementById("guestbookAvatarFile");
 const guestbookUseEmoji = document.getElementById("guestbookUseEmoji");
@@ -65,7 +67,7 @@ let publishedReviewPage = 1;
 let moderatorUserId = null;
 let moderatorProfile = null;
 let moderatorProfilePhotoPreviewUrl = null;
-let publicModeratorProfile = null;
+let publicModeratorProfiles = new Map();
 
 function setMessage(element, message, isError = false, isSuccess = false) {
   if (isSuccess) element.classList.remove("is-success");
@@ -98,7 +100,15 @@ function getModeratorSignInErrorMessage(error) {
 
 function makeAvatar(emoji, color, label, photoUrl = null) {
   const avatar = document.createElement("span");
-  avatar.className = `guestbook-avatar guestbook-avatar--${color}${photoUrl ? " guestbook-avatar--photo" : ""}`;
+  const isCustomColor = /^#[\da-f]{6}$/i.test(color);
+  const isKnownColor = AVATAR_COLORS.includes(color);
+  if (!isCustomColor && !isKnownColor) {
+    console.error("Получен неизвестный цвет аватара.", color);
+  }
+  avatar.className = `guestbook-avatar ${isCustomColor
+    ? "guestbook-avatar--custom"
+    : `guestbook-avatar--${isKnownColor ? color : AVATAR_COLORS[0]}`}${photoUrl ? " guestbook-avatar--photo" : ""}`;
+  if (isCustomColor) avatar.style.setProperty("--guestbook-avatar-custom-color", color);
   avatar.setAttribute("aria-label", label);
   if (photoUrl) {
     const image = document.createElement("img");
@@ -120,6 +130,18 @@ function updateAvatarPreview() {
   guestbookAvatarPreview.replaceChildren(
     makeAvatar(selectedEmoji, selectedColor, "Выбранный аватар", selectedAvatarPreviewUrl)
   );
+}
+
+function setSelectedColor(color) {
+  selectedColor = color;
+  guestbookColorOptions.querySelectorAll(".guestbook-color-choice").forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.color === color));
+  });
+  guestbookCustomColorChoice.classList.toggle("is-selected", color.startsWith("#"));
+  if (color.startsWith("#")) {
+    guestbookCustomColorChoice.style.setProperty("--guestbook-picker-color", color);
+  }
+  updateAvatarPreview();
 }
 
 function clearSelectedAvatarFile() {
@@ -178,19 +200,20 @@ function createAvatarChoices() {
     const option = document.createElement("button");
     option.type = "button";
     option.className = `guestbook-color-choice guestbook-avatar--${color}`;
+    option.dataset.color = color;
     option.setAttribute("aria-label", `Цвет аватара: ${color}`);
     option.title = color;
     option.setAttribute("aria-pressed", String(color === selectedColor));
     option.addEventListener("click", () => {
-      selectedColor = color;
-      guestbookColorOptions.querySelectorAll("button").forEach((button) => {
-        button.setAttribute("aria-pressed", String(button === option));
-      });
-      updateAvatarPreview();
+      setSelectedColor(color);
     });
     guestbookColorOptions.append(option);
   });
 
+  const updateCustomColor = () => setSelectedColor(guestbookCustomColorPicker.value.toLowerCase());
+  guestbookCustomColorPicker.addEventListener("input", updateCustomColor);
+  guestbookCustomColorPicker.addEventListener("change", updateCustomColor);
+  guestbookColorOptions.append(guestbookCustomColorChoice);
   updateAvatarPreview();
 }
 
@@ -281,6 +304,20 @@ function formatHistoryDate(value) {
     });
 }
 
+function formatModeratorLastSeen(value) {
+  if (!value) return "Последний вход ещё не зафиксирован.";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Время последнего входа недоступно.";
+  return `Последний вход: ${new Intl.DateTimeFormat("ru-RU", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).format(date)}`;
+}
+
 function createReviewCard(review, isModeration = false, photoUrl = null) {
   const card = document.createElement("article");
   card.className = [
@@ -297,7 +334,16 @@ function createReviewCard(review, isModeration = false, photoUrl = null) {
   identity.className = "guestbook-review-identity";
   const name = document.createElement("h3");
   name.textContent = `${review.first_name} ${review.last_name}`;
-  identity.append(name);
+  const nameLine = document.createElement("div");
+  nameLine.className = "guestbook-review-name-line";
+  nameLine.append(name);
+  if (review.is_first_review) {
+    const firstReviewBadge = document.createElement("span");
+    firstReviewBadge.className = "guestbook-first-review-badge";
+    firstReviewBadge.textContent = "Самый первый отзыв";
+    nameLine.append(firstReviewBadge);
+  }
+  identity.append(nameLine);
 
   const date = document.createElement("time");
   date.dateTime = review.created_at;
@@ -371,6 +417,8 @@ function createReviewCard(review, isModeration = false, photoUrl = null) {
 }
 
 function createPublicModeratorReply(review) {
+  const profileId = review.moderator_user_id || (moderatorUserId && !review.moderator_reply ? moderatorUserId : null);
+  const profile = publicModeratorProfiles.get(profileId);
   const reply = document.createElement("section");
   reply.className = "guestbook-moderator-reply";
   reply.setAttribute("aria-label", "Ответ модератора");
@@ -382,20 +430,38 @@ function createPublicModeratorReply(review) {
       "🛡️",
       "gold",
       "Аватар модератора",
-      publicModeratorProfile?.photoUrl || null
+      profile?.photoUrl || null
     )
   );
 
   const identity = document.createElement("div");
   identity.className = "guestbook-review-identity";
-  const name = document.createElement("h3");
-  name.textContent = publicModeratorProfile?.firstName && publicModeratorProfile?.lastName
-    ? `${publicModeratorProfile.firstName} ${publicModeratorProfile.lastName}`
+  const fullName = profile?.firstName && profile?.lastName
+    ? `${profile.firstName} ${profile.lastName}`
     : "Модератор";
+  const profileTrigger = document.createElement("span");
+  profileTrigger.className = "guestbook-moderator-profile";
+  profileTrigger.tabIndex = 0;
+  profileTrigger.setAttribute("aria-label", `${fullName}, модератор. ${formatModeratorLastSeen(profile?.lastSeenAt)}`);
+  const name = document.createElement("span");
+  name.className = "guestbook-moderator-name";
+  name.textContent = fullName;
+  const profileCard = document.createElement("span");
+  profileCard.className = "guestbook-moderator-profile-card";
+  profileCard.setAttribute("role", "tooltip");
+  const profileName = document.createElement("strong");
+  profileName.textContent = fullName;
+  const profileStatus = document.createElement("span");
+  profileStatus.textContent = "Модератор";
+  const profileLastSeen = document.createElement("time");
+  profileLastSeen.textContent = formatModeratorLastSeen(profile?.lastSeenAt);
+  if (profile?.lastSeenAt) profileLastSeen.dateTime = profile.lastSeenAt;
+  profileCard.append(profileName, profileStatus, profileLastSeen);
+  profileTrigger.append(name, profileCard);
   const status = document.createElement("span");
   status.className = "guestbook-moderator-status";
   status.textContent = "— Модератор 🛡️";
-  identity.append(name, status);
+  identity.append(profileTrigger, status);
 
   header.append(identity);
   if (review.moderator_reply) {
@@ -635,32 +701,39 @@ function createDeleteAction(id, avatarPath) {
 
 async function prepareReviewCards(reviews, isModeration, feedbackElement) {
   let photoFailures = 0;
-  publicModeratorProfile = null;
-  if (!isModeration && reviews.some((review) => review.moderator_reply)) {
-    try {
-      const { data, error } = await supabase
-        .from("guestbook_moderator_profile")
-        .select("profile_first_name, profile_last_name, profile_image_path")
-        .maybeSingle();
-      if (error) throw error;
+  if (!isModeration) {
+    publicModeratorProfiles = new Map();
+    const moderatorIds = new Set(
+      reviews.map((review) => review.moderator_user_id).filter(Boolean)
+    );
+    if (moderatorUserId) moderatorIds.add(moderatorUserId);
+    if (moderatorIds.size) {
+      try {
+        const { data, error } = await supabase
+          .from("guestbook_moderator_profile")
+          .select("profile_first_name, profile_last_name, profile_image_path, user_id, last_seen_at")
+          .in("user_id", [...moderatorIds]);
+        if (error) throw error;
 
-      publicModeratorProfile = data
-        ? {
-          firstName: data.profile_first_name,
-          lastName: data.profile_last_name,
+        publicModeratorProfiles = new Map((data || []).map((profile) => [profile.user_id, {
+          firstName: profile.profile_first_name,
+          lastName: profile.profile_last_name,
+          photoPath: profile.profile_image_path,
           photoUrl: null,
+          lastSeenAt: profile.last_seen_at,
+        }]));
+        for (const profile of publicModeratorProfiles.values()) {
+          if (!profile.photoPath) continue;
+          const { data: signedPhoto, error: photoError } = await supabase.storage
+            .from(MODERATOR_PROFILE_BUCKET)
+            .createSignedUrl(profile.photoPath, 3600);
+          if (photoError) throw photoError;
+          profile.photoUrl = signedPhoto.signedUrl;
         }
-        : null;
-      if (data?.profile_image_path) {
-        const { data: signedPhoto, error: photoError } = await supabase.storage
-          .from(MODERATOR_PROFILE_BUCKET)
-          .createSignedUrl(data.profile_image_path, 3600);
-        if (photoError) throw photoError;
-        publicModeratorProfile.photoUrl = signedPhoto.signedUrl;
+      } catch (error) {
+        photoFailures += 1;
+        console.error("Не удалось загрузить публичный профиль модератора.", error);
       }
-    } catch (error) {
-      photoFailures += 1;
-      console.error("Не удалось загрузить публичный профиль модератора.", error);
     }
   }
 
@@ -738,7 +811,7 @@ async function loadPublishedReviews(page = publishedReviewPage) {
   try {
     const fetchPage = (pageNumber) => supabase
       .from("guestbook_reviews")
-      .select("id, first_name, last_name, body, rating, avatar_emoji, avatar_color, avatar_image_path, avatar_image_status, moderator_reply, moderator_replied_at, is_featured, created_at", { count: "exact" })
+      .select("id, first_name, last_name, body, rating, avatar_emoji, avatar_color, avatar_image_path, avatar_image_status, moderator_reply, moderator_replied_at, moderator_user_id, is_featured, is_first_review, created_at", { count: "exact" })
       .eq("status", "approved")
       .order("is_featured", { ascending: false })
       .order("created_at", { ascending: false })
@@ -811,7 +884,7 @@ async function loadModerationReviews() {
   try {
     const { data, error } = await supabase
       .from("guestbook_reviews")
-      .select("id, first_name, last_name, body, rating, avatar_emoji, avatar_color, avatar_image_path, avatar_image_status, moderator_reply, moderator_replied_at, is_featured, status, created_at")
+      .select("id, first_name, last_name, body, rating, avatar_emoji, avatar_color, avatar_image_path, avatar_image_status, moderator_reply, moderator_replied_at, moderator_user_id, is_featured, is_first_review, status, created_at")
       .neq("status", "approved")
       .order("created_at", { ascending: false })
       .limit(100);
@@ -936,6 +1009,7 @@ async function saveModeratorReply(id, textarea, button) {
       .update({
         moderator_reply: reply || null,
         moderator_replied_at: reply ? new Date().toISOString() : null,
+        moderator_user_id: reply ? moderatorUserId : null,
       })
       .eq("id", id)
       .select("id")
@@ -1221,13 +1295,24 @@ async function verifyModerator(session) {
     }
 
     moderatorUserId = session.user.id;
+    let lastSeenError = null;
+    try {
+      const { error } = await supabase.rpc("touch_guestbook_moderator_last_seen");
+      lastSeenError = error;
+    } catch (error) {
+      lastSeenError = error;
+    }
     guestbookLogin.hidden = true;
     guestbookAdmin.hidden = false;
     setAdminSection("reviews");
     closeAdminMenu();
     guestbookModerator.open = true;
-    setMessage(moderatorFeedback, "");
     await Promise.all([loadModerationReviews(), loadModeratorProfile(), loadPublishedReviews()]);
+    if (lastSeenError) {
+      reportError(moderatorFeedback, "Вход выполнен, но время последнего посещения не удалось обновить.", lastSeenError);
+    } else {
+      setMessage(moderatorFeedback, "");
+    }
   } catch (error) {
     reportError(moderatorFeedback, "Не удалось проверить права модератора.", error);
   }
@@ -1301,6 +1386,17 @@ async function initializeGuestbook() {
       });
 
       if (error) {
+        if (
+          error.code === "23514"
+          && error.message?.includes("guestbook_reviews_avatar_color_check")
+        ) {
+          reportError(
+            guestbookFeedback,
+            "База данных пока не принимает собственные цвета. Выполните новую SQL-миграцию в Supabase.",
+            error
+          );
+          return;
+        }
         reportError(guestbookFeedback, "Не удалось отправить отзыв. Попробуйте позже.", error);
         return;
       }
@@ -1344,16 +1440,12 @@ async function initializeGuestbook() {
       guestbookForm.reset();
       clearSelectedAvatarFile();
       selectedEmoji = AVATARS[0];
-      selectedColor = AVATAR_COLORS[0];
+      setSelectedColor(AVATAR_COLORS[0]);
       selectedRating = 0;
       updateRatingChoices();
       guestbookAvatarOptions.querySelectorAll("button").forEach((button) => {
         button.setAttribute("aria-pressed", String(button.textContent === selectedEmoji));
       });
-      guestbookColorOptions.querySelectorAll("button").forEach((button) => {
-        button.setAttribute("aria-pressed", String(button.classList.contains(`guestbook-avatar--${selectedColor}`)));
-      });
-      updateAvatarPreview();
       if (avatarUploadError) {
         console.error("Отзыв сохранён, но фото аватара не загрузилось.", avatarUploadError);
         setMessage(
