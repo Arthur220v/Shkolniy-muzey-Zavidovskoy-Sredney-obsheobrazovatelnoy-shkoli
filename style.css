@@ -3666,7 +3666,7 @@ body.modal-open {
 
 .guestbook-review--first {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   border-color: rgba(165, 121, 31, 0.72);
   background: linear-gradient(145deg, rgba(91, 64, 15, 0.82), rgba(32, 29, 21, 0.96));
   box-shadow: inset 0 0 28px rgba(153, 111, 28, 0.12), 0 0 22px rgba(145, 105, 28, 0.16);
@@ -3674,14 +3674,14 @@ body.modal-open {
 
 .guestbook-review--first::before {
   position: absolute;
-  top: 50%;
-  right: 0.55rem;
+  z-index: 4;
+  top: -0.85rem;
+  right: 0.65rem;
   content: "🏛️";
   color: #efd38d;
   font-size: clamp(1.35rem, 5vw, 2rem);
   filter: drop-shadow(0 0 7px rgba(227, 188, 94, 0.82)) drop-shadow(0 0 16px rgba(227, 188, 94, 0.42));
   pointer-events: none;
-  transform: translateY(-50%);
 }
 
 .guestbook-review--first > * {
@@ -4315,9 +4315,7 @@ body.modal-open {
   outline-offset: 2px;
 }
 
-.guestbook-moderator-profile:hover:not(.is-dismissed) .guestbook-moderator-profile-card,
-.guestbook-moderator-profile.is-open:not(.is-dismissed) .guestbook-moderator-profile-card,
-.guestbook-moderator-profile:focus-within:not(.is-dismissed) .guestbook-moderator-profile-card {
+.guestbook-moderator-profile-card.is-open {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);

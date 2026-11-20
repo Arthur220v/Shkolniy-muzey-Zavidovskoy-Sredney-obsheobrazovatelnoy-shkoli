@@ -402,7 +402,8 @@ function createModeratorProfileWidget(profile) {
   closeButton.textContent = "×";
   closeButton.setAttribute("aria-label", "Закрыть профиль модератора");
   card.append(photo, details, closeButton);
-  widget.append(trigger, card);
+  widget.append(trigger);
+  document.body.append(card);
 
   const placeModeratorProfileCard = () => {
     const triggerRect = trigger.getBoundingClientRect();
@@ -425,9 +426,10 @@ function createModeratorProfileWidget(profile) {
   const setOpen = (open, dismissed = false) => {
     widget.classList.toggle("is-open", open);
     widget.classList.toggle("is-dismissed", dismissed);
+    card.classList.toggle("is-open", open && !dismissed);
     trigger.setAttribute("aria-expanded", String(open));
     card.setAttribute("aria-hidden", String(!open));
-    if (open) window.requestAnimationFrame(placeModeratorProfileCard);
+    if (open) placeModeratorProfileCard();
   };
   trigger.addEventListener("click", () => {
     const opening = !widget.classList.contains("is-open");
@@ -436,32 +438,40 @@ function createModeratorProfileWidget(profile) {
   closeButton.addEventListener("click", () => setOpen(false, true));
   widget.addEventListener("pointerenter", (event) => {
     if (event.pointerType === "mouse" && !widget.classList.contains("is-dismissed")) {
+      card.classList.add("is-open");
       trigger.setAttribute("aria-expanded", "true");
       card.setAttribute("aria-hidden", "false");
-      window.requestAnimationFrame(placeModeratorProfileCard);
+      placeModeratorProfileCard();
     }
   });
   trigger.addEventListener("focus", () => {
     if (!widget.classList.contains("is-open")) {
       widget.classList.remove("is-dismissed");
+      card.classList.add("is-open");
       trigger.setAttribute("aria-expanded", "true");
       card.setAttribute("aria-hidden", "false");
-      window.requestAnimationFrame(placeModeratorProfileCard);
+      placeModeratorProfileCard();
     }
   });
   widget.addEventListener("focusout", (event) => {
     if (!widget.contains(event.relatedTarget) && !widget.classList.contains("is-open")) {
       trigger.setAttribute("aria-expanded", "false");
       card.setAttribute("aria-hidden", "true");
+      card.classList.remove("is-open");
     }
   });
   widget.addEventListener("pointerleave", (event) => {
     if (event.pointerType === "mouse") {
       widget.classList.remove("is-dismissed");
-      if (!widget.classList.contains("is-open") && !widget.contains(document.activeElement)) {
-        trigger.setAttribute("aria-expanded", "false");
-        card.setAttribute("aria-hidden", "true");
-      }
+      window.setTimeout(() => {
+        if (!widget.classList.contains("is-open") &&
+            !widget.contains(document.activeElement) &&
+            !card.matches(":hover")) {
+          trigger.setAttribute("aria-expanded", "false");
+          card.setAttribute("aria-hidden", "true");
+          card.classList.remove("is-open");
+        }
+      }, 80);
     }
   });
   widget.addEventListener("keydown", (event) => {
