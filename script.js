@@ -1603,6 +1603,7 @@ async function openTour() {
         clearTimeout(mobileMapWarningCloseTimer);
         mobileMapWarning.classList.remove("is-closing");
         mobileMapWarning.hidden = false;
+        mobileMapWarning.getBoundingClientRect();
         requestAnimationFrame(() => {
           if (requestId === tourOpenRequestId && isTourOpen()) {
             mobileMapWarning.classList.add("is-visible");

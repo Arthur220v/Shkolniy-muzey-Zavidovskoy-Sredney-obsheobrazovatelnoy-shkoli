@@ -27,6 +27,16 @@
   box-sizing: border-box;
 }
 
+a[href],
+button,
+input,
+select,
+textarea,
+summary,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
 * {
   scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   scrollbar-width: thin;
@@ -4080,6 +4090,18 @@ html[data-theme="light"] .scene-numeral-button:active {
 
 @media (prefers-reduced-motion: reduce) {
   .mobile-map-warning,
+  .mobile-map-warning.is-visible {
+    filter: none;
+    transform: translate(-50%, 0) scale(1);
+    transition: opacity 1.5s ease, visibility 1.5s linear;
+  }
+
+  .mobile-map-warning.is-closing {
+    filter: none;
+    transform: translate(-50%, 0) scale(1);
+    transition-duration: 0.36s;
+  }
+
   .mobile-map-warning-close {
     transition: none;
   }
