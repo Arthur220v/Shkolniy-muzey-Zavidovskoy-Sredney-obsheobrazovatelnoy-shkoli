@@ -1279,6 +1279,26 @@ footer {
   letter-spacing: 0.03em;
 }
 
+.exhibit-title a {
+  color: #69b4ff;
+  text-decoration: underline;
+  text-decoration-color: rgba(105, 180, 255, 0.55);
+  text-underline-offset: 0.16em;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.exhibit-title a:hover,
+.exhibit-title a:focus-visible {
+  color: #a4d5ff;
+  text-decoration-color: currentColor;
+}
+
+.exhibit-title a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 .exhibit-copy {
   display: flex;
   flex-direction: column;
@@ -4000,6 +4020,16 @@ html[data-theme="light"] .exhibit-card {
 html[data-theme="light"] .exhibit-title,
 html[data-theme="light"] .exhibit-text {
   color: #252a31;
+}
+
+html[data-theme="light"] .exhibit-title a {
+  color: #1765b1;
+  text-decoration-color: rgba(23, 101, 177, 0.55);
+}
+
+html[data-theme="light"] .exhibit-title a:hover,
+html[data-theme="light"] .exhibit-title a:focus-visible {
+  color: #0e4b89;
 }
 
 html[data-theme="light"] .audio-speed-value {

@@ -124,6 +124,7 @@ function makeExhibit(id, title, extras = {}) {
     image: extras.image || `${id}.jpg`,
     preserveImageFormat: Boolean(extras.preserveImageFormat),
     fullViewImage: extras.fullViewImage || null,
+    titleLinkUrl: extras.titleLinkUrl || null,
     textFile,
     audioFile: extras.audioFile === null ? null : (extras.audioFile || audioFileForExhibit(id, textFile)),
     fallback: extras.fallback || "",
@@ -137,6 +138,17 @@ const ZAVIDOVO_CENSUS_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XIII)";
 const ZAVIDOVO_DORMITORY_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XV)";
 const ZAVIDOVO_ROAD_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XVI)";
 const ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XVIII)";
+const ZAVIDOVO_CLUB_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XIX)";
+const ZAVIDOVO_DORMITORY_2_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XX)";
+const ZAVIDOVO_KLIN_DISTRICT_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXII)";
+const ZAVIDOVO_DORMITORY_3_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXV)";
+const ZAVIDOVO_TEMPLE_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXVI)";
+const ZAVIDOVO_TEMPLE_SIDE_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXVIII)";
+const ZAVIDOVO_KINDERGARTEN_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXIX)";
+const ZAVIDOVO_DORMITORY_4_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXXI)";
+const ZAVIDOVO_BOOK_1_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXXII)";
+const ZAVIDOVO_FILMS_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXXIII)";
+const ZAVIDOVO_BOOK_2_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXXIV)";
 
 Object.assign(EXHIBITS, {
   [ZAVIDOVO_VILLAGE_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_VILLAGE_EXHIBIT_ID, "Село Завидово", {
@@ -172,6 +184,68 @@ Object.assign(EXHIBITS, {
   [ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID, "улица Ленинградская", {
     image: "Stend_about_Zavidovo_history(2)_(XVIII).jpg",
     preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_CLUB_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_CLUB_EXHIBIT_ID, "Клуб", {
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_DORMITORY_2_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_DORMITORY_2_EXHIBIT_ID, "Общежитие N2", {
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_KLIN_DISTRICT_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_KLIN_DISTRICT_EXHIBIT_ID, "Карта Клинского уезда от 1821 года", {
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_DORMITORY_3_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_DORMITORY_3_EXHIBIT_ID, "Общежитие N3", {
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_TEMPLE_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_TEMPLE_EXHIBIT_ID, "Храмовый комплекс села Завидово, XX век", {
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_TEMPLE_SIDE_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_TEMPLE_SIDE_EXHIBIT_ID, "Боковой вид на храмовый комплекс села Завидово", {
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_KINDERGARTEN_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_KINDERGARTEN_EXHIBIT_ID, "Детский сад", {
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_DORMITORY_4_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_DORMITORY_4_EXHIBIT_ID, "Общежитие N4", {
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_BOOK_1_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_BOOK_1_EXHIBIT_ID, 'Р.И.Шуркина - "Нет Богом брошенных на свете"', {
+    preserveImageFormat: true,
+    titleLinkUrl: "https://vk.ru/away.php?to=https%3A%2F%2Fkonakovobiblioteka.ru%2Findex.php%2Fliteraturnaya-zhizn%2F143-shurkina-roza-ivanovna&utf=1",
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_FILMS_EXHIBIT_ID]: makeExhibit(
+    ZAVIDOVO_FILMS_EXHIBIT_ID,
+    'Фильм первый - "Храм у дороги", Фильм второй - "Святая обитель"',
+    {
+      preserveImageFormat: true,
+      textFile: null,
+      audioFile: null,
+      fallback: "Кинематографическое произведение не было найдено в открытых источниках. Просмотреть можно только при физическом визите в музей.",
+    }
+  ),
+  [ZAVIDOVO_BOOK_2_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_BOOK_2_EXHIBIT_ID, 'Е.В.Павлова - "Станция Завидово"', {
+    preserveImageFormat: true,
+    titleLinkUrl: "https://vk.ru/away.php?to=https%3A%2F%2Ftverbook.tverlib.ru%2Fbooks%2F2023%2Fpavlova-ev-stanciya-zavidovo&utf=1",
     textFile: null,
     audioFile: null,
   }),
@@ -513,26 +587,26 @@ const SCENES = {
       { numeral: "XI", title: "Село Завидово", exhibitId: ZAVIDOVO_VILLAGE_EXHIBIT_ID, left: "24.0%", top: "35.3%" },
       { numeral: "XVI", title: "Дорога двух столиц", exhibitId: ZAVIDOVO_ROAD_EXHIBIT_ID, left: "43.3%", top: "35.3%" },
       { numeral: "XXI", left: "59.0%", top: "35.3%" },
-      { numeral: "XXVI", left: "75.7%", top: "35.3%" },
+      { numeral: "XXVI", title: "Храмовый комплекс", exhibitId: ZAVIDOVO_TEMPLE_EXHIBIT_ID, left: "75.7%", top: "35.3%" },
       { numeral: "XII", title: "Завидовская конюшня", exhibitId: ZAVIDOVO_STABLE_EXHIBIT_ID, left: "24.6%", top: "49.7%" },
       { numeral: "XVII", left: "44.8%", top: "49.7%" },
-      { numeral: "XXII", left: "60.5%", top: "49.7%" },
+      { numeral: "XXII", title: "Клинский уезд", exhibitId: ZAVIDOVO_KLIN_DISTRICT_EXHIBIT_ID, left: "60.5%", top: "49.7%" },
       { numeral: "XXVII", left: "77.1%", top: "49.7%" },
       { numeral: "XIII", title: "Перепись населения", exhibitId: ZAVIDOVO_CENSUS_EXHIBIT_ID, left: "25.2%", top: "59.5%" },
       { numeral: "XVIII", title: "улица Ленинградская", exhibitId: ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID, left: "43.5%", top: "59.5%" },
       { numeral: "XXIII", left: "62.0%", top: "59.5%" },
-      { numeral: "XXVIII", left: "78.9%", top: "59.5%" },
+      { numeral: "XXVIII", title: "Рядом с храмом..", exhibitId: ZAVIDOVO_TEMPLE_SIDE_EXHIBIT_ID, left: "78.9%", top: "59.5%" },
       { numeral: "XIV", left: "25.7%", top: "68.1%" },
-      { numeral: "XIX", left: "43.8%", top: "68.1%" },
+      { numeral: "XIX", title: "Клуб", exhibitId: ZAVIDOVO_CLUB_EXHIBIT_ID, left: "43.8%", top: "68.1%" },
       { numeral: "XXIV", left: "62.0%", top: "68.1%" },
-      { numeral: "XXIX", left: "76.0%", top: "68.1%" },
+      { numeral: "XXIX", title: "Детский сад", exhibitId: ZAVIDOVO_KINDERGARTEN_EXHIBIT_ID, left: "76.0%", top: "68.1%" },
       { numeral: "XV", title: "Общежитие N1", exhibitId: ZAVIDOVO_DORMITORY_EXHIBIT_ID, left: "22.4%", top: "76.4%" },
-      { numeral: "XX", left: "41.4%", top: "76.4%" },
-      { numeral: "XXV", left: "57.8%", top: "76.4%" },
-      { numeral: "XXXI", left: "75.2%", top: "76.4%" },
-      { numeral: "XXXII", left: "27.6%", top: "83.1%" },
-      { numeral: "XXXIV", left: "52.6%", top: "83.1%" },
-      { numeral: "XXXIII", left: "40.4%", top: "86.6%" },
+      { numeral: "XX", title: "Общежитие N2", exhibitId: ZAVIDOVO_DORMITORY_2_EXHIBIT_ID, left: "41.4%", top: "76.4%" },
+      { numeral: "XXV", title: "Общежитие N3", exhibitId: ZAVIDOVO_DORMITORY_3_EXHIBIT_ID, left: "57.8%", top: "76.4%" },
+      { numeral: "XXXI", title: "Общежитие N4", exhibitId: ZAVIDOVO_DORMITORY_4_EXHIBIT_ID, left: "75.2%", top: "76.4%" },
+      { numeral: "XXXII", title: "Книга 1", exhibitId: ZAVIDOVO_BOOK_1_EXHIBIT_ID, left: "27.6%", top: "83.1%" },
+      { numeral: "XXXIV", title: "Книга 2", exhibitId: ZAVIDOVO_BOOK_2_EXHIBIT_ID, left: "52.6%", top: "83.1%" },
+      { numeral: "XXXIII", title: "Фильм-1,2", exhibitId: ZAVIDOVO_FILMS_EXHIBIT_ID, left: "40.4%", top: "86.6%" },
     ],
   },
 };
@@ -1275,7 +1349,17 @@ async function openExhibit(id, blurSrc) {
     exhibitPhoto.removeAttribute("tabindex");
     exhibitPhoto.removeAttribute("aria-label");
   }
-  exhibitTitle.textContent = data.title || "";
+  exhibitTitle.replaceChildren();
+  if (data.titleLinkUrl) {
+    const titleLink = document.createElement("a");
+    titleLink.href = data.titleLinkUrl;
+    titleLink.target = "_blank";
+    titleLink.rel = "noopener noreferrer";
+    titleLink.textContent = data.title || "";
+    exhibitTitle.appendChild(titleLink);
+  } else {
+    exhibitTitle.textContent = data.title || "";
+  }
   exhibitTitle.hidden = !data.title;
   exhibitBlur.style.backgroundImage = `url("${blurSrc}")`;
   exhibitText.textContent = data.textFile ? "Загрузка описания..." : "";
