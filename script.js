@@ -1168,8 +1168,15 @@ function renderNestedMarkers(container, spots, blurSrc) {
 }
 
 function isVisibleMarkerClick(event, targetSelector) {
-  return event.detail === 0 ||
-    (event.target instanceof Element && event.target.closest(targetSelector) !== null);
+  if (event.detail === 0) return true;
+  if (!(event.target instanceof Element)) return false;
+  const marker = event.target.closest(targetSelector);
+  if (!marker) return false;
+  const bounds = marker.getBoundingClientRect();
+  return event.clientX >= bounds.left &&
+    event.clientX <= bounds.right &&
+    event.clientY >= bounds.top &&
+    event.clientY <= bounds.bottom;
 }
 
 function renderSceneNumerals(container, numerals) {
