@@ -3782,6 +3782,7 @@ body.modal-open {
 
 @media (max-width: 760px) {
   .guestbook-public {
+    grid-column: 1;
     grid-row: auto;
   }
 }
