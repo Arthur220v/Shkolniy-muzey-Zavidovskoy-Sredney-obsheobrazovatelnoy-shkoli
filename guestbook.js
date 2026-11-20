@@ -404,11 +404,28 @@ function createModeratorProfileWidget(profile) {
   card.append(photo, details, closeButton);
   widget.append(trigger, card);
 
+  const placeModeratorProfileCard = () => {
+    const triggerRect = trigger.getBoundingClientRect();
+    const cardWidth = Math.min(330, window.innerWidth - 24);
+    let left = triggerRect.left;
+    left = Math.max(12, Math.min(left, window.innerWidth - cardWidth - 12));
+
+    const estimatedHeight = card.offsetHeight || 130;
+    let top = triggerRect.bottom + 8;
+    if (top + estimatedHeight > window.innerHeight - 12) {
+      top = Math.max(12, triggerRect.top - estimatedHeight - 8);
+    }
+
+    card.style.setProperty("--moderator-profile-top", `${top}px`);
+    card.style.setProperty("--moderator-profile-left", `${left}px`);
+  };
+
   const setOpen = (open, dismissed = false) => {
     widget.classList.toggle("is-open", open);
     widget.classList.toggle("is-dismissed", dismissed);
     trigger.setAttribute("aria-expanded", String(open));
     card.setAttribute("aria-hidden", String(!open));
+    if (open) window.requestAnimationFrame(placeModeratorProfileCard);
   };
   trigger.addEventListener("click", () => {
     const opening = !widget.classList.contains("is-open");
@@ -419,6 +436,7 @@ function createModeratorProfileWidget(profile) {
     if (event.pointerType === "mouse" && !widget.classList.contains("is-dismissed")) {
       trigger.setAttribute("aria-expanded", "true");
       card.setAttribute("aria-hidden", "false");
+      window.requestAnimationFrame(placeModeratorProfileCard);
     }
   });
   trigger.addEventListener("focus", () => {
@@ -426,6 +444,7 @@ function createModeratorProfileWidget(profile) {
       widget.classList.remove("is-dismissed");
       trigger.setAttribute("aria-expanded", "true");
       card.setAttribute("aria-hidden", "false");
+      window.requestAnimationFrame(placeModeratorProfileCard);
     }
   });
   widget.addEventListener("focusout", (event) => {
@@ -449,6 +468,16 @@ function createModeratorProfileWidget(profile) {
       trigger.focus();
     }
   });
+  window.addEventListener("resize", () => {
+    if (trigger.getAttribute("aria-expanded") === "true") {
+      placeModeratorProfileCard();
+    }
+  });
+  window.addEventListener("scroll", () => {
+    if (trigger.getAttribute("aria-expanded") === "true") {
+      placeModeratorProfileCard();
+    }
+  }, { passive: true });
   return widget;
 }
 
