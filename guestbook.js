@@ -379,7 +379,7 @@ function createModeratorProfileWidget(profile) {
   if (profile?.photoUrl) {
     photo.src = profile.photoUrl;
     photo.alt = `Фото ${fullName}`;
-    photo.loading = "lazy";
+    photo.loading = "eager";
   } else {
     photo.setAttribute("aria-hidden", "true");
     photo.textContent = "🛡️";
@@ -407,14 +407,16 @@ function createModeratorProfileWidget(profile) {
   const placeModeratorProfileCard = () => {
     const triggerRect = trigger.getBoundingClientRect();
     const cardWidth = Math.min(330, window.innerWidth - 24);
+    const cardHeight = card.scrollHeight || card.offsetHeight || 130;
     let left = triggerRect.left;
     left = Math.max(12, Math.min(left, window.innerWidth - cardWidth - 12));
 
-    const estimatedHeight = card.offsetHeight || 130;
     let top = triggerRect.bottom + 8;
-    if (top + estimatedHeight > window.innerHeight - 12) {
-      top = Math.max(12, triggerRect.top - estimatedHeight - 8);
+    if (top + cardHeight > window.innerHeight - 12) {
+      top = Math.max(12, triggerRect.top - cardHeight - 8);
     }
+    top = Math.min(top, Math.max(12, window.innerHeight - cardHeight - 12));
+    top = Math.max(12, top);
 
     card.style.setProperty("--moderator-profile-top", `${top}px`);
     card.style.setProperty("--moderator-profile-left", `${left}px`);
@@ -478,6 +480,7 @@ function createModeratorProfileWidget(profile) {
       placeModeratorProfileCard();
     }
   }, { passive: true });
+  window.requestAnimationFrame(placeModeratorProfileCard);
   return widget;
 }
 

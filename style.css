@@ -3668,32 +3668,20 @@ body.modal-open {
   position: relative;
   overflow: hidden;
   border-color: rgba(165, 121, 31, 0.72);
-  background:
-    radial-gradient(circle at 8% 50%, transparent 0 7px, rgba(227, 188, 94, 0.14) 8px 9px, transparent 10px 14px),
-    radial-gradient(circle at 92% 50%, transparent 0 7px, rgba(227, 188, 94, 0.14) 8px 9px, transparent 10px 14px),
-    linear-gradient(145deg, rgba(91, 64, 15, 0.82), rgba(32, 29, 21, 0.96));
+  background: linear-gradient(145deg, rgba(91, 64, 15, 0.82), rgba(32, 29, 21, 0.96));
   box-shadow: inset 0 0 28px rgba(153, 111, 28, 0.12), 0 0 22px rgba(145, 105, 28, 0.16);
 }
 
-.guestbook-review--first::before,
-.guestbook-review--first::after {
-  position: absolute;
-  color: rgba(227, 188, 94, 0.38);
-  font-size: 1.15rem;
-  letter-spacing: 0.18rem;
-  pointer-events: none;
-}
-
 .guestbook-review--first::before {
-  top: 0.35rem;
-  right: 0.8rem;
-  content: "❦  ❖  ✦  ❖  ❦";
-}
-
-.guestbook-review--first::after {
-  bottom: 0.3rem;
-  left: 0.8rem;
-  content: "❧  ✧  ❖  ✧  ❧";
+  position: absolute;
+  top: 50%;
+  right: 0.55rem;
+  content: "🏛️";
+  color: #efd38d;
+  font-size: clamp(1.35rem, 5vw, 2rem);
+  filter: drop-shadow(0 0 7px rgba(227, 188, 94, 0.82)) drop-shadow(0 0 16px rgba(227, 188, 94, 0.42));
+  pointer-events: none;
+  transform: translateY(-50%);
 }
 
 .guestbook-review--first > * {
@@ -4243,12 +4231,15 @@ body.modal-open {
 .guestbook-moderator-profile-card {
   position: fixed;
   z-index: 2147483647;
-  top: var(--moderator-profile-top, 4.5rem);
-  left: var(--moderator-profile-left, 1rem);
+  top: var(--moderator-profile-top, 12px);
+  left: var(--moderator-profile-left, 12px);
   display: grid;
   grid-template-columns: 58px minmax(0, 1fr) 28px;
   align-items: start;
-  width: min(330px, calc(100vw - 3rem));
+  box-sizing: border-box;
+  width: min(330px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  max-height: calc(100dvh - 24px);
   gap: 0.65rem;
   padding: 0.8rem 0.9rem;
   border: 1px solid rgba(212, 176, 106, 0.48);
@@ -5115,6 +5106,19 @@ html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:focus-
 }
 
 @media (max-width: 560px) {
+  .guestbook-moderator-profile-card {
+    grid-template-columns: 50px minmax(0, 1fr) 28px;
+    width: calc(100vw - 24px);
+    max-width: 330px;
+    max-height: calc(100dvh - 24px);
+    padding: 0.75rem;
+  }
+
+  .guestbook-moderator-profile-photo {
+    width: 50px;
+    height: 50px;
+  }
+
   .museum-news-photo-gallery {
     grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
   }
