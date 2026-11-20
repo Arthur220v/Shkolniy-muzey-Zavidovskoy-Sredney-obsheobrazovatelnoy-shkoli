@@ -1601,7 +1601,7 @@ async function openTour() {
             mobileMapWarning.classList.add("is-visible");
           }
         });
-      }, 1000);
+      }, 12);
     }
   });
   tourHint.hidden = false;
