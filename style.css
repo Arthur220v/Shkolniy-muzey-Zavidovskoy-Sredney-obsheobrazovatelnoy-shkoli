@@ -2558,6 +2558,11 @@ body.modal-open {
   transition: var(--blue-rect-button-transition);
 }
 
+.scene-numeral-button.is-exhibit-link {
+  max-width: min(220px, 38vw);
+  white-space: normal;
+}
+
 .scene-numeral-button:hover,
 .scene-numeral-button:focus-visible {
   border-color: var(--blue-rect-button-border-hover);

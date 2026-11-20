@@ -131,6 +131,17 @@ function makeExhibit(id, title, extras = {}) {
   };
 }
 
+const ZAVIDOVO_VILLAGE_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XI)";
+EXHIBITS[ZAVIDOVO_VILLAGE_EXHIBIT_ID] = makeExhibit(
+  ZAVIDOVO_VILLAGE_EXHIBIT_ID,
+  "Село Завидово",
+  {
+    image: "Stend_about_Zavidovo_history(2)_(XI).jpg",
+    textFile: null,
+    audioFile: "audio_for_Stend_about_Zavidovo_history(2)_(XI).mp3",
+  }
+);
+
 function audioFileForExhibit(key, textFile) {
   if (textFile === null) return null;
   const fileStem = (textFile || `${key}_info_about_image.txt`).replace(/\.txt$/i, "");
@@ -464,7 +475,7 @@ const SCENES = {
     preserveImageFormat: true,
     spots: [],
     romanNumerals: [
-      { numeral: "XI", left: "26.5%", top: "35.3%" },
+      { numeral: "XI", title: "Село Завидово", exhibitId: ZAVIDOVO_VILLAGE_EXHIBIT_ID, left: "26.5%", top: "35.3%" },
       { numeral: "XVI", left: "43.3%", top: "35.3%" },
       { numeral: "XXI", left: "59.0%", top: "35.3%" },
       { numeral: "XXVI", left: "75.7%", top: "35.3%" },
@@ -1179,16 +1190,17 @@ function isVisibleMarkerClick(event, targetSelector) {
     event.clientY <= bounds.bottom;
 }
 
-function renderSceneNumerals(container, numerals) {
-  (numerals || []).forEach(({ numeral, left, top }) => {
+function renderSceneNumerals(container, numerals, blurSrc) {
+  (numerals || []).forEach(({ numeral, title, exhibitId, left, top }) => {
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "scene-numeral-button";
-    button.textContent = numeral;
+    button.className = `scene-numeral-button${exhibitId ? " is-exhibit-link" : ""}`;
+    button.textContent = title || numeral;
     button.style.left = left;
     button.style.top = top;
-    button.setAttribute("aria-disabled", "true");
-    button.setAttribute("aria-label", `Раздел ${numeral} пока недоступен`);
+    button.setAttribute("aria-label", exhibitId ? `Открыть информацию: ${title}` : `Раздел ${numeral} пока недоступен`);
+    button.setAttribute("aria-disabled", String(!exhibitId));
+    if (exhibitId) button.addEventListener("click", () => openExhibit(exhibitId, blurSrc));
     container.appendChild(button);
   });
 }
@@ -1660,7 +1672,7 @@ function openScene(id) {
     data.spots,
     encodePath(IMAGE_DIR, data.image, data.preserveImageFormat)
   );
-  renderSceneNumerals(sceneMarkers, data.romanNumerals);
+  renderSceneNumerals(sceneMarkers, data.romanNumerals, encodePath(IMAGE_DIR, data.image, data.preserveImageFormat));
   scene.setAttribute("aria-hidden", "false");
   scene.classList.remove("is-closing");
   decodeImage(scenePhoto, data.image).then(() => {
