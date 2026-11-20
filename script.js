@@ -132,16 +132,50 @@ function makeExhibit(id, title, extras = {}) {
 }
 
 const ZAVIDOVO_VILLAGE_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XI)";
-EXHIBITS[ZAVIDOVO_VILLAGE_EXHIBIT_ID] = makeExhibit(
-  ZAVIDOVO_VILLAGE_EXHIBIT_ID,
-  "Село Завидово",
-  {
+const ZAVIDOVO_STABLE_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XII)";
+const ZAVIDOVO_CENSUS_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XIII)";
+const ZAVIDOVO_DORMITORY_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XV)";
+const ZAVIDOVO_ROAD_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XVI)";
+const ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XVIII)";
+
+Object.assign(EXHIBITS, {
+  [ZAVIDOVO_VILLAGE_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_VILLAGE_EXHIBIT_ID, "Село Завидово", {
     image: "Stend_about_Zavidovo_history(2)_(XI).jpg",
     preserveImageFormat: true,
     textFile: null,
     audioFile: "audio_for_Stend_about_Zavidovo_history(2)_(XI).mp3",
-  }
-);
+  }),
+  [ZAVIDOVO_STABLE_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_STABLE_EXHIBIT_ID, "Завидовская конюшня", {
+    image: "Stend_about_Zavidovo_history(2)_(XII).jpg",
+    preserveImageFormat: true,
+    textFile: "Stend_about_Zavidovo_history(2)_(XII).jpg_info_about_image.txt",
+    audioFile: null,
+  }),
+  [ZAVIDOVO_CENSUS_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_CENSUS_EXHIBIT_ID, "Перепись населения", {
+    image: "Stend_about_Zavidovo_history(2)_(XIII).jpg",
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_DORMITORY_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_DORMITORY_EXHIBIT_ID, "Общежитие N1", {
+    image: "Stend_about_Zavidovo_history(2)_(XV).jpg",
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_ROAD_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_ROAD_EXHIBIT_ID, "Дорога двух столиц", {
+    image: "Stend_about_Zavidovo_history(2)_(XVI).jpg",
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID, "улица Ленинградская", {
+    image: "Stend_about_Zavidovo_history(2)_(XVIII).jpg",
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+});
 
 function audioFileForExhibit(key, textFile) {
   if (textFile === null) return null;
@@ -477,22 +511,22 @@ const SCENES = {
     spots: [],
     romanNumerals: [
       { numeral: "XI", title: "Село Завидово", exhibitId: ZAVIDOVO_VILLAGE_EXHIBIT_ID, left: "26.5%", top: "35.3%" },
-      { numeral: "XVI", left: "43.3%", top: "35.3%" },
+      { numeral: "XVI", title: "Дорога двух столиц", exhibitId: ZAVIDOVO_ROAD_EXHIBIT_ID, left: "43.3%", top: "35.3%" },
       { numeral: "XXI", left: "59.0%", top: "35.3%" },
       { numeral: "XXVI", left: "75.7%", top: "35.3%" },
-      { numeral: "XII", left: "27.1%", top: "49.7%" },
+      { numeral: "XII", title: "Завидовская конюшня", exhibitId: ZAVIDOVO_STABLE_EXHIBIT_ID, left: "27.1%", top: "49.7%" },
       { numeral: "XVII", left: "44.8%", top: "49.7%" },
       { numeral: "XXII", left: "60.5%", top: "49.7%" },
       { numeral: "XXVII", left: "77.1%", top: "49.7%" },
-      { numeral: "XIII", left: "27.7%", top: "59.5%" },
-      { numeral: "XVIII", left: "46.0%", top: "59.5%" },
+      { numeral: "XIII", title: "Перепись населения", exhibitId: ZAVIDOVO_CENSUS_EXHIBIT_ID, left: "27.7%", top: "59.5%" },
+      { numeral: "XVIII", title: "улица Ленинградская", exhibitId: ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID, left: "46.0%", top: "59.5%" },
       { numeral: "XXIII", left: "62.0%", top: "59.5%" },
       { numeral: "XXVIII", left: "78.9%", top: "59.5%" },
       { numeral: "XIV", left: "25.7%", top: "68.1%" },
       { numeral: "XIX", left: "43.8%", top: "68.1%" },
       { numeral: "XXIV", left: "62.0%", top: "68.1%" },
       { numeral: "XXIX", left: "76.0%", top: "68.1%" },
-      { numeral: "XV", left: "24.9%", top: "76.4%" },
+      { numeral: "XV", title: "Общежитие N1", exhibitId: ZAVIDOVO_DORMITORY_EXHIBIT_ID, left: "24.9%", top: "76.4%" },
       { numeral: "XX", left: "41.4%", top: "76.4%" },
       { numeral: "XXV", left: "57.8%", top: "76.4%" },
       { numeral: "XXXI", left: "75.2%", top: "76.4%" },
