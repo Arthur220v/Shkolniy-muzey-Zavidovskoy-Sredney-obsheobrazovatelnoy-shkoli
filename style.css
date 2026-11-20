@@ -3395,15 +3395,31 @@ body.modal-open {
 
 @media (max-width: 760px) {
   .guestbook {
-    grid-template-columns: minmax(0, 1fr);
+    display: block;
   }
 
-  .guestbook-header,
+  .guestbook-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .guestbook-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
   .guestbook-form,
-  .guestbook-public,
-  .guestbook-moderator {
-    grid-column: 1;
+  .guestbook-public {
+    grid-column: auto;
     grid-row: auto;
+  }
+
+  .guestbook-public {
+    padding-right: 0;
+  }
+
+  .guestbook-moderator {
+    margin-top: 1.35rem;
   }
 }
 
