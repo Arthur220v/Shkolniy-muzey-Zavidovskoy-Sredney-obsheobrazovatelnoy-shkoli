@@ -1230,7 +1230,10 @@ function renderSceneNumerals(container, numerals, blurSrc) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = `scene-numeral-button${exhibitId ? " is-exhibit-link" : ""}`;
-    button.textContent = title || numeral;
+    const label = document.createElement("span");
+    label.className = "scene-numeral-label";
+    label.textContent = title || numeral;
+    button.appendChild(label);
     button.style.left = left;
     button.style.top = top;
     button.setAttribute("aria-label", exhibitId ? `Открыть информацию: ${title}` : `Раздел ${numeral} пока недоступен`);
@@ -1698,6 +1701,7 @@ function closeTour() {
 function openScene(id) {
   const data = SCENES[id];
   if (!data) return;
+  scene.classList.toggle("is-zavidovo-history", id === "Stend_about_Zavidovo_history(2)");
   const requestId = ++sceneRequestId;
   clearTimeout(sceneCloseTimer);
   scenePhoto.src = encodePath(IMAGE_DIR, data.image, data.preserveImageFormat);
