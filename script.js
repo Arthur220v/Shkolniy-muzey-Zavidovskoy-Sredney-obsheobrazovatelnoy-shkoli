@@ -932,7 +932,7 @@ async function goTo(nextIndex, instant) {
   return true;
 }
 
-function openLightbox() {
+function openLightbox(direction = 0) {
   const item = GALLERY[index];
   lightboxTargetIndex = index;
   lightboxGalleryMode = true;
@@ -941,6 +941,40 @@ function openLightbox() {
   lightbox.classList.remove("is-exhibit-image");
   lightbox.classList.remove("is-closing");
   lightbox.setAttribute("aria-hidden", "false");
+
+  if (direction && isLightboxOpen() && lightboxImage.classList.contains("is-shown")) {
+    const incomingImage = new Image();
+    incomingImage.src = encodePath(IMAGE_DIR, item.file);
+    decodeImage(incomingImage, item.file).then((imageReady) => {
+      if (!imageReady || requestId !== lightboxRequestId || !isLightboxOpen()) return;
+      lightboxImage.classList.remove("is-entering-next", "is-entering-previous");
+      lightboxImage.classList.remove("is-shown");
+      lightboxImage.classList.add(direction > 0 ? "is-exiting-next" : "is-exiting-previous");
+
+      window.setTimeout(() => {
+        if (requestId !== lightboxRequestId || !isLightboxOpen()) return;
+        lightboxImage.classList.remove("is-exiting-next", "is-exiting-previous");
+        lightboxImage.src = incomingImage.src;
+        lightboxImage.alt = item.caption;
+        lightboxCaption.textContent = item.caption;
+        lightboxImage.classList.add(direction > 0 ? "is-entering-next" : "is-entering-previous");
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            if (requestId === lightboxRequestId) lightboxImage.classList.add("is-shown");
+          });
+        });
+      }, window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 240);
+    });
+    document.body.classList.add("modal-open");
+    return;
+  }
+
+  lightboxImage.classList.remove(
+    "is-exiting-next",
+    "is-exiting-previous",
+    "is-entering-next",
+    "is-entering-previous"
+  );
   lightboxImage.classList.remove("is-shown");
   lightboxImage.src = encodePath(IMAGE_DIR, item.file);
   lightboxImage.alt = item.caption;
@@ -1052,7 +1086,7 @@ function navigateLightbox(direction) {
   lightboxTargetIndex = (lightboxTargetIndex + direction + GALLERY.length) % GALLERY.length;
   const requestedIndex = lightboxTargetIndex;
   goTo(requestedIndex).then((navigated) => {
-    if (navigated && isLightboxOpen() && requestedIndex === lightboxTargetIndex) openLightbox();
+    if (navigated && isLightboxOpen() && requestedIndex === lightboxTargetIndex) openLightbox(direction);
   });
 }
 

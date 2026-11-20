@@ -1119,14 +1119,32 @@ footer {
   transform: scale(0.995);
   filter: none;
   transition:
-    opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.36s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .lightbox.is-open img.is-shown {
   opacity: 1;
   transform: none;
   filter: blur(0);
+}
+
+.lightbox img.is-exiting-next {
+  opacity: 0;
+  transform: translateX(-5vw) scale(0.985);
+}
+
+.lightbox img.is-exiting-previous {
+  opacity: 0;
+  transform: translateX(5vw) scale(0.985);
+}
+
+.lightbox img.is-entering-next:not(.is-shown) {
+  transform: translateX(5vw) scale(0.985);
+}
+
+.lightbox img.is-entering-previous:not(.is-shown) {
+  transform: translateX(-5vw) scale(0.985);
 }
 
 .lightbox-caption {
@@ -1163,6 +1181,11 @@ footer {
   font-size: 2rem;
   line-height: 1;
   cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .exhibit-blur {
@@ -3835,8 +3858,32 @@ html[data-theme="light"] .exhibit-card {
 }
 
 html[data-theme="light"] .exhibit-title,
+html[data-theme="light"] .exhibit-text {
+  color: #252a31;
+}
+
 html[data-theme="light"] .audio-speed-value {
   color: var(--theme-heading);
+}
+
+html[data-theme="light"] .close-x {
+  border: 1px solid var(--light-control-border);
+  background: var(--light-control-background);
+  color: var(--light-control-ink);
+  box-shadow: 0 8px 22px rgba(30, 45, 65, 0.18);
+}
+
+html[data-theme="light"] .close-x:hover,
+html[data-theme="light"] .close-x:focus-visible {
+  border-color: #9b702b;
+  background: var(--light-control-hover-background);
+  color: var(--light-control-ink);
+  transform: scale(1.06);
+}
+
+html[data-theme="light"] .close-x:focus-visible {
+  outline: 2px solid var(--light-control-ink);
+  outline-offset: 3px;
 }
 
 html[data-theme="light"] .tour-hint,
@@ -3960,6 +4007,11 @@ html[data-theme="light"] .hot-area-label {
   .map-pin .pin-glow {
     transition: none;
     animation: none;
+  }
+
+  .lightbox img,
+  .close-x {
+    transition: none;
   }
 }
 
