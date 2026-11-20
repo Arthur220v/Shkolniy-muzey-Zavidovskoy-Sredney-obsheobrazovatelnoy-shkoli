@@ -2234,11 +2234,11 @@ body.modal-open {
   pointer-events: none;
   transform: translate(-50%, -24px) scale(0.94);
   transition:
-    opacity 0.5s ease,
-    filter 0.5s ease,
-    transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1),
-    visibility 0.5s ease,
-    box-shadow 0.6s ease;
+    opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.72s ease,
+    box-shadow 0.85s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .mobile-map-warning[hidden] {
