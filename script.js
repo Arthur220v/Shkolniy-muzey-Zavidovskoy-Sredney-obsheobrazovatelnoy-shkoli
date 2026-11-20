@@ -135,15 +135,21 @@ function makeExhibit(id, title, extras = {}) {
 const ZAVIDOVO_VILLAGE_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XI)";
 const ZAVIDOVO_STABLE_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XII)";
 const ZAVIDOVO_CENSUS_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XIII)";
+const ZAVIDOVO_RAILWAY_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XIV)";
 const ZAVIDOVO_DORMITORY_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XV)";
 const ZAVIDOVO_ROAD_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XVI)";
+const ZAVIDOVO_COACHMEN_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XVII)";
 const ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XVIII)";
 const ZAVIDOVO_CLUB_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XIX)";
 const ZAVIDOVO_DORMITORY_2_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XX)";
+const ZAVIDOVO_TEMPLE_INFO_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXI)";
 const ZAVIDOVO_KLIN_DISTRICT_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXII)";
+const ZAVIDOVO_TRINITY_CHURCH_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXIII)";
+const ZAVIDOVO_FACTORY_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXIV)";
 const ZAVIDOVO_DORMITORY_3_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXV)";
 const ZAVIDOVO_TEMPLE_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXVI)";
 const ZAVIDOVO_TEMPLE_SIDE_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXVIII)";
+const ZAVIDOVO_RIVER_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXVII)";
 const ZAVIDOVO_KINDERGARTEN_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXIX)";
 const ZAVIDOVO_DORMITORY_4_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXXI)";
 const ZAVIDOVO_BOOK_1_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXXII)";
@@ -169,6 +175,11 @@ Object.assign(EXHIBITS, {
     textFile: null,
     audioFile: null,
   }),
+  [ZAVIDOVO_RAILWAY_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_RAILWAY_EXHIBIT_ID, "Николаевская железная дорога", {
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
   [ZAVIDOVO_DORMITORY_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_DORMITORY_EXHIBIT_ID, "Общежитие N1", {
     image: "Stend_about_Zavidovo_history(2)_(XV).jpg",
     preserveImageFormat: true,
@@ -177,6 +188,11 @@ Object.assign(EXHIBITS, {
   }),
   [ZAVIDOVO_ROAD_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_ROAD_EXHIBIT_ID, "Дорога двух столиц", {
     image: "Stend_about_Zavidovo_history(2)_(XVI).jpg",
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_COACHMEN_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_COACHMEN_EXHIBIT_ID, "Ямщики", {
     preserveImageFormat: true,
     textFile: null,
     audioFile: null,
@@ -197,7 +213,22 @@ Object.assign(EXHIBITS, {
     textFile: null,
     audioFile: null,
   }),
+  [ZAVIDOVO_TEMPLE_INFO_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_TEMPLE_INFO_EXHIBIT_ID, "Сведения о Храмовом комплексе", {
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
   [ZAVIDOVO_KLIN_DISTRICT_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_KLIN_DISTRICT_EXHIBIT_ID, "Карта Клинского уезда от 1821 года", {
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_TRINITY_CHURCH_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_TRINITY_CHURCH_EXHIBIT_ID, "Троицкая церковь", {
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_FACTORY_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_FACTORY_EXHIBIT_ID, "Фабрики плетельных изделий фабриканта П.И.Бакерина", {
     preserveImageFormat: true,
     textFile: null,
     audioFile: null,
@@ -208,6 +239,11 @@ Object.assign(EXHIBITS, {
     audioFile: null,
   }),
   [ZAVIDOVO_TEMPLE_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_TEMPLE_EXHIBIT_ID, "Храмовый комплекс села Завидово, XX век", {
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+  }),
+  [ZAVIDOVO_RIVER_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_RIVER_EXHIBIT_ID, "Река Дойбица", {
     preserveImageFormat: true,
     textFile: null,
     audioFile: null,
@@ -586,19 +622,19 @@ const SCENES = {
     romanNumerals: [
       { numeral: "XI", title: "Село Завидово", exhibitId: ZAVIDOVO_VILLAGE_EXHIBIT_ID, left: "24.0%", top: "35.3%" },
       { numeral: "XVI", title: "Дорога двух столиц", exhibitId: ZAVIDOVO_ROAD_EXHIBIT_ID, left: "43.3%", top: "35.3%" },
-      { numeral: "XXI", left: "59.0%", top: "35.3%" },
+      { numeral: "XXI", title: "Сведения о Храмовом комплексе", exhibitId: ZAVIDOVO_TEMPLE_INFO_EXHIBIT_ID, left: "59.0%", top: "35.3%" },
       { numeral: "XXVI", title: "Храмовый комплекс", exhibitId: ZAVIDOVO_TEMPLE_EXHIBIT_ID, left: "75.7%", top: "35.3%" },
       { numeral: "XII", title: "Завидовская конюшня", exhibitId: ZAVIDOVO_STABLE_EXHIBIT_ID, left: "24.6%", top: "49.7%" },
-      { numeral: "XVII", left: "44.8%", top: "49.7%" },
+      { numeral: "XVII", title: "Ямщики", exhibitId: ZAVIDOVO_COACHMEN_EXHIBIT_ID, left: "44.8%", top: "49.7%" },
       { numeral: "XXII", title: "Клинский уезд", exhibitId: ZAVIDOVO_KLIN_DISTRICT_EXHIBIT_ID, left: "60.5%", top: "49.7%" },
-      { numeral: "XXVII", left: "77.1%", top: "49.7%" },
+      { numeral: "XXVII", title: "Река Дойбица", exhibitId: ZAVIDOVO_RIVER_EXHIBIT_ID, left: "77.1%", top: "49.7%" },
       { numeral: "XIII", title: "Перепись населения", exhibitId: ZAVIDOVO_CENSUS_EXHIBIT_ID, left: "25.2%", top: "59.5%" },
       { numeral: "XVIII", title: "улица Ленинградская", exhibitId: ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID, left: "43.5%", top: "59.5%" },
-      { numeral: "XXIII", left: "62.0%", top: "59.5%" },
+      { numeral: "XXIII", title: "Троицкая церковь", exhibitId: ZAVIDOVO_TRINITY_CHURCH_EXHIBIT_ID, left: "62.0%", top: "59.5%" },
       { numeral: "XXVIII", title: "Рядом с храмом..", exhibitId: ZAVIDOVO_TEMPLE_SIDE_EXHIBIT_ID, left: "78.9%", top: "59.5%" },
-      { numeral: "XIV", left: "25.7%", top: "68.1%" },
+      { numeral: "XIV", title: "Николаевская железная дорога", exhibitId: ZAVIDOVO_RAILWAY_EXHIBIT_ID, left: "25.7%", top: "68.1%" },
       { numeral: "XIX", title: "Клуб", exhibitId: ZAVIDOVO_CLUB_EXHIBIT_ID, left: "43.8%", top: "68.1%" },
-      { numeral: "XXIV", left: "62.0%", top: "68.1%" },
+      { numeral: "XXIV", title: "Плетельная фабрика", exhibitId: ZAVIDOVO_FACTORY_EXHIBIT_ID, left: "62.0%", top: "68.1%" },
       { numeral: "XXIX", title: "Детский сад", exhibitId: ZAVIDOVO_KINDERGARTEN_EXHIBIT_ID, left: "76.0%", top: "68.1%" },
       { numeral: "XV", title: "Общежитие N1", exhibitId: ZAVIDOVO_DORMITORY_EXHIBIT_ID, left: "22.4%", top: "76.4%" },
       { numeral: "XX", title: "Общежитие N2", exhibitId: ZAVIDOVO_DORMITORY_2_EXHIBIT_ID, left: "41.4%", top: "76.4%" },
