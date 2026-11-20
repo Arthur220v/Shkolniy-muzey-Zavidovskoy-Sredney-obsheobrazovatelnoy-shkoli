@@ -301,6 +301,12 @@ Object.assign(EXHIBITS, {
   "sunduk_N2(3)": makeExhibit("sunduk_N2(3)", "Немецкий сундук", {
     preserveImageFormat: true,
   }),
+  "voennie_trofei(4)": makeExhibit("voennie_trofei(4)", "Военные трофеи", {
+    image: "voennie_trofei(4).jpg",
+    preserveImageFormat: true,
+    textFile: "voennie_trofei(4)_info_about_image.txt",
+    audioFile: null,
+  }),
   "vitrina_tankov(10)": makeExhibit("vitrina_tankov(10)", "Витрина военной техники"),
   "medicinskaya_vitrina(11)": makeExhibit("medicinskaya_vitrina(11)", "Медицинская витрина"),
   "maket_boev(12)": makeExhibit("maket_boev(12)", "Макет уличных боёв"),
@@ -501,6 +507,15 @@ const LONGITUDINAL_OBJECTS = [
     top: "89%",
     type: "exhibit",
     labelPosition: "above",
+  },
+  {
+    id: "voennie_trofei(4)",
+    title: "Военные трофеи",
+    number: "4",
+    color: "blue",
+    left: "76.7%",
+    top: "47.8%",
+    type: "exhibit",
   },
 ];
 
