@@ -550,6 +550,7 @@ const mapImage = document.getElementById("mapImage");
 const mapMarkers = document.getElementById("mapMarkers");
 const tourContinue = document.getElementById("tourContinue");
 const tourBack = document.getElementById("tourBack");
+const mobileMapWarning = document.getElementById("mobileMapWarning");
 const tourHint = document.getElementById("tourHint");
 const hintContent = document.getElementById("hintContent");
 const hintLegend = document.getElementById("hintLegend");
@@ -589,6 +590,7 @@ let lightboxTargetIndex = 0;
 let exhibitCloseTimer = 0;
 let tourCloseTimer = 0;
 let tourOpenRequestId = 0;
+let mobileMapWarningTimer = 0;
 let sceneCloseTimer = 0;
 let sceneRequestId = 0;
 let bookCloseTimer = 0;
@@ -1567,6 +1569,9 @@ function openMapObject(item) {
 
 async function openTour() {
   const requestId = ++tourOpenRequestId;
+  clearTimeout(mobileMapWarningTimer);
+  mobileMapWarning.classList.remove("is-visible");
+  mobileMapWarning.hidden = true;
   showEntranceMap(true);
   const imageReady = await entranceMapReady;
   if (requestId !== tourOpenRequestId || !imageReady) return;
@@ -1582,6 +1587,17 @@ async function openTour() {
   requestAnimationFrame(() => {
     if (requestId !== tourOpenRequestId) return;
     tour.classList.add("is-open");
+    if (document.body.classList.contains("touch-device")) {
+      mobileMapWarningTimer = window.setTimeout(() => {
+        if (requestId !== tourOpenRequestId || !isTourOpen()) return;
+        mobileMapWarning.hidden = false;
+        requestAnimationFrame(() => {
+          if (requestId === tourOpenRequestId && isTourOpen()) {
+            mobileMapWarning.classList.add("is-visible");
+          }
+        });
+      }, 2000);
+    }
   });
   tourHint.hidden = false;
   requestAnimationFrame(() => tourHint.classList.add("is-visible"));
@@ -1600,6 +1616,9 @@ function setTourHintCollapsed(collapsed) {
 
 function closeTour() {
   tourOpenRequestId += 1;
+  clearTimeout(mobileMapWarningTimer);
+  mobileMapWarning.classList.remove("is-visible");
+  mobileMapWarning.hidden = true;
   exhibitStack = [];
   closeExhibit();
   closeScene();
@@ -1857,6 +1876,11 @@ document.getElementById("walkBtn").addEventListener("click", openTour);
 tourContinue.addEventListener("click", showLongitudinalMap);
 tourBack.addEventListener("click", () => showEntranceMap());
 document.getElementById("tourExit").addEventListener("click", closeTour);
+document.getElementById("mobileMapWarningClose").addEventListener("click", () => {
+  clearTimeout(mobileMapWarningTimer);
+  mobileMapWarning.classList.remove("is-visible");
+  mobileMapWarning.hidden = true;
+});
 document.getElementById("closeHint").addEventListener("click", () => setTourHintCollapsed(true));
 hintRestore.addEventListener("click", () => setTourHintCollapsed(false));
 hintLegendToggle.addEventListener("click", () => {

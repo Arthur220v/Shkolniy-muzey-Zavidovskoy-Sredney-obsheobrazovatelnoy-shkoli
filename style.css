@@ -2215,6 +2215,73 @@ body.modal-open {
   background: rgba(20, 42, 78, 0.95);
 }
 
+.mobile-map-warning {
+  position: absolute;
+  top: max(0.8rem, env(safe-area-inset-top));
+  left: 50%;
+  z-index: 12;
+  width: min(calc(100vw - 1.5rem), 38rem);
+  padding: 0.9rem 3rem 0.9rem 1rem;
+  border: 1px solid rgba(255, 93, 93, 0.92);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(111, 22, 30, 0.98), rgba(54, 10, 18, 0.98));
+  color: #fff;
+  font: 600 0.86rem/1.5 "Manrope", "Segoe UI", sans-serif;
+  box-shadow: 0 0 12px rgba(255, 45, 55, 0.62), 0 0 32px rgba(224, 49, 49, 0.38), 0 14px 36px rgba(0, 0, 0, 0.42);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -10px) scale(0.98);
+  transition:
+    opacity 0.24s ease,
+    transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+    visibility 0.24s ease;
+}
+
+.mobile-map-warning[hidden] {
+  display: none;
+}
+
+.mobile-map-warning.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.mobile-map-warning p {
+  margin: 0;
+}
+
+.mobile-map-warning-close {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.35rem;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  background: rgba(40, 8, 14, 0.55);
+  color: #fff;
+  font: 400 1.35rem/1 "Manrope", "Segoe UI", sans-serif;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.mobile-map-warning-close:hover,
+.mobile-map-warning-close:focus-visible {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.06);
+}
+
+.mobile-map-warning-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
 .tour-hint {
   position: absolute;
   right: 1.1rem;
@@ -3585,6 +3652,10 @@ html[data-theme="light"] {
   --light-control-border: rgba(65, 84, 108, 0.28);
   --light-control-background: linear-gradient(180deg, #f5f6f8, #e1e6ed);
   --light-control-hover-background: linear-gradient(180deg, #fff, #dce2e9);
+  --blue-rect-button-background: linear-gradient(180deg, #f8f9fb, #e4e9ef);
+  --blue-rect-button-background-hover: #fff;
+  --blue-rect-button-border: rgba(65, 84, 108, 0.28);
+  --blue-rect-button-border-hover: rgba(65, 84, 108, 0.44);
 }
 
 html[data-theme="light"] body {
@@ -3972,8 +4043,32 @@ html[data-theme="light"] .fullscreen-btn:focus-visible {
 }
 
 html[data-theme="light"] .pin-label,
-html[data-theme="light"] .hot-area-label {
-  color: #f4ecdc;
+html[data-theme="light"] .hot-area-label,
+html[data-theme="light"] .scene-numeral-button {
+  color: #263449;
+  text-shadow: none;
+}
+
+html[data-theme="light"] .map-pin:hover .pin-label,
+html[data-theme="light"] .map-pin:focus-visible .pin-label,
+html[data-theme="light"] .map-pin:active .pin-label,
+html[data-theme="light"] .hot-area:hover .hot-area-label,
+html[data-theme="light"] .hot-area:focus-visible .hot-area-label,
+html[data-theme="light"] .hot-area:active .hot-area-label,
+html[data-theme="light"] .scene-numeral-button:hover,
+html[data-theme="light"] .scene-numeral-button:focus-visible,
+html[data-theme="light"] .scene-numeral-button:active {
+  border-color: var(--light-control-border);
+  background: #fff;
+  color: #263449;
+  box-shadow: 0 8px 20px rgba(30, 45, 65, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-map-warning,
+  .mobile-map-warning-close {
+    transition: none;
+  }
 }
 
 @media (max-width: 560px) {
