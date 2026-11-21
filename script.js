@@ -1618,7 +1618,7 @@ async function loadAboutAndLinks() {
   about.replace(/\u200b/g, "").split(/\n+/).map((block) => block.trim()).filter(Boolean).forEach((block, index) => {
     const p = document.createElement("p");
     const withLinks = block
-      .replace(/Гореликова Валерия Петровича/g, '<a class="glow-link" href="https://vk.ru/v.gorelikov69" target="_blank" rel="noopener noreferrer">Гореликова Валерия Петровича</a>')
+      .replace(/Гореликова Валерия Петровича/g, '<a class="glow-link" href="#valeriy-gorelikov">Гореликова Валерия Петровича</a>')
       .replace(/школьного клуба «Звезда»/g, '<a class="glow-link" href="https://vk.ru/club108708301" target="_blank" rel="noopener noreferrer">школьного клуба «Звезда»</a>')
       .replace(/Валерий Ильин/g, '<a class="glow-link" href="https://tvereparhia.ru/about/clergy/valeriy-dmitrievich-ilin-protoierey/" target="_blank" rel="noopener noreferrer">Валерий Ильин</a>')
       .replace(/Пётр Дубяго/g, '<a class="glow-link" href="https://tvereparhia.ru/about/clergy/petr-ivanovich-dubyago-protoierey/" target="_blank" rel="noopener noreferrer">Пётр Дубяго</a>')
