@@ -195,7 +195,7 @@ Object.assign(EXHIBITS, {
   [ZAVIDOVO_COACHMEN_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_COACHMEN_EXHIBIT_ID, "Ямщики", {
     preserveImageFormat: true,
     textFile: null,
-    audioFile: null,
+    audioFile: "audio_for_Stend_about_Zavidovo_history(2)_(XVII).mp3",
   }),
   [ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID, "улица Ленинградская", {
     image: "Stend_about_Zavidovo_history(2)_(XVIII).jpg",
