@@ -305,7 +305,7 @@ Object.assign(EXHIBITS, {
     image: "voennie_trofei(4).jpg",
     preserveImageFormat: true,
     textFile: "voennie_trofei(4)_info_about_image.txt",
-    audioFile: null,
+    audioFile: "audio_for_voennie_trofei(4).mp3",
   }),
   "vitrina_tankov(10)": makeExhibit("vitrina_tankov(10)", "Витрина военной техники"),
   "medicinskaya_vitrina(11)": makeExhibit("medicinskaya_vitrina(11)", "Медицинская витрина"),
