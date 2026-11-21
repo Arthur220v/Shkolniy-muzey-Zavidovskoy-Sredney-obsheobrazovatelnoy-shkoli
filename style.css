@@ -957,6 +957,19 @@ footer {
   line-height: 1.75;
 }
 
+.author-biography-quote {
+  display: inline-block;
+  margin: 0.12em 0.08em;
+  padding: 0.08em 0.3em;
+  border-radius: 0.35em;
+  background: rgba(235, 239, 247, 0.1);
+  color: #f7f8fb;
+  font-size: 1.08em;
+  font-style: italic;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.42);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.08);
+}
+
 .event-section {
   margin-top: clamp(2rem, 5vw, 3.2rem);
 }

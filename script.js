@@ -1,7 +1,12 @@
 const IMAGE_DIR = "images/";
 const TEXT_DIR = "Texts/";
 const AUDIO_DIR = "Audio/";
-const TEXT_CACHE_VERSION = "20261118-2";
+const TEXT_CACHE_VERSION = "20261121-3";
+const VALERIY_BIOGRAPHY_QUOTES = [
+  "«В нашей семье, как и в остальных семьях, есть свои герои: наши деды, дяди (братья наших дедов) — все они вдохновляли, много героических рассказов про них»",
+  "«А если мы найдём останки фашиста, что будем делать?»",
+  "«Назад отправим, в Германию. Они нам не нужны, нам наши деды нужны. Наша память!»",
+];
 
 const GALLERY = [
   { file: "school_photo.jpg", caption: "Завидовская школа" },
@@ -1585,7 +1590,25 @@ async function loadAboutAndLinks() {
   const valeriyBiographyBox = document.getElementById("valeriyGorelikovBiography");
   valeriyBiography.split(/\n+/).map((paragraph) => paragraph.trim()).filter(Boolean).forEach((paragraph) => {
     const p = document.createElement("p");
-    p.textContent = paragraph;
+    let remaining = paragraph;
+    while (remaining) {
+      const matches = VALERIY_BIOGRAPHY_QUOTES
+        .map((quote) => ({ quote, index: remaining.indexOf(quote) }))
+        .filter((match) => match.index !== -1)
+        .sort((a, b) => a.index - b.index);
+      if (matches.length === 0) {
+        p.appendChild(document.createTextNode(remaining));
+        break;
+      }
+
+      const { quote, index } = matches[0];
+      p.appendChild(document.createTextNode(remaining.slice(0, index)));
+      const quotation = document.createElement("span");
+      quotation.className = "author-biography-quote";
+      quotation.textContent = quote;
+      p.appendChild(quotation);
+      remaining = remaining.slice(index + quote.length);
+    }
     valeriyBiographyBox.appendChild(p);
   });
   const aboutBox = document.getElementById("aboutText");
