@@ -872,6 +872,7 @@ footer {
 
 .founder-card {
   margin-top: 1.25rem;
+  align-items: start;
 }
 
 .author-photo-button {
