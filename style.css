@@ -971,10 +971,10 @@ footer {
 }
 
 html[data-theme="light"] .author-biography-quote {
-  background: #574628;
-  color: #fff9eb;
-  text-shadow: 0 0 7px rgba(255, 255, 255, 0.24);
-  box-shadow: 0 0 12px rgba(64, 47, 20, 0.24);
+  background: #68717d;
+  color: #f1f3f5;
+  text-shadow: 0 0 7px rgba(235, 239, 244, 0.7);
+  box-shadow: 0 0 12px rgba(104, 113, 125, 0.32);
 }
 
 .event-section {
