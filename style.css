@@ -4838,16 +4838,22 @@ html[data-theme="light"] .guestbook-review--featured {
 html[data-theme="light"] .guestbook-review--first {
   border-color: rgba(155, 112, 43, 0.78);
   background:
-    radial-gradient(ellipse at 50% 0, rgba(247, 215, 149, 0.22), transparent 58%),
-    linear-gradient(145deg, #3c2b13, #1d1b18 52%, #392a16);
-  box-shadow: 0 0 0 1px rgba(195, 147, 62, 0.22), 0 0 26px rgba(171, 126, 40, 0.2);
-  color: #f2e4c4;
+    radial-gradient(ellipse at 50% 0, rgba(255, 248, 205, 0.72), transparent 58%),
+    linear-gradient(145deg, #fff8dc, #f3df9f);
+  box-shadow: 0 0 0 1px rgba(195, 147, 62, 0.22), 0 0 26px rgba(205, 164, 31, 0.18);
+  color: #5b451f;
 }
 
 html[data-theme="light"] .guestbook-review--first .guestbook-review-identity h3,
 html[data-theme="light"] .guestbook-review--first .guestbook-review-identity time,
 html[data-theme="light"] .guestbook-review--first .guestbook-review-body {
-  color: #f2e4c4;
+  color: #5b451f;
+}
+
+html[data-theme="light"] .guestbook-review--first .guestbook-first-review-badge {
+  border-color: rgba(155, 112, 43, 0.5);
+  background: rgba(255, 255, 255, 0.58);
+  color: #78531e;
 }
 
 html[data-theme="light"] .museum-news-card {
