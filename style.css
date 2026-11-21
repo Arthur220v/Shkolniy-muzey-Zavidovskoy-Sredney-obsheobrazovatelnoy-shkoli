@@ -970,6 +970,13 @@ footer {
   box-shadow: 0 0 14px rgba(255, 255, 255, 0.08);
 }
 
+html[data-theme="light"] .author-biography-quote {
+  background: #574628;
+  color: #fff9eb;
+  text-shadow: 0 0 7px rgba(255, 255, 255, 0.24);
+  box-shadow: 0 0 12px rgba(64, 47, 20, 0.24);
+}
+
 .event-section {
   margin-top: clamp(2rem, 5vw, 3.2rem);
 }
