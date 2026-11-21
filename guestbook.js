@@ -426,10 +426,23 @@ function createModeratorProfileWidget(profile) {
   const setOpen = (open, dismissed = false) => {
     widget.classList.toggle("is-open", open);
     widget.classList.toggle("is-dismissed", dismissed);
-    card.classList.toggle("is-open", open && !dismissed);
     trigger.setAttribute("aria-expanded", String(open));
     card.setAttribute("aria-hidden", String(!open));
-    if (open) placeModeratorProfileCard();
+    window.clearTimeout(card.closeTimer);
+    if (open) {
+      card.classList.remove("is-closing");
+      card.classList.add("is-open");
+      trigger.setAttribute("aria-expanded", "true");
+      card.setAttribute("aria-hidden", "false");
+      placeModeratorProfileCard();
+    } else {
+      card.classList.remove("is-open");
+      card.classList.add("is-closing");
+      card.setAttribute("aria-hidden", "true");
+      card.closeTimer = window.setTimeout(() => {
+        card.classList.remove("is-closing");
+      }, 180);
+    }
   };
   trigger.addEventListener("click", () => {
     const opening = !widget.classList.contains("is-open");
@@ -485,10 +498,16 @@ function createModeratorProfileWidget(profile) {
       placeModeratorProfileCard();
     }
   });
-  window.addEventListener("scroll", () => {
-    if (trigger.getAttribute("aria-expanded") === "true") {
-      placeModeratorProfileCard();
+  const closeOnOutsidePointer = (event) => {
+    if (widget.classList.contains("is-open") &&
+        !widget.contains(event.target) &&
+        !card.contains(event.target)) {
+      setOpen(false, true);
     }
+  };
+  document.addEventListener("pointerdown", closeOnOutsidePointer);
+  window.addEventListener("scroll", () => {
+    if (widget.classList.contains("is-open")) setOpen(false, true);
   }, { passive: true });
   window.requestAnimationFrame(placeModeratorProfileCard);
   return widget;
