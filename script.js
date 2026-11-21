@@ -513,8 +513,8 @@ const LONGITUDINAL_OBJECTS = [
     title: "Военные трофеи",
     number: "4",
     color: "blue",
-    left: "76.7%",
-    top: "47.8%",
+    left: "78.2%",
+    top: "49.3%",
     type: "exhibit",
   },
 ];
@@ -795,11 +795,14 @@ function encodePath(dir, file, preserveImageFormat = false) {
     file === "audio_for_Bratskaya_mogila_v_derevne_Varaksino_(I)_info_about_image.mp3";
   const isUpdatedVaraksinoText = dir === TEXT_DIR &&
     file === "Bratskaya_mogila_v_derevne_Varaksino_(I)_info_about_image.txt";
+  const isUpdatedZavidovoXXIV = dir === IMAGE_DIR &&
+    file === "Stend_about_Zavidovo_history(2)_(XXIV).jpg";
   return isUpdatedMemoryDisplay
     ? `${path}?v=20261108-1`
     : isUpdatedEntranceMap ? `${path}?v=20261108-2`
       : isUpdatedMotovilinAudio ? `${path}?v=20261118-1`
-        : isUpdatedVaraksinoAudio || isUpdatedVaraksinoText ? `${path}?v=20261115-2` : path;
+        : isUpdatedVaraksinoAudio || isUpdatedVaraksinoText ? `${path}?v=20261115-2`
+          : isUpdatedZavidovoXXIV ? `${path}?v=20261121-xxiv-2` : path;
 }
 
 function createPanZoom(viewport, world) {
