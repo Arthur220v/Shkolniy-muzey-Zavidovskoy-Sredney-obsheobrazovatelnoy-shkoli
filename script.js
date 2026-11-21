@@ -513,8 +513,8 @@ const LONGITUDINAL_OBJECTS = [
     title: "Военные трофеи",
     number: "4",
     color: "blue",
-    left: "78.2%",
-    top: "49.3%",
+    left: "79%",
+    top: "50.5%",
     type: "exhibit",
   },
 ];
@@ -802,7 +802,7 @@ function encodePath(dir, file, preserveImageFormat = false) {
     : isUpdatedEntranceMap ? `${path}?v=20261108-2`
       : isUpdatedMotovilinAudio ? `${path}?v=20261118-1`
         : isUpdatedVaraksinoAudio || isUpdatedVaraksinoText ? `${path}?v=20261115-2`
-          : isUpdatedZavidovoXXIV ? `${path}?v=20261121-xxiv-2` : path;
+          : isUpdatedZavidovoXXIV ? `${path}?v=20261121-xxiv-3` : path;
 }
 
 function createPanZoom(viewport, world) {
