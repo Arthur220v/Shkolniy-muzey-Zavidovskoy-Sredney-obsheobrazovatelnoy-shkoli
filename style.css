@@ -875,6 +875,17 @@ footer {
   align-items: start;
 }
 
+.founder-card-heading {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--gold-bright);
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  font-size: clamp(1.55rem, 3vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+
 .author-photo-button {
   display: block;
   width: 100%;
@@ -4713,6 +4724,7 @@ html[data-theme="light"] :where(
   .about h2,
   .additional-info > h2,
   .author-copy h3,
+  .founder-card-heading,
   .event-section h3,
   .guestbook-header h2,
   .guestbook-avatar-builder legend,
