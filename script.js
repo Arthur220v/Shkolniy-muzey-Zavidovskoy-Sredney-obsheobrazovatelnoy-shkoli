@@ -178,7 +178,7 @@ Object.assign(EXHIBITS, {
   [ZAVIDOVO_RAILWAY_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_RAILWAY_EXHIBIT_ID, "Николаевская железная дорога", {
     preserveImageFormat: true,
     textFile: null,
-    audioFile: null,
+    audioFile: "audio_for_Stend_about_Zavidovo_history(2)_(XIV).mp3",
   }),
   [ZAVIDOVO_DORMITORY_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_DORMITORY_EXHIBIT_ID, "Общежитие N1", {
     image: "Stend_about_Zavidovo_history(2)_(XV).jpg",
@@ -216,7 +216,7 @@ Object.assign(EXHIBITS, {
   [ZAVIDOVO_TEMPLE_INFO_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_TEMPLE_INFO_EXHIBIT_ID, "Сведения о Храмовом комплексе", {
     preserveImageFormat: true,
     textFile: null,
-    audioFile: null,
+    audioFile: "audio_for_Stend_about_Zavidovo_history(2)_(XXI).mp3",
   }),
   [ZAVIDOVO_KLIN_DISTRICT_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_KLIN_DISTRICT_EXHIBIT_ID, "Карта Клинского уезда от 1821 года", {
     preserveImageFormat: true,
@@ -226,12 +226,12 @@ Object.assign(EXHIBITS, {
   [ZAVIDOVO_TRINITY_CHURCH_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_TRINITY_CHURCH_EXHIBIT_ID, "Троицкая церковь", {
     preserveImageFormat: true,
     textFile: null,
-    audioFile: null,
+    audioFile: "audio_for_Stend_about_Zavidovo_history(2)_(XXIII).mp3",
   }),
   [ZAVIDOVO_FACTORY_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_FACTORY_EXHIBIT_ID, "Фабрики плетельных изделий фабриканта П.И.Бакерина", {
     preserveImageFormat: true,
     textFile: null,
-    audioFile: null,
+    audioFile: "audio_for_Stend_about_Zavidovo_history(2)_(XXIV).mp3",
   }),
   [ZAVIDOVO_DORMITORY_3_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_DORMITORY_3_EXHIBIT_ID, "Общежитие N3", {
     preserveImageFormat: true,
@@ -246,7 +246,7 @@ Object.assign(EXHIBITS, {
   [ZAVIDOVO_RIVER_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_RIVER_EXHIBIT_ID, "Река Дойбица", {
     preserveImageFormat: true,
     textFile: null,
-    audioFile: null,
+    audioFile: "audio_for_Stend_about_Zavidovo_history(2)_(XXVII).mp3",
   }),
   [ZAVIDOVO_TEMPLE_SIDE_EXHIBIT_ID]: makeExhibit(ZAVIDOVO_TEMPLE_SIDE_EXHIBIT_ID, "Боковой вид на храмовый комплекс села Завидово", {
     preserveImageFormat: true,
