@@ -1578,6 +1578,16 @@ async function loadAboutAndLinks() {
     encodePath(TEXT_DIR, "main_information_about_the_school_museum_below_the_images.txt"),
     ABOUT_FALLBACK
   );
+  const valeriyBiography = await readTextFile(
+    encodePath(TEXT_DIR, "Valeriy_Gorelikov_info.txt"),
+    "Биографический текст временно недоступен."
+  );
+  const valeriyBiographyBox = document.getElementById("valeriyGorelikovBiography");
+  valeriyBiography.split(/\n+/).map((paragraph) => paragraph.trim()).filter(Boolean).forEach((paragraph) => {
+    const p = document.createElement("p");
+    p.textContent = paragraph;
+    valeriyBiographyBox.appendChild(p);
+  });
   const aboutBox = document.getElementById("aboutText");
   const aboutRemainder = document.getElementById("aboutRemainder");
   aboutBox.innerHTML = "";

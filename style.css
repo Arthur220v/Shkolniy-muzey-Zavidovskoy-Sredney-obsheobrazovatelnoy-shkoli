@@ -870,6 +870,10 @@ footer {
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
 }
 
+.founder-card {
+  margin-top: 1.25rem;
+}
+
 .author-photo-button {
   display: block;
   width: 100%;
@@ -925,6 +929,19 @@ footer {
   font-family: Arial, sans-serif;
   font-size: clamp(0.94rem, 1.6vw, 1.05rem);
   font-style: italic;
+  line-height: 1.75;
+}
+
+.author-biography {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.author-biography p {
+  margin: 0;
+  color: #e7edf6;
+  font-family: Arial, sans-serif;
+  font-size: clamp(0.94rem, 1.6vw, 1.05rem);
   line-height: 1.75;
 }
 
@@ -4713,7 +4730,8 @@ html[data-theme="light"] :where(
 }
 
 html[data-theme="light"] .about-text p,
-html[data-theme="light"] .author-copy blockquote p {
+html[data-theme="light"] .author-copy blockquote p,
+html[data-theme="light"] .author-biography p {
   color: var(--ivory);
 }
 
