@@ -513,8 +513,8 @@ const LONGITUDINAL_OBJECTS = [
     title: "Военные трофеи",
     number: "4",
     color: "blue",
-    left: "79.5%",
-    top: "51.2%",
+    left: "81.2%",
+    top: "53.3%",
     type: "exhibit",
   },
 ];
