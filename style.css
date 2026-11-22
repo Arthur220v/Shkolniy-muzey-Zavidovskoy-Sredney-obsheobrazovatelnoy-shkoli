@@ -111,6 +111,109 @@ footer {
 
 .hero {
   padding: clamp(4rem, 6vw, 4.8rem) 1.25rem 1.5rem;
+  z-index: 4;
+}
+
+.site-navigation {
+  position: absolute;
+  top: 0.8rem;
+  left: clamp(0.75rem, 2.5vw, 1.5rem);
+  z-index: 5;
+}
+
+.site-navigation-toggle {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(212, 176, 106, 0.52);
+  border-radius: 12px;
+  background: rgba(16, 36, 69, 0.82);
+  color: var(--gold-bright);
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  transition:
+    color 0.25s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.site-navigation-toggle:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold-bright);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25), 0 0 18px rgba(240, 213, 154, 0.18);
+}
+
+.site-navigation-toggle:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 4px;
+}
+
+.site-navigation-toggle svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.site-navigation-toggle:hover svg,
+.site-navigation-toggle[aria-expanded="true"] svg {
+  transform: rotate(35deg);
+}
+
+.site-navigation-menu {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  left: 0;
+  display: grid;
+  width: min(320px, calc(100vw - 1.5rem));
+  gap: 0.25rem;
+  padding: 0.55rem;
+  border: 1px solid rgba(212, 176, 106, 0.45);
+  border-radius: 14px;
+  background: rgba(7, 17, 34, 0.97);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.38);
+  backdrop-filter: blur(12px);
+}
+
+.site-navigation-menu[hidden] {
+  display: none;
+}
+
+.site-navigation-menu a {
+  display: block;
+  padding: 0.65rem 0.75rem;
+  border-radius: 9px;
+  color: var(--ivory);
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: color 160ms ease, background 160ms ease;
+}
+
+.site-navigation-menu a:hover,
+.site-navigation-menu a:focus-visible {
+  outline: 0;
+  background: rgba(212, 176, 106, 0.14);
+  color: var(--gold-bright);
+}
+
+#about-heading,
+#teachers-heading,
+#walkBtn,
+#additional-info-heading,
+#museum-news-heading,
+#guestbook-heading {
+  scroll-margin-top: 1.25rem;
 }
 
 .site-title {
@@ -4312,6 +4415,14 @@ body.modal-open {
   padding-right: 0.3rem;
 }
 
+.guestbook-reviews-heading {
+  margin: 0 0 0.8rem;
+  color: var(--gold-bright);
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+
 .guestbook-review {
   animation: guestbookReviewReveal 0.38s ease both;
 }
@@ -4841,6 +4952,34 @@ html[data-theme="light"] .page-glow {
   background:
     radial-gradient(1200px 500px at 50% -10%, rgba(114, 147, 191, 0.12), transparent 60%),
     radial-gradient(800px 400px at 100% 80%, rgba(177, 194, 216, 0.18), transparent 55%);
+}
+
+html[data-theme="light"] .site-navigation-toggle {
+  border-color: rgba(120, 83, 30, 0.35);
+  background: rgba(233, 237, 242, 0.94);
+  color: #78531e;
+  box-shadow: 0 8px 22px rgba(30, 45, 65, 0.14);
+}
+
+html[data-theme="light"] .site-navigation-toggle:hover {
+  border-color: #78531e;
+  box-shadow: 0 10px 26px rgba(30, 45, 65, 0.2);
+}
+
+html[data-theme="light"] .site-navigation-menu {
+  border-color: rgba(65, 84, 108, 0.24);
+  background: rgba(250, 251, 253, 0.98);
+  box-shadow: 0 14px 34px rgba(30, 45, 65, 0.2);
+}
+
+html[data-theme="light"] .site-navigation-menu a {
+  color: #263449;
+}
+
+html[data-theme="light"] .site-navigation-menu a:hover,
+html[data-theme="light"] .site-navigation-menu a:focus-visible {
+  background: rgba(120, 83, 30, 0.1);
+  color: #78531e;
 }
 
 .theme-toggle {
@@ -5487,11 +5626,24 @@ html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:focus-
     padding: 0.45rem 0.75rem;
     font-size: 0.78rem;
   }
+
+  .site-navigation {
+    top: 0.65rem;
+    left: 0.7rem;
+  }
+
+  .site-navigation-toggle {
+    width: 42px;
+    height: 42px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .theme-toggle,
   .theme-toggle-icon,
+  .site-navigation-toggle,
+  .site-navigation-toggle svg,
+  .site-navigation-menu a,
   body :where(h1, h2, h3, h4, h5, p, figcaption, label, legend, summary, time, small) {
     transition-duration: 0.01ms;
   }

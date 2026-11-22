@@ -2198,6 +2198,9 @@ document.addEventListener("keydown", (event) => {
 
 const themeToggle = document.getElementById("themeToggle");
 const themeToggleLabel = document.getElementById("themeToggleLabel");
+const siteNavigation = document.querySelector(".site-navigation");
+const siteNavigationToggle = document.getElementById("siteNavigationToggle");
+const siteNavigationMenu = document.getElementById("siteNavigationMenu");
 let themeAnimationTimer = 0;
 
 function updateThemeToggle() {
@@ -2228,6 +2231,52 @@ themeToggle.addEventListener("click", () => {
   } catch (error) {
     console.error("Не удалось сохранить выбранную тему оформления.", error);
   }
+});
+
+function setSiteNavigationOpen(isOpen) {
+  siteNavigationMenu.hidden = !isOpen;
+  siteNavigationToggle.setAttribute("aria-expanded", String(isOpen));
+  siteNavigationToggle.setAttribute(
+    "aria-label",
+    isOpen ? "Закрыть панель навигации" : "Открыть панель навигации"
+  );
+}
+
+siteNavigationToggle.addEventListener("click", () => {
+  setSiteNavigationOpen(siteNavigationMenu.hidden);
+});
+
+siteNavigationMenu.addEventListener("click", (event) => {
+  if (event.target instanceof HTMLAnchorElement) setSiteNavigationOpen(false);
+});
+
+document.addEventListener("pointerdown", (event) => {
+  if (!siteNavigation.contains(event.target)) setSiteNavigationOpen(false);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !siteNavigationMenu.hidden) {
+    setSiteNavigationOpen(false);
+    siteNavigationToggle.focus();
+  }
+});
+
+document.addEventListener("copy", (event) => {
+  const activeElement = document.activeElement;
+  const selection = window.getSelection();
+  if (
+    !event.clipboardData
+    || !selection
+    || selection.isCollapsed
+    || activeElement instanceof HTMLInputElement
+    || activeElement instanceof HTMLTextAreaElement
+    || activeElement?.isContentEditable
+  ) {
+    return;
+  }
+
+  event.clipboardData.setData("text/plain", selection.toString());
+  event.preventDefault();
 });
 
 renderGallery();

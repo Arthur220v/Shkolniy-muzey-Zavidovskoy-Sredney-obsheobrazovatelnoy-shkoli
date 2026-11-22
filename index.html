@@ -40,12 +40,37 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261122-review-order-1" />
+  <link rel="stylesheet" href="style.css?v=20261122-site-navigation-1" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
 
   <header class="hero">
+    <div class="site-navigation">
+      <button
+        class="site-navigation-toggle"
+        id="siteNavigationToggle"
+        type="button"
+        aria-label="Открыть панель навигации"
+        title="Панель навигации"
+        aria-expanded="false"
+        aria-controls="siteNavigationMenu"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M15.8 8.2 13.1 13l-4.9 2.8L11 11z" />
+          <path d="M12 2v2m0 16v2M2 12h2m16 0h2" />
+        </svg>
+      </button>
+      <nav class="site-navigation-menu" id="siteNavigationMenu" aria-label="Панель навигации" hidden>
+        <a href="#about-heading">О школе и музее</a>
+        <a href="#teachers-heading">Наши педагоги — руководители музея</a>
+        <a href="#walkBtn">Пройтись по музею?</a>
+        <a href="#additional-info-heading">Дополнительные сведения</a>
+        <a href="#museum-news-heading">Новости музея</a>
+        <a href="#guestbook-heading">Книга отзывов</a>
+      </nav>
+    </div>
     <button
       class="theme-toggle"
       id="themeToggle"
@@ -321,6 +346,7 @@
           <p class="guestbook-feedback" id="guestbookFeedback" role="status" aria-live="polite"></p>
         </form>
         <div class="guestbook-public">
+          <h3 class="guestbook-reviews-heading">Отзывы:</h3>
           <div class="guestbook-review-list" id="guestbookReviewList" aria-live="polite"></div>
           <nav class="guestbook-pagination" id="guestbookPagination" aria-label="Страницы отзывов" hidden>
             <button class="guestbook-secondary-button" id="guestbookPreviousPage" type="button" aria-label="Предыдущая страница отзывов">←</button>
@@ -629,7 +655,7 @@
   </div>
 
   <script src="guestbook-config.js?v=20261115-1"></script>
-  <script src="script.js?v=20261122-afghan-veteran-photo-1"></script>
+  <script src="script.js?v=20261122-site-navigation-1"></script>
   <script type="module" src="guestbook.js?v=20261122-review-order-1"></script>
 </body>
 </html>
