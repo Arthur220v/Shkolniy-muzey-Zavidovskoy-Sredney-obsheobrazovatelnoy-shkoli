@@ -2273,7 +2273,30 @@ siteNavigationToggle.addEventListener("click", () => {
 });
 
 siteNavigationMenu.addEventListener("click", (event) => {
-  if (event.target instanceof HTMLAnchorElement) setSiteNavigationOpen(false);
+  const link = event.target instanceof Element
+    ? event.target.closest("a[href^='#']")
+    : null;
+  if (!(link instanceof HTMLAnchorElement)) return;
+
+  const destination = document.getElementById(link.hash.slice(1));
+  if (!destination) return;
+
+  event.preventDefault();
+  setSiteNavigationOpen(false);
+  if (window.location.hash !== link.hash) {
+    window.history.pushState(null, "", link.hash);
+  }
+
+  const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "instant"
+    : "smooth";
+  window.requestAnimationFrame(() => {
+    const bounds = destination.getBoundingClientRect();
+    window.scrollBy({
+      top: bounds.top + bounds.height / 2 - window.innerHeight / 2,
+      behavior
+    });
+  });
 });
 
 document.addEventListener("pointerdown", (event) => {
