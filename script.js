@@ -2201,6 +2201,9 @@ const themeToggleLabel = document.getElementById("themeToggleLabel");
 const siteNavigation = document.querySelector(".site-navigation");
 const siteNavigationToggle = document.getElementById("siteNavigationToggle");
 const siteNavigationMenu = document.getElementById("siteNavigationMenu");
+let siteNavigationIsOpen = false;
+let siteNavigationCloseTimer = 0;
+let siteNavigationOpenFrame = 0;
 let themeAnimationTimer = 0;
 
 function updateThemeToggle() {
@@ -2234,16 +2237,39 @@ themeToggle.addEventListener("click", () => {
 });
 
 function setSiteNavigationOpen(isOpen) {
-  siteNavigationMenu.hidden = !isOpen;
+  if (siteNavigationIsOpen === isOpen) return;
+
+  siteNavigationIsOpen = isOpen;
+  window.clearTimeout(siteNavigationCloseTimer);
+  window.cancelAnimationFrame(siteNavigationOpenFrame);
   siteNavigationToggle.setAttribute("aria-expanded", String(isOpen));
   siteNavigationToggle.setAttribute(
     "aria-label",
     isOpen ? "Закрыть панель навигации" : "Открыть панель навигации"
   );
+
+  if (isOpen) {
+    siteNavigationMenu.hidden = false;
+    siteNavigationMenu.removeAttribute("aria-hidden");
+    siteNavigationMenu.removeAttribute("inert");
+    siteNavigationOpenFrame = window.requestAnimationFrame(() => {
+      if (siteNavigationIsOpen) siteNavigationMenu.classList.add("is-open");
+    });
+    return;
+  }
+
+  siteNavigationMenu.setAttribute("aria-hidden", "true");
+  siteNavigationMenu.setAttribute("inert", "");
+  siteNavigationMenu.classList.remove("is-open");
+
+  const closeDelay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 240;
+  siteNavigationCloseTimer = window.setTimeout(() => {
+    if (!siteNavigationIsOpen) siteNavigationMenu.hidden = true;
+  }, closeDelay);
 }
 
 siteNavigationToggle.addEventListener("click", () => {
-  setSiteNavigationOpen(siteNavigationMenu.hidden);
+  setSiteNavigationOpen(!siteNavigationIsOpen);
 });
 
 siteNavigationMenu.addEventListener("click", (event) => {
@@ -2255,7 +2281,7 @@ document.addEventListener("pointerdown", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !siteNavigationMenu.hidden) {
+  if (event.key === "Escape" && siteNavigationIsOpen) {
     setSiteNavigationOpen(false);
     siteNavigationToggle.focus();
   }
