@@ -27,6 +27,7 @@ const EVENT_PHOTOS = [
   { file: "11september_meropriyatiye.jpg", caption: "Мероприятие, посвящённое 11 сентября" },
   { file: "Vechernyaya_Mosow_1941.jpg", caption: "Вечер памяти «Москва. 1941 год»" },
   { file: "Vstrecha_s_Veteranom_SVO_Teleginim_Evgeniem.jpg", caption: "Встреча с ветераном СВО Евгением Телегиным" },
+  { file: "Vstrecha_s_veteranom_Afganistana_Alekseem_Fedotovim.jpg", caption: "Встреча с участником боевых действий в Афганистане - Алексеем Федотовым" },
   { file: "Day_Materi.jpg", caption: "День матери в музее" },
   { file: "Day_WW2_Endless.jpg", caption: "Мероприятие ко Дню окончания Второй мировой войны" },
   { file: "Day_Detskikh_Obshestvennih_Organization.jpg", caption: "День детских общественных организаций" },
