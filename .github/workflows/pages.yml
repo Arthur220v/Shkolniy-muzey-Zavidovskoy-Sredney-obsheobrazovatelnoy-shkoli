@@ -49,6 +49,8 @@ jobs:
             if artifact_id=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts" --jq '.artifacts[] | select(.name == "github-pages") | .id'); then
               if [[ -n "$artifact_id" ]]; then
                 echo "Pages artifact $artifact_id is available."
+                # Let the Pages deployment API catch up with the Actions artifact API.
+                sleep 10
                 exit 0
               fi
             else
