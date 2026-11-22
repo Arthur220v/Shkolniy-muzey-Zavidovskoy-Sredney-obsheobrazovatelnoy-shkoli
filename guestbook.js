@@ -52,6 +52,9 @@ const guestbookHistoryFeedback = document.getElementById("guestbookHistoryFeedba
 const guestbookAdminMenu = document.getElementById("guestbookAdminMenu");
 const moderatorMenuToggle = document.getElementById("moderatorMenuToggle");
 const guestbookAdminReviews = document.getElementById("guestbookAdminReviews");
+const guestbookAdminModeratorDirectory = document.getElementById("guestbookAdminModeratorDirectory");
+const guestbookModeratorDirectoryList = document.getElementById("guestbookModeratorDirectoryList");
+const guestbookModeratorDirectoryFeedback = document.getElementById("guestbookModeratorDirectoryFeedback");
 const guestbookAdminProfile = document.getElementById("guestbookAdminProfile");
 const moderatorProfileForm = document.getElementById("guestbookModeratorProfileForm");
 const moderatorProfileFirstName = document.getElementById("moderatorProfileFirstName");
@@ -1953,6 +1956,7 @@ async function deleteReview(id, avatarPath) {
 function setAdminSection(section = "reviews") {
   guestbookAdminReviews.hidden = section !== "reviews";
   guestbookHistory.hidden = section !== "history";
+  guestbookAdminModeratorDirectory.hidden = section !== "moderators";
   guestbookAdminProfile.hidden = section !== "profile";
   guestbookAdminNews.hidden = section !== "news";
   guestbookAdminNewsArchive.hidden = section !== "newsArchive";
@@ -1990,6 +1994,48 @@ async function loadModeratorProfile() {
     setMessage(moderatorProfileFeedback, "");
   } catch (error) {
     reportError(moderatorProfileFeedback, "Не удалось загрузить профиль модератора.", error);
+  }
+}
+
+async function loadModeratorDirectory() {
+  guestbookModeratorDirectoryList.replaceChildren();
+  setMessage(guestbookModeratorDirectoryFeedback, "Загружаем список модераторов…");
+
+  try {
+    const { data, error } = await supabase.rpc("get_guestbook_moderator_directory");
+    if (error) throw error;
+
+    if (!data?.length) {
+      setMessage(guestbookModeratorDirectoryFeedback, "Список модераторов пуст.");
+      return;
+    }
+
+    const entries = data.map((moderator) => {
+      const entry = document.createElement("article");
+      entry.className = "guestbook-history-entry";
+
+      const name = document.createElement("h5");
+      const fullName = [moderator.profile_first_name, moderator.profile_last_name]
+        .filter(Boolean)
+        .join(" ");
+      name.textContent = fullName || "Имя не указано в профиле";
+
+      const lastSeen = document.createElement("time");
+      lastSeen.textContent = formatModeratorLastSeen(moderator.last_seen_at);
+      if (moderator.last_seen_at) lastSeen.dateTime = moderator.last_seen_at;
+
+      entry.append(name, lastSeen);
+      return entry;
+    });
+
+    guestbookModeratorDirectoryList.replaceChildren(...entries);
+    setMessage(guestbookModeratorDirectoryFeedback, "");
+  } catch (error) {
+    reportError(
+      guestbookModeratorDirectoryFeedback,
+      "Не удалось загрузить список модераторов.",
+      error
+    );
   }
 }
 
@@ -2372,6 +2418,12 @@ async function initializeGuestbook() {
     setAdminSection("history");
     closeAdminMenu();
     loadModerationHistory();
+  });
+
+  document.getElementById("moderatorMenuDirectory").addEventListener("click", () => {
+    setAdminSection("moderators");
+    closeAdminMenu();
+    loadModeratorDirectory();
   });
 
   document.getElementById("moderatorMenuProfile").addEventListener("click", () => {

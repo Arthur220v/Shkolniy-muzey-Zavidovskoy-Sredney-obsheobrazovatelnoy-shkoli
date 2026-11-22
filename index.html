@@ -358,6 +358,7 @@
           <nav class="guestbook-admin-menu" id="guestbookAdminMenu" aria-label="Разделы панели модератора" hidden>
             <button class="guestbook-secondary-button" id="moderatorMenuReviews" type="button">Отзывы</button>
             <button class="guestbook-secondary-button" id="moderatorMenuHistory" type="button">История</button>
+            <button class="guestbook-secondary-button" id="moderatorMenuDirectory" type="button">Список модераторов</button>
             <button class="guestbook-secondary-button" id="moderatorMenuProfile" type="button">Профиль</button>
             <button class="guestbook-secondary-button" id="moderatorMenuNews" type="button">Новости</button>
             <button class="guestbook-secondary-button" id="moderatorMenuNewsArchive" type="button">Архив новостей</button>
@@ -372,6 +373,11 @@
             <h4 class="guestbook-admin-section-heading" id="guestbookAdminHistoryHeading">История отзывов и решений</h4>
             <div class="guestbook-history-list" id="guestbookHistoryList"></div>
             <p class="guestbook-feedback" id="guestbookHistoryFeedback" role="status" aria-live="polite"></p>
+          </section>
+          <section id="guestbookAdminModeratorDirectory" aria-labelledby="guestbookAdminModeratorDirectoryHeading" hidden>
+            <h4 class="guestbook-admin-section-heading" id="guestbookAdminModeratorDirectoryHeading">Список модераторов</h4>
+            <div class="guestbook-history-list" id="guestbookModeratorDirectoryList"></div>
+            <p class="guestbook-feedback" id="guestbookModeratorDirectoryFeedback" role="status" aria-live="polite"></p>
           </section>
           <section id="guestbookAdminProfile" aria-labelledby="guestbookAdminProfileHeading" hidden>
             <h4 class="guestbook-admin-section-heading" id="guestbookAdminProfileHeading">Профиль модератора</h4>
@@ -605,6 +611,6 @@
 
   <script src="guestbook-config.js?v=20261115-1"></script>
   <script src="script.js?v=20261122-afghan-veteran-photo-1"></script>
-  <script type="module" src="guestbook.js?v=20261122-moderator-login-error-1"></script>
+  <script type="module" src="guestbook.js?v=20261122-moderator-directory-1"></script>
 </body>
 </html>
