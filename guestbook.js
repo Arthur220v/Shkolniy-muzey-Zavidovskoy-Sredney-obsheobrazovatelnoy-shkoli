@@ -40,6 +40,7 @@ const guestbookPageNumbers = document.getElementById("guestbookPageNumbers");
 const guestbookPreviousPage = document.getElementById("guestbookPreviousPage");
 const guestbookNextPage = document.getElementById("guestbookNextPage");
 const guestbookModerator = document.getElementById("guestbookModerator");
+const moderatorLoginSummary = document.getElementById("moderatorLoginSummary");
 const guestbookLogin = document.getElementById("guestbookLogin");
 const moderatorEmail = document.getElementById("moderatorEmail");
 const moderatorPassword = document.getElementById("moderatorPassword");
@@ -126,8 +127,7 @@ function reportError(element, message, error) {
 
 function setModeratorPasswordVisibility(isVisible) {
   moderatorPassword.type = isVisible ? "text" : "password";
-  moderatorPasswordToggle.textContent = isVisible ? "Скрыть пароль" : "Показать пароль";
-  moderatorPasswordToggle.setAttribute("aria-pressed", String(isVisible));
+  moderatorPasswordToggle.checked = isVisible;
 }
 
 async function updateModeratorPresence(isOnline) {
@@ -412,18 +412,20 @@ function createModeratorAvatar(photoUrl, variantClass = "", isOnline = false) {
   avatar.className = ["guestbook-moderator-avatar", variantClass].filter(Boolean).join(" ");
   avatar.setAttribute("aria-hidden", "true");
 
+  const face = document.createElement("span");
+  face.className = "guestbook-moderator-avatar-face";
   if (photoUrl) {
-    avatar.classList.add("has-photo");
+    face.classList.add("has-photo");
     const image = document.createElement("img");
     image.src = photoUrl;
     image.alt = "";
     image.loading = "lazy";
     image.decoding = "async";
     image.addEventListener("error", () => {
-      avatar.classList.remove("has-photo");
+      face.classList.remove("has-photo");
       image.remove();
     }, { once: true });
-    avatar.append(image);
+    face.append(image);
   }
 
   const presenceIndicator = document.createElement("span");
@@ -432,7 +434,7 @@ function createModeratorAvatar(photoUrl, variantClass = "", isOnline = false) {
     isOnline ? "is-online" : "",
   ].filter(Boolean).join(" ");
   presenceIndicator.setAttribute("aria-hidden", "true");
-  avatar.append(presenceIndicator);
+  avatar.append(face, presenceIndicator);
   return avatar;
 }
 
@@ -2312,6 +2314,7 @@ async function verifyModerator(session) {
   if (!session) {
     stopModeratorPresenceHeartbeat(true);
     moderatorUserId = null;
+    moderatorLoginSummary.hidden = false;
     moderatorPanelToggle.hidden = true;
     moderatorPanelToggle.setAttribute("aria-expanded", "false");
     guestbookAdmin.hidden = true;
@@ -2341,6 +2344,7 @@ async function verifyModerator(session) {
       guestbookAdmin.hidden = true;
       guestbookLogin.hidden = false;
       moderatorUserId = null;
+      moderatorLoginSummary.hidden = false;
       moderatorPanelToggle.hidden = true;
       moderatorPanelToggle.setAttribute("aria-expanded", "false");
       closeAdminMenu();
@@ -2357,6 +2361,7 @@ async function verifyModerator(session) {
       lastSeenError = error;
     }
     guestbookLogin.hidden = true;
+    moderatorLoginSummary.hidden = true;
     moderatorPanelToggle.hidden = false;
     guestbookAdmin.hidden = true;
     moderatorPanelToggle.setAttribute("aria-expanded", "false");
@@ -2590,8 +2595,8 @@ async function initializeGuestbook() {
     }
   });
 
-  moderatorPasswordToggle.addEventListener("click", () => {
-    setModeratorPasswordVisibility(moderatorPassword.type === "password");
+  moderatorPasswordToggle.addEventListener("change", () => {
+    setModeratorPasswordVisibility(moderatorPasswordToggle.checked);
   });
 
   moderatorPanelToggle.addEventListener("click", () => {
@@ -2674,6 +2679,7 @@ async function initializeGuestbook() {
       guestbookAdmin.hidden = true;
       guestbookLogin.hidden = false;
       moderatorUserId = null;
+      moderatorLoginSummary.hidden = false;
       moderatorPanelToggle.hidden = true;
       moderatorPanelToggle.setAttribute("aria-expanded", "false");
       setAdminSection("reviews");
@@ -2700,6 +2706,7 @@ async function initializeGuestbook() {
       guestbookAdmin.hidden = true;
       guestbookLogin.hidden = false;
       moderatorUserId = null;
+      moderatorLoginSummary.hidden = false;
       moderatorPanelToggle.hidden = true;
       moderatorPanelToggle.setAttribute("aria-expanded", "false");
       setAdminSection("reviews");

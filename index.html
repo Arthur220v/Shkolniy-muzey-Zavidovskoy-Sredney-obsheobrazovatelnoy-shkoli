@@ -40,7 +40,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261122-moderator-presence-1" />
+  <link rel="stylesheet" href="style.css?v=20261122-moderator-presence-2" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -330,7 +330,7 @@
           <p class="guestbook-feedback" id="guestbookLoadFeedback" role="status"></p>
         </div>
         <details class="guestbook-moderator" id="guestbookModerator">
-        <summary>Вход модератора</summary>
+        <summary id="moderatorLoginSummary">Вход модератора</summary>
         <form class="guestbook-login" id="guestbookLogin">
           <label class="guestbook-field">
             <span>Email модератора</span>
@@ -340,12 +340,15 @@
             <span id="moderatorPasswordLabel">Пароль</span>
             <div class="guestbook-password-control">
               <input id="moderatorPassword" type="password" autocomplete="current-password" aria-labelledby="moderatorPasswordLabel" required />
-              <button
-                class="guestbook-secondary-button"
-                id="moderatorPasswordToggle"
-                type="button"
-                aria-pressed="false"
-              >Показать пароль</button>
+              <label class="guestbook-password-visibility" for="moderatorPasswordToggle">
+                <input
+                  id="moderatorPasswordToggle"
+                  type="checkbox"
+                  aria-controls="moderatorPassword"
+                />
+                <span class="guestbook-password-checkbox" aria-hidden="true"></span>
+                <span>Показать пароль</span>
+              </label>
             </div>
           </div>
           <button class="guestbook-submit" id="moderatorLoginButton" type="submit">Войти</button>
@@ -627,6 +630,6 @@
 
   <script src="guestbook-config.js?v=20261115-1"></script>
   <script src="script.js?v=20261122-afghan-veteran-photo-1"></script>
-  <script type="module" src="guestbook.js?v=20261122-moderator-presence-1"></script>
+  <script type="module" src="guestbook.js?v=20261122-moderator-presence-2"></script>
 </body>
 </html>

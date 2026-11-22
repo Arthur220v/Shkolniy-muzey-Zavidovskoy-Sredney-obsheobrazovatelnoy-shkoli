@@ -3472,10 +3472,81 @@ body.modal-open {
   min-width: 0;
 }
 
-.guestbook-password-control .guestbook-secondary-button {
+.guestbook-password-visibility {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 0.5rem;
   min-height: 44px;
-  padding-inline: 0.75rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid rgba(197, 208, 224, 0.28);
+  border-radius: 999px;
+  background: rgba(4, 10, 22, 0.48);
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
   white-space: nowrap;
+  cursor: pointer;
+  transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.guestbook-password-visibility:hover {
+  border-color: rgba(240, 213, 154, 0.7);
+  color: var(--ivory);
+}
+
+.guestbook-password-visibility input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.guestbook-password-checkbox {
+  display: grid;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border: 1.5px solid rgba(197, 208, 224, 0.6);
+  border-radius: 6px;
+  background: rgba(4, 10, 22, 0.72);
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.guestbook-password-checkbox::after {
+  width: 9px;
+  height: 5px;
+  border-bottom: 2px solid #142038;
+  border-left: 2px solid #142038;
+  content: "";
+  opacity: 0;
+  transform: translateY(-1px) rotate(-45deg) scale(0.35);
+  transition: opacity 140ms ease, transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guestbook-password-visibility input:checked + .guestbook-password-checkbox {
+  border-color: var(--gold-bright);
+  background: linear-gradient(145deg, #f8e6ae, #d6aa59);
+  transform: scale(1.05);
+}
+
+.guestbook-password-visibility input:checked + .guestbook-password-checkbox::after {
+  opacity: 1;
+  transform: translateY(-1px) rotate(-45deg) scale(1);
+}
+
+.guestbook-password-visibility input:focus-visible + .guestbook-password-checkbox {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 3px;
 }
 
 .guestbook-moderator-panel-toggle {
@@ -4306,7 +4377,7 @@ body.modal-open {
   top: var(--moderator-profile-top, 12px);
   left: var(--moderator-profile-left, 12px);
   display: grid;
-  grid-template-columns: 58px minmax(0, 1fr) 28px;
+  grid-template-columns: 68px minmax(0, 1fr) 28px;
   align-items: start;
   box-sizing: border-box;
   width: min(330px, calc(100vw - 24px));
@@ -4332,8 +4403,16 @@ body.modal-open {
   position: relative;
   display: inline-block;
   flex: none;
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
+  overflow: visible;
+}
+
+.guestbook-moderator-avatar-face {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   border: 1px solid rgba(65, 84, 108, 0.2);
   border-radius: 50%;
@@ -4342,21 +4421,24 @@ body.modal-open {
 
 .guestbook-moderator-profile-photo {
   display: block;
-  width: 58px;
-  height: 58px;
-  border-color: rgba(212, 176, 106, 0.38);
-  border-radius: 13px;
+  width: 68px;
+  height: 68px;
 }
 
-.guestbook-moderator-avatar::before,
-.guestbook-moderator-avatar::after {
+.guestbook-moderator-profile-photo .guestbook-moderator-avatar-face {
+  border-color: rgba(212, 176, 106, 0.38);
+  border-radius: 12px;
+}
+
+.guestbook-moderator-avatar-face::before,
+.guestbook-moderator-avatar-face::after {
   position: absolute;
   z-index: 0;
   background: #7d8792;
   content: "";
 }
 
-.guestbook-moderator-avatar::before {
+.guestbook-moderator-avatar-face::before {
   top: 17%;
   left: 37%;
   width: 26%;
@@ -4364,7 +4446,7 @@ body.modal-open {
   border-radius: 50%;
 }
 
-.guestbook-moderator-avatar::after {
+.guestbook-moderator-avatar-face::after {
   bottom: 8%;
   left: 22%;
   width: 56%;
@@ -4372,27 +4454,29 @@ body.modal-open {
   border-radius: 55% 55% 30% 30%;
 }
 
-.guestbook-moderator-avatar.has-photo::before,
-.guestbook-moderator-avatar.has-photo::after {
+.guestbook-moderator-avatar-face.has-photo::before,
+.guestbook-moderator-avatar-face.has-photo::after {
   display: none;
 }
 
-.guestbook-moderator-avatar img {
+.guestbook-moderator-avatar-face img {
   position: relative;
   z-index: 1;
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  image-rendering: auto;
 }
 
 .guestbook-moderator-presence-dot {
   position: absolute;
-  right: 1px;
-  bottom: 1px;
+  right: -3px;
+  bottom: -3px;
   z-index: 2;
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
   border: 2px solid #f5f6f7;
   border-radius: 50%;
   background: #929aa6;
@@ -4662,6 +4746,9 @@ body.modal-open {
   .guestbook-custom-color-choice,
   .guestbook-submit,
   .guestbook-secondary-button,
+  .guestbook-password-visibility,
+  .guestbook-password-checkbox,
+  .guestbook-password-checkbox::after,
   .guestbook-moderator summary,
   .guestbook-moderator-profile-card {
     transition: none;
@@ -5290,7 +5377,7 @@ html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:focus-
 
 @media (max-width: 560px) {
   .guestbook-moderator-profile-card {
-    grid-template-columns: 50px minmax(0, 1fr) 28px;
+    grid-template-columns: 60px minmax(0, 1fr) 28px;
     width: calc(100vw - 24px);
     max-width: 330px;
     max-height: calc(100dvh - 24px);
@@ -5298,8 +5385,8 @@ html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:focus-
   }
 
   .guestbook-moderator-profile-photo {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
   }
 
   .museum-news-photo-gallery {
