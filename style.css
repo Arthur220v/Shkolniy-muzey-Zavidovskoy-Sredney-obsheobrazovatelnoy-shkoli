@@ -67,6 +67,18 @@ summary,
   background: transparent;
 }
 
+@media (max-width: 760px) {
+  * {
+    scrollbar-width: none;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -4377,7 +4389,7 @@ body.modal-open {
   top: var(--moderator-profile-top, 12px);
   left: var(--moderator-profile-left, 12px);
   display: grid;
-  grid-template-columns: 68px minmax(0, 1fr) 28px;
+  grid-template-columns: 80px minmax(0, 1fr) 28px;
   align-items: start;
   box-sizing: border-box;
   width: min(330px, calc(100vw - 24px));
@@ -4403,8 +4415,8 @@ body.modal-open {
   position: relative;
   display: inline-block;
   flex: none;
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   overflow: visible;
 }
 
@@ -4421,8 +4433,8 @@ body.modal-open {
 
 .guestbook-moderator-profile-photo {
   display: block;
-  width: 68px;
-  height: 68px;
+  width: 80px;
+  height: 80px;
 }
 
 .guestbook-moderator-profile-photo .guestbook-moderator-avatar-face {
@@ -5377,7 +5389,7 @@ html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:focus-
 
 @media (max-width: 560px) {
   .guestbook-moderator-profile-card {
-    grid-template-columns: 60px minmax(0, 1fr) 28px;
+    grid-template-columns: 72px minmax(0, 1fr) 28px;
     width: calc(100vw - 24px);
     max-width: 330px;
     max-height: calc(100dvh - 24px);
@@ -5385,8 +5397,8 @@ html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:focus-
   }
 
   .guestbook-moderator-profile-photo {
-    width: 60px;
-    height: 60px;
+    width: 72px;
+    height: 72px;
   }
 
   .museum-news-photo-gallery {

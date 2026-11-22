@@ -401,6 +401,14 @@ function formatModeratorLastSeen(value) {
   }).format(date)}`;
 }
 
+function formatReviewAuthorName(firstName, lastName) {
+  const first = firstName?.trim() || "";
+  const last = lastName?.trim() || "";
+  if (!first) return last;
+  if (!last) return first;
+  return `${first}${first.endsWith(".") ? "" : " "}${last}`;
+}
+
 function moderatorDisplayName(profile) {
   return profile?.firstName && profile?.lastName
     ? `${profile.firstName} ${profile.lastName}`
@@ -419,7 +427,7 @@ function createModeratorAvatar(photoUrl, variantClass = "", isOnline = false) {
     const image = document.createElement("img");
     image.src = photoUrl;
     image.alt = "";
-    image.loading = "lazy";
+    image.loading = "eager";
     image.decoding = "async";
     image.addEventListener("error", () => {
       face.classList.remove("has-photo");
@@ -664,7 +672,7 @@ function createReviewCard(review, isModeration = false, photoUrl = null) {
   const identity = document.createElement("div");
   identity.className = "guestbook-review-identity";
   const name = document.createElement("h3");
-  name.textContent = `${review.first_name} ${review.last_name}`;
+  name.textContent = formatReviewAuthorName(review.first_name, review.last_name);
   const nameLine = document.createElement("div");
   nameLine.className = "guestbook-review-name-line";
   nameLine.append(name);
@@ -700,7 +708,7 @@ function createReviewCard(review, isModeration = false, photoUrl = null) {
   if (review.is_featured) {
     const featuredBadge = document.createElement("span");
     featuredBadge.className = "guestbook-featured-badge";
-    featuredBadge.textContent = "Самый ценный отзыв";
+    featuredBadge.textContent = "Ценный отзыв";
     card.append(featuredBadge);
   }
 
@@ -821,7 +829,7 @@ function createPublicModeratorReplyEditor(review) {
   textarea.rows = 3;
   textarea.maxLength = MAX_REVIEW_LENGTH;
   textarea.value = review.moderator_reply || "";
-  textarea.setAttribute("aria-label", `Ответ на отзыв ${review.first_name} ${review.last_name}`);
+  textarea.setAttribute("aria-label", `Ответ на отзыв ${formatReviewAuthorName(review.first_name, review.last_name)}`);
   label.append(labelText, textarea);
 
   const actions = document.createElement("div");
@@ -872,8 +880,8 @@ function createPublishedReviewActions(review) {
   featuredButton.type = "button";
   featuredButton.className = "guestbook-secondary-button guestbook-featured-action";
   featuredButton.textContent = review.is_featured
-    ? "Снять статус «Самый ценный отзыв»"
-    : "Самый ценный отзыв";
+    ? "Снять статус «Ценный отзыв»"
+    : "Ценный отзыв";
   featuredButton.setAttribute("aria-pressed", String(Boolean(review.is_featured)));
   featuredButton.addEventListener("click", () => updateReviewFeatured(review.id, !review.is_featured));
 
@@ -893,7 +901,7 @@ function createModeratorReplyEditor(review) {
   textarea.rows = 3;
   textarea.maxLength = MAX_REVIEW_LENGTH;
   textarea.value = review.moderator_reply || "";
-  textarea.setAttribute("aria-label", `Ответ на отзыв ${review.first_name} ${review.last_name}`);
+  textarea.setAttribute("aria-label", `Ответ на отзыв ${formatReviewAuthorName(review.first_name, review.last_name)}`);
   label.append(labelText, textarea);
 
   const saveButton = document.createElement("button");
@@ -1783,8 +1791,9 @@ async function loadPublishedReviews(page = publishedReviewPage) {
       .from("guestbook_reviews")
       .select("id, first_name, last_name, body, rating, avatar_emoji, avatar_color, avatar_image_path, avatar_image_status, moderator_reply, moderator_replied_at, moderator_user_id, is_featured, is_first_review, created_at", { count: "exact" })
       .eq("status", "approved")
+      .order("created_at", { ascending: true })
       .order("is_featured", { ascending: false })
-      .order("created_at", { ascending: false })
+      .order("id", { ascending: true })
       .range(
         (pageNumber - 1) * PUBLISHED_REVIEWS_PER_PAGE,
         pageNumber * PUBLISHED_REVIEWS_PER_PAGE - 1
@@ -1906,8 +1915,8 @@ async function loadModerationHistory() {
       review_rejected: "Отзыв отклонён",
       review_reopened: "Статус отзыва изменён",
       review_deleted: "Отзыв удалён",
-      review_featured: "Отзыв отмечен как самый ценный",
-      review_unfeatured: "С отзыва снята отметка «Самый ценный отзыв»",
+      review_featured: "Отзыв отмечен как ценный",
+      review_unfeatured: "С отзыва снята отметка «Ценный отзыв»",
       avatar_approved: "Фото аватара одобрено",
       avatar_rejected: "Фото аватара отклонено",
       avatar_reset: "Статус фото аватара изменён",
@@ -1922,7 +1931,7 @@ async function loadModerationHistory() {
       entry.className = "guestbook-history-entry";
 
       const title = document.createElement("h5");
-      title.textContent = `${event.reviewer_first_name} ${event.reviewer_last_name}`;
+      title.textContent = formatReviewAuthorName(event.reviewer_first_name, event.reviewer_last_name);
 
       const time = document.createElement("time");
       time.dateTime = event.created_at;
