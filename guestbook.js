@@ -4,10 +4,11 @@ const MODERATOR_PROFILE_BUCKET = "guestbook-moderator-profile";
 const MUSEUM_NEWS_BUCKET = "museum-news";
 const MAX_AVATAR_SIZE = 3 * 1024 * 1024;
 const MAX_NEWS_PHOTO_SIZE = 3 * 1024 * 1024;
-const MAX_NEWS_PHOTOS = 6;
 const MAX_NEWS_BODY_LENGTH = 6000;
 const MAX_REVIEW_LENGTH = 1200;
 const PUBLISHED_REVIEWS_PER_PAGE = 7;
+const NEWS_PHOTO_PAGE_SIZE = 500;
+const NEWS_PHOTO_INSERT_BATCH_SIZE = 100;
 const AVATAR_EXTENSIONS = new Map([
   ["image/jpeg", "jpg"],
   ["image/png", "png"],
@@ -358,6 +359,28 @@ function moderatorDisplayName(profile) {
     : "Модератор";
 }
 
+function createModeratorAvatar(photoUrl, variantClass = "") {
+  const avatar = document.createElement("span");
+  avatar.className = ["guestbook-moderator-avatar", variantClass].filter(Boolean).join(" ");
+  avatar.setAttribute("aria-hidden", "true");
+
+  if (photoUrl) {
+    avatar.classList.add("has-photo");
+    const image = document.createElement("img");
+    image.src = photoUrl;
+    image.alt = "";
+    image.loading = "lazy";
+    image.decoding = "async";
+    image.addEventListener("error", () => {
+      avatar.classList.remove("has-photo");
+      image.remove();
+    }, { once: true });
+    avatar.append(image);
+  }
+
+  return avatar;
+}
+
 function createModeratorProfileWidget(profile) {
   const fullName = moderatorDisplayName(profile);
   const widget = document.createElement("div");
@@ -377,16 +400,7 @@ function createModeratorProfileWidget(profile) {
   card.setAttribute("aria-label", `Профиль модератора: ${fullName}`);
   card.setAttribute("aria-hidden", "true");
 
-  const photo = document.createElement(profile?.photoUrl ? "img" : "span");
-  photo.className = "guestbook-moderator-profile-photo";
-  if (profile?.photoUrl) {
-    photo.src = profile.photoUrl;
-    photo.alt = `Фото ${fullName}`;
-    photo.loading = "eager";
-  } else {
-    photo.setAttribute("aria-hidden", "true");
-    photo.textContent = "🛡️";
-  }
+  const photo = createModeratorAvatar(profile?.photoUrl, "guestbook-moderator-profile-photo");
 
   const details = document.createElement("div");
   details.className = "guestbook-moderator-profile-details";
@@ -1139,15 +1153,22 @@ function createMuseumNewsCard(news, {
 
 async function fetchMuseumNewsPhotos(newsIds) {
   if (!newsIds.length) return new Map();
-  const { data, error } = await supabase
-    .from("museum_news_photos")
-    .select("news_id, storage_path, sort_order")
-    .in("news_id", newsIds)
-    .order("sort_order", { ascending: true });
-  if (error) throw error;
+  const rows = [];
+  for (let offset = 0; ; offset += NEWS_PHOTO_PAGE_SIZE) {
+    const { data, error } = await supabase
+      .from("museum_news_photos")
+      .select("news_id, storage_path, sort_order")
+      .in("news_id", newsIds)
+      .order("news_id", { ascending: true })
+      .order("sort_order", { ascending: true })
+      .range(offset, offset + NEWS_PHOTO_PAGE_SIZE - 1);
+    if (error) throw error;
+    rows.push(...(data || []));
+    if (!data || data.length < NEWS_PHOTO_PAGE_SIZE) break;
+  }
 
   const photosByNewsId = new Map(newsIds.map((id) => [id, []]));
-  for (const photo of data || []) {
+  for (const photo of rows) {
     const { data: signedPhoto, error: photoError } = await supabase.storage
       .from(MUSEUM_NEWS_BUCKET)
       .createSignedUrl(photo.storage_path, 3600);
@@ -1427,10 +1448,6 @@ function renderMuseumNewsPhotoPreviews() {
 function handleMuseumNewsPhotoSelection() {
   const files = Array.from(museumNewsPhotosInput.files || []);
   clearMuseumNewsPhotoSelection();
-  if (files.length > MAX_NEWS_PHOTOS) {
-    setMessage(museumNewsAdminFeedback, `Можно выбрать не более ${MAX_NEWS_PHOTOS} фотографий.`, true);
-    return;
-  }
   const invalidFile = files.find((file) => !AVATAR_EXTENSIONS.has(file.type) || file.size > MAX_NEWS_PHOTO_SIZE);
   if (invalidFile) {
     const message = AVATAR_EXTENSIONS.has(invalidFile.type)
@@ -1525,10 +1542,12 @@ async function publishMuseumNews(event) {
     }
 
     if (photoRows.length) {
-      const { error: photosError } = await supabase
-        .from("museum_news_photos")
-        .insert(photoRows);
-      if (photosError) throw photosError;
+      for (let offset = 0; offset < photoRows.length; offset += NEWS_PHOTO_INSERT_BATCH_SIZE) {
+        const { error: photosError } = await supabase
+          .from("museum_news_photos")
+          .insert(photoRows.slice(offset, offset + NEWS_PHOTO_INSERT_BATCH_SIZE));
+        if (photosError) throw photosError;
+      }
     }
 
     const { error: publishError } = await supabase
@@ -1963,9 +1982,7 @@ function setAdminSection(section = "reviews") {
 }
 
 function renderModeratorProfilePhoto(photoUrl = null) {
-  moderatorProfilePhotoPreview.replaceChildren(
-    makeAvatar("🛡️", "gold", "Фото профиля модератора", photoUrl)
-  );
+  moderatorProfilePhotoPreview.replaceChildren(createModeratorAvatar(photoUrl));
 }
 
 async function loadModeratorProfile() {
@@ -2010,9 +2027,10 @@ async function loadModeratorDirectory() {
       return;
     }
 
+    const profiles = await fetchModeratorProfiles(data.map((moderator) => moderator.user_id));
     const entries = data.map((moderator) => {
       const entry = document.createElement("article");
-      entry.className = "guestbook-history-entry";
+      entry.className = "guestbook-history-entry guestbook-moderator-directory-entry";
 
       const name = document.createElement("h5");
       const fullName = [moderator.profile_first_name, moderator.profile_last_name]
@@ -2024,7 +2042,10 @@ async function loadModeratorDirectory() {
       lastSeen.textContent = formatModeratorLastSeen(moderator.last_seen_at);
       if (moderator.last_seen_at) lastSeen.dateTime = moderator.last_seen_at;
 
-      entry.append(name, lastSeen);
+      const details = document.createElement("div");
+      details.className = "guestbook-moderator-directory-details";
+      details.append(name, lastSeen);
+      entry.append(createModeratorAvatar(profiles.get(moderator.user_id)?.photoUrl), details);
       return entry;
     });
 

@@ -4305,16 +4305,74 @@ body.modal-open {
   visibility: hidden;
 }
 
+.guestbook-moderator-avatar {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  border: 1px solid rgba(65, 84, 108, 0.2);
+  border-radius: 50%;
+  background: #e4e7eb;
+}
+
 .guestbook-moderator-profile-photo {
-  display: grid;
+  display: block;
   width: 58px;
   height: 58px;
-  place-items: center;
-  border: 1px solid rgba(212, 176, 106, 0.38);
+  border-color: rgba(212, 176, 106, 0.38);
   border-radius: 13px;
-  background: rgba(91, 64, 15, 0.35);
-  font-size: 1.8rem;
+}
+
+.guestbook-moderator-avatar::before,
+.guestbook-moderator-avatar::after {
+  position: absolute;
+  z-index: 0;
+  background: #7d8792;
+  content: "";
+}
+
+.guestbook-moderator-avatar::before {
+  top: 17%;
+  left: 37%;
+  width: 26%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.guestbook-moderator-avatar::after {
+  bottom: 8%;
+  left: 22%;
+  width: 56%;
+  height: 35%;
+  border-radius: 55% 55% 30% 30%;
+}
+
+.guestbook-moderator-avatar.has-photo::before,
+.guestbook-moderator-avatar.has-photo::after {
+  display: none;
+}
+
+.guestbook-moderator-avatar img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+}
+
+.guestbook-moderator-directory-entry {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.guestbook-moderator-directory-details {
+  display: grid;
+  min-width: 0;
+  gap: 0.2rem;
 }
 
 .guestbook-moderator-profile-details {
@@ -4465,10 +4523,9 @@ body.modal-open {
   background: rgba(5, 13, 28, 0.5);
 }
 
-.guestbook-profile-photo-preview .guestbook-avatar {
+.guestbook-profile-photo-preview .guestbook-moderator-avatar {
   width: 76px;
   height: 76px;
-  font-size: 2rem;
 }
 
 .guestbook-feedback.is-success {
