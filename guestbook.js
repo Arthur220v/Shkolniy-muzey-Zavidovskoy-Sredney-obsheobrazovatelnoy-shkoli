@@ -118,7 +118,7 @@ function getModeratorSignInErrorMessage(error) {
     return "Email не подтверждён. Подтвердите адрес в Supabase → Authentication → Users и войдите снова.";
   }
   if (error.code === "invalid_credentials") {
-    return "Supabase не принял email и пароль. Проверьте, что пользователь создан в Authentication → Users именно этого проекта; если нужно, отправьте ему письмо для сброса пароля.";
+    return "Неверный логин или пароль. Перепроверьте введённые Вами данные.";
   }
   if (error.code === "email_provider_disabled") {
     return "В Supabase отключён вход по email и паролю. Включите провайдер Email в Authentication → Sign In / Providers.";
@@ -473,20 +473,18 @@ function createModeratorProfileWidget(profile) {
       card.classList.remove("is-open");
     }
   });
-  widget.addEventListener("pointerleave", (event) => {
+  const closeOnMouseLeave = (event) => {
     if (event.pointerType === "mouse") {
       widget.classList.remove("is-dismissed");
       window.setTimeout(() => {
-        if (!widget.classList.contains("is-open") &&
-            !widget.contains(document.activeElement) &&
-            !card.matches(":hover")) {
-          trigger.setAttribute("aria-expanded", "false");
-          card.setAttribute("aria-hidden", "true");
-          card.classList.remove("is-open");
+        if (!widget.matches(":hover") && !card.matches(":hover")) {
+          setOpen(false);
         }
       }, 80);
     }
-  });
+  };
+  widget.addEventListener("pointerleave", closeOnMouseLeave);
+  card.addEventListener("pointerleave", closeOnMouseLeave);
   widget.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && (widget.classList.contains("is-open") || widget.matches(":hover"))) {
       setOpen(false, true);
