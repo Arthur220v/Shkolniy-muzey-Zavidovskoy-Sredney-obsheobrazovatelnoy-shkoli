@@ -40,7 +40,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="images/interior_of_the_museum_entrance.png?v=20261108-2" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261122-moderator-avatar-1" />
+  <link rel="stylesheet" href="style.css?v=20261122-moderator-presence-1" />
 </head>
 <body>
   <div class="page-glow" aria-hidden="true"></div>
@@ -336,13 +336,29 @@
             <span>Email модератора</span>
             <input id="moderatorEmail" type="email" autocomplete="username" required />
           </label>
-          <label class="guestbook-field">
-            <span>Пароль</span>
-            <input id="moderatorPassword" type="password" autocomplete="current-password" required />
-          </label>
+          <div class="guestbook-field">
+            <span id="moderatorPasswordLabel">Пароль</span>
+            <div class="guestbook-password-control">
+              <input id="moderatorPassword" type="password" autocomplete="current-password" aria-labelledby="moderatorPasswordLabel" required />
+              <button
+                class="guestbook-secondary-button"
+                id="moderatorPasswordToggle"
+                type="button"
+                aria-pressed="false"
+              >Показать пароль</button>
+            </div>
+          </div>
           <button class="guestbook-submit" id="moderatorLoginButton" type="submit">Войти</button>
           <p class="guestbook-feedback" id="moderatorFeedback" role="status" aria-live="polite"></p>
         </form>
+        <button
+          class="guestbook-submit guestbook-moderator-panel-toggle"
+          id="moderatorPanelToggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="guestbookAdmin"
+          hidden
+        >Панель модератора</button>
         <section class="guestbook-admin" id="guestbookAdmin" aria-label="Модерация отзывов" hidden>
           <div class="guestbook-admin-heading">
             <h3>Панель модератора</h3>
@@ -611,6 +627,6 @@
 
   <script src="guestbook-config.js?v=20261115-1"></script>
   <script src="script.js?v=20261122-afghan-veteran-photo-1"></script>
-  <script type="module" src="guestbook.js?v=20261122-moderator-avatar-news-1"></script>
+  <script type="module" src="guestbook.js?v=20261122-moderator-presence-1"></script>
 </body>
 </html>

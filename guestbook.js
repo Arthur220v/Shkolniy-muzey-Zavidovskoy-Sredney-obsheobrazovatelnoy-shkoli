@@ -9,6 +9,7 @@ const MAX_REVIEW_LENGTH = 1200;
 const PUBLISHED_REVIEWS_PER_PAGE = 7;
 const NEWS_PHOTO_PAGE_SIZE = 500;
 const NEWS_PHOTO_INSERT_BATCH_SIZE = 100;
+const MODERATOR_PRESENCE_HEARTBEAT_MS = 30_000;
 const AVATAR_EXTENSIONS = new Map([
   ["image/jpeg", "jpg"],
   ["image/png", "png"],
@@ -42,9 +43,11 @@ const guestbookModerator = document.getElementById("guestbookModerator");
 const guestbookLogin = document.getElementById("guestbookLogin");
 const moderatorEmail = document.getElementById("moderatorEmail");
 const moderatorPassword = document.getElementById("moderatorPassword");
+const moderatorPasswordToggle = document.getElementById("moderatorPasswordToggle");
 const moderatorLoginButton = document.getElementById("moderatorLoginButton");
 const moderatorFeedback = document.getElementById("moderatorFeedback");
 const guestbookAdmin = document.getElementById("guestbookAdmin");
+const moderatorPanelToggle = document.getElementById("moderatorPanelToggle");
 const guestbookAdminList = document.getElementById("guestbookAdminList");
 const moderatorAdminFeedback = document.getElementById("moderatorAdminFeedback");
 const guestbookHistory = document.getElementById("guestbookAdminHistory");
@@ -100,6 +103,10 @@ let moderatorUserId = null;
 let moderatorProfile = null;
 let moderatorProfilePhotoPreviewUrl = null;
 let publicModeratorProfiles = new Map();
+let moderatorPresenceSessionId = null;
+let moderatorPresenceHeartbeatTimer = null;
+let moderatorDirectoryRefreshTimer = null;
+let moderatorDirectoryLoading = false;
 let selectedNewsPhotos = [];
 let museumNewsGalleryPhotos = [];
 let museumNewsGalleryIndex = 0;
@@ -115,6 +122,47 @@ function setMessage(element, message, isError = false, isSuccess = false) {
 function reportError(element, message, error) {
   console.error(message, error);
   setMessage(element, message, true);
+}
+
+function setModeratorPasswordVisibility(isVisible) {
+  moderatorPassword.type = isVisible ? "text" : "password";
+  moderatorPasswordToggle.textContent = isVisible ? "Скрыть пароль" : "Показать пароль";
+  moderatorPasswordToggle.setAttribute("aria-pressed", String(isVisible));
+}
+
+async function updateModeratorPresence(isOnline) {
+  if (!moderatorUserId) return;
+  if (!moderatorPresenceSessionId) moderatorPresenceSessionId = crypto.randomUUID();
+
+  const { error } = await supabase.rpc("set_guestbook_moderator_presence", {
+    p_session_id: moderatorPresenceSessionId,
+    p_is_online: isOnline,
+  });
+  if (error) throw error;
+}
+
+function stopModeratorPresenceHeartbeat(clearSession = false) {
+  window.clearInterval(moderatorPresenceHeartbeatTimer);
+  moderatorPresenceHeartbeatTimer = null;
+  if (clearSession) moderatorPresenceSessionId = null;
+}
+
+async function sendModeratorPresenceHeartbeat() {
+  try {
+    await updateModeratorPresence(true);
+  } catch (error) {
+    reportError(moderatorAdminFeedback, "Не удалось обновить сетевой статус модератора.", error);
+  }
+}
+
+function startModeratorPresenceHeartbeat() {
+  if (moderatorPresenceHeartbeatTimer) return;
+  if (!moderatorPresenceSessionId) moderatorPresenceSessionId = crypto.randomUUID();
+  void sendModeratorPresenceHeartbeat();
+  moderatorPresenceHeartbeatTimer = window.setInterval(
+    sendModeratorPresenceHeartbeat,
+    MODERATOR_PRESENCE_HEARTBEAT_MS
+  );
 }
 
 function getModeratorSignInErrorMessage(error) {
@@ -359,7 +407,7 @@ function moderatorDisplayName(profile) {
     : "Модератор";
 }
 
-function createModeratorAvatar(photoUrl, variantClass = "") {
+function createModeratorAvatar(photoUrl, variantClass = "", isOnline = false) {
   const avatar = document.createElement("span");
   avatar.className = ["guestbook-moderator-avatar", variantClass].filter(Boolean).join(" ");
   avatar.setAttribute("aria-hidden", "true");
@@ -378,7 +426,19 @@ function createModeratorAvatar(photoUrl, variantClass = "") {
     avatar.append(image);
   }
 
+  const presenceIndicator = document.createElement("span");
+  presenceIndicator.className = [
+    "guestbook-moderator-presence-dot",
+    isOnline ? "is-online" : "",
+  ].filter(Boolean).join(" ");
+  presenceIndicator.setAttribute("aria-hidden", "true");
+  avatar.append(presenceIndicator);
   return avatar;
+}
+
+function updateModeratorAvatarPresence(avatar, isOnline) {
+  const indicator = avatar.querySelector(".guestbook-moderator-presence-dot");
+  if (indicator) indicator.classList.toggle("is-online", isOnline);
 }
 
 function createModeratorProfileWidget(profile) {
@@ -392,7 +452,10 @@ function createModeratorProfileWidget(profile) {
   trigger.textContent = fullName;
   trigger.setAttribute("aria-haspopup", "dialog");
   trigger.setAttribute("aria-expanded", "false");
-  trigger.setAttribute("aria-label", `${fullName}, модератор. ${formatModeratorLastSeen(profile?.lastSeenAt)}`);
+  const presenceDescription = () => profile?.isOnline
+    ? "В сети."
+    : formatModeratorLastSeen(profile?.lastSeenAt);
+  trigger.setAttribute("aria-label", `${fullName}, модератор. ${presenceDescription()}`);
 
   const card = document.createElement("div");
   card.className = "guestbook-moderator-profile-card";
@@ -400,7 +463,11 @@ function createModeratorProfileWidget(profile) {
   card.setAttribute("aria-label", `Профиль модератора: ${fullName}`);
   card.setAttribute("aria-hidden", "true");
 
-  const photo = createModeratorAvatar(profile?.photoUrl, "guestbook-moderator-profile-photo");
+  const photo = createModeratorAvatar(
+    profile?.photoUrl,
+    "guestbook-moderator-profile-photo",
+    profile?.isOnline
+  );
 
   const details = document.createElement("div");
   details.className = "guestbook-moderator-profile-details";
@@ -408,9 +475,24 @@ function createModeratorProfileWidget(profile) {
   name.textContent = fullName;
   const status = document.createElement("span");
   status.textContent = "Модератор";
-  const lastSeen = document.createElement("time");
-  lastSeen.textContent = formatModeratorLastSeen(profile?.lastSeenAt);
-  if (profile?.lastSeenAt) lastSeen.dateTime = profile.lastSeenAt;
+  const lastSeen = document.createElement("span");
+  lastSeen.className = "guestbook-moderator-last-seen";
+  const renderPresence = (presence) => {
+    if (profile) {
+      profile.isOnline = presence.isOnline;
+      profile.lastSeenAt = presence.lastSeenAt;
+    }
+    updateModeratorAvatarPresence(photo, presence.isOnline);
+    lastSeen.textContent = presence.isOnline
+      ? "В сети"
+      : formatModeratorLastSeen(presence.lastSeenAt);
+    lastSeen.classList.toggle("is-online", presence.isOnline);
+    trigger.setAttribute("aria-label", `${fullName}, модератор. ${presenceDescription()}`);
+  };
+  renderPresence({
+    isOnline: profile?.isOnline === true,
+    lastSeenAt: profile?.lastSeenAt || null,
+  });
   details.append(name, status, lastSeen);
 
   const closeButton = document.createElement("button");
@@ -421,6 +503,39 @@ function createModeratorProfileWidget(profile) {
   card.append(photo, details, closeButton);
   widget.append(trigger);
   document.body.append(card);
+
+  let presenceRefreshTimer = null;
+  const refreshPresence = async () => {
+    if (!profile?.userId) return;
+    try {
+      const { data, error } = await supabase
+        .from("guestbook_moderator_profile")
+        .select("last_seen_at, is_online")
+        .eq("user_id", profile.userId)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data) throw new Error("Профиль модератора не найден.");
+      renderPresence({
+        isOnline: data.is_online === true,
+        lastSeenAt: data.last_seen_at,
+      });
+    } catch (error) {
+      console.error("Не удалось обновить сетевой статус модератора.", error);
+      if (profile) profile.isOnline = false;
+      lastSeen.textContent = "Статус временно недоступен.";
+      lastSeen.classList.remove("is-online");
+      updateModeratorAvatarPresence(photo, false);
+      trigger.setAttribute("aria-label", `${fullName}, модератор. Статус временно недоступен.`);
+    }
+  };
+  const startPresenceRefresh = () => {
+    if (!profile?.userId) return;
+    window.clearInterval(presenceRefreshTimer);
+    void refreshPresence();
+    presenceRefreshTimer = window.setInterval(() => {
+      if (card.classList.contains("is-open")) void refreshPresence();
+    }, MODERATOR_PRESENCE_HEARTBEAT_MS);
+  };
 
   const placeModeratorProfileCard = () => {
     const triggerRect = trigger.getBoundingClientRect();
@@ -452,7 +567,10 @@ function createModeratorProfileWidget(profile) {
       trigger.setAttribute("aria-expanded", "true");
       card.setAttribute("aria-hidden", "false");
       placeModeratorProfileCard();
+      startPresenceRefresh();
     } else {
+      window.clearInterval(presenceRefreshTimer);
+      presenceRefreshTimer = null;
       card.classList.remove("is-open");
       card.classList.add("is-closing");
       card.setAttribute("aria-hidden", "true");
@@ -472,6 +590,7 @@ function createModeratorProfileWidget(profile) {
       trigger.setAttribute("aria-expanded", "true");
       card.setAttribute("aria-hidden", "false");
       placeModeratorProfileCard();
+      startPresenceRefresh();
     }
   });
   trigger.addEventListener("focus", () => {
@@ -481,13 +600,12 @@ function createModeratorProfileWidget(profile) {
       trigger.setAttribute("aria-expanded", "true");
       card.setAttribute("aria-hidden", "false");
       placeModeratorProfileCard();
+      startPresenceRefresh();
     }
   });
   widget.addEventListener("focusout", (event) => {
     if (!widget.contains(event.relatedTarget) && !widget.classList.contains("is-open")) {
-      trigger.setAttribute("aria-expanded", "false");
-      card.setAttribute("aria-hidden", "true");
-      card.classList.remove("is-open");
+      setOpen(false);
     }
   });
   const closeOnMouseLeave = (event) => {
@@ -894,16 +1012,18 @@ async function fetchModeratorProfiles(moderatorIds) {
 
   const { data, error } = await supabase
     .from("guestbook_moderator_profile")
-    .select("profile_first_name, profile_last_name, profile_image_path, user_id, last_seen_at")
+    .select("profile_first_name, profile_last_name, profile_image_path, user_id, last_seen_at, is_online")
     .in("user_id", ids);
   if (error) throw error;
 
   const profiles = new Map((data || []).map((profile) => [profile.user_id, {
     firstName: profile.profile_first_name,
     lastName: profile.profile_last_name,
+    userId: profile.user_id,
     photoPath: profile.profile_image_path,
     photoUrl: null,
     lastSeenAt: profile.last_seen_at,
+    isOnline: profile.is_online === true,
   }]));
   for (const profile of profiles.values()) {
     if (!profile.photoPath) continue;
@@ -1972,6 +2092,26 @@ async function deleteReview(id, avatarPath) {
   }
 }
 
+function stopModeratorDirectoryRefresh() {
+  window.clearInterval(moderatorDirectoryRefreshTimer);
+  moderatorDirectoryRefreshTimer = null;
+}
+
+function startModeratorDirectoryRefresh() {
+  stopModeratorDirectoryRefresh();
+  moderatorDirectoryRefreshTimer = window.setInterval(() => {
+    if (
+      moderatorUserId
+      && !guestbookAdmin.hidden
+      && !guestbookAdminModeratorDirectory.hidden
+    ) {
+      void loadModeratorDirectory();
+    } else {
+      stopModeratorDirectoryRefresh();
+    }
+  }, MODERATOR_PRESENCE_HEARTBEAT_MS);
+}
+
 function setAdminSection(section = "reviews") {
   guestbookAdminReviews.hidden = section !== "reviews";
   guestbookHistory.hidden = section !== "history";
@@ -1979,6 +2119,7 @@ function setAdminSection(section = "reviews") {
   guestbookAdminProfile.hidden = section !== "profile";
   guestbookAdminNews.hidden = section !== "news";
   guestbookAdminNewsArchive.hidden = section !== "newsArchive";
+  if (section !== "moderators") stopModeratorDirectoryRefresh();
 }
 
 function renderModeratorProfilePhoto(photoUrl = null) {
@@ -2015,6 +2156,8 @@ async function loadModeratorProfile() {
 }
 
 async function loadModeratorDirectory() {
+  if (moderatorDirectoryLoading) return;
+  moderatorDirectoryLoading = true;
   guestbookModeratorDirectoryList.replaceChildren();
   setMessage(guestbookModeratorDirectoryFeedback, "Загружаем список модераторов…");
 
@@ -2029,6 +2172,7 @@ async function loadModeratorDirectory() {
 
     const profiles = await fetchModeratorProfiles(data.map((moderator) => moderator.user_id));
     const entries = data.map((moderator) => {
+      const profile = profiles.get(moderator.user_id);
       const entry = document.createElement("article");
       entry.className = "guestbook-history-entry guestbook-moderator-directory-entry";
 
@@ -2038,14 +2182,17 @@ async function loadModeratorDirectory() {
         .join(" ");
       name.textContent = fullName || "Имя не указано в профиле";
 
-      const lastSeen = document.createElement("time");
-      lastSeen.textContent = formatModeratorLastSeen(moderator.last_seen_at);
-      if (moderator.last_seen_at) lastSeen.dateTime = moderator.last_seen_at;
+      const lastSeen = document.createElement("span");
+      lastSeen.className = "guestbook-moderator-last-seen";
+      lastSeen.textContent = profile?.isOnline
+        ? "В сети"
+        : formatModeratorLastSeen(moderator.last_seen_at);
+      lastSeen.classList.toggle("is-online", profile?.isOnline === true);
 
       const details = document.createElement("div");
       details.className = "guestbook-moderator-directory-details";
       details.append(name, lastSeen);
-      entry.append(createModeratorAvatar(profiles.get(moderator.user_id)?.photoUrl), details);
+      entry.append(createModeratorAvatar(profile?.photoUrl, "", profile?.isOnline), details);
       return entry;
     });
 
@@ -2057,6 +2204,8 @@ async function loadModeratorDirectory() {
       "Не удалось загрузить список модераторов.",
       error
     );
+  } finally {
+    moderatorDirectoryLoading = false;
   }
 }
 
@@ -2161,13 +2310,20 @@ function closeAdminMenu() {
 
 async function verifyModerator(session) {
   if (!session) {
+    stopModeratorPresenceHeartbeat(true);
     moderatorUserId = null;
+    moderatorPanelToggle.hidden = true;
+    moderatorPanelToggle.setAttribute("aria-expanded", "false");
     guestbookAdmin.hidden = true;
     guestbookLogin.hidden = false;
+    setAdminSection("reviews");
     closeAdminMenu();
     return;
   }
 
+  moderatorPanelToggle.hidden = true;
+  moderatorPanelToggle.setAttribute("aria-expanded", "false");
+  guestbookAdmin.hidden = true;
   try {
     const { data, error } = await supabase.rpc("is_guestbook_moderator");
     if (error) {
@@ -2176,6 +2332,7 @@ async function verifyModerator(session) {
     }
 
     if (data !== true) {
+      stopModeratorPresenceHeartbeat(true);
       const { error: signOutError } = await supabase.auth.signOut();
       if (signOutError) {
         reportError(moderatorFeedback, "У аккаунта нет прав модератора, и не удалось завершить сеанс.", signOutError);
@@ -2184,6 +2341,8 @@ async function verifyModerator(session) {
       guestbookAdmin.hidden = true;
       guestbookLogin.hidden = false;
       moderatorUserId = null;
+      moderatorPanelToggle.hidden = true;
+      moderatorPanelToggle.setAttribute("aria-expanded", "false");
       closeAdminMenu();
       setMessage(moderatorFeedback, "У этого аккаунта нет прав модератора.", true);
       return;
@@ -2198,7 +2357,9 @@ async function verifyModerator(session) {
       lastSeenError = error;
     }
     guestbookLogin.hidden = true;
-    guestbookAdmin.hidden = false;
+    moderatorPanelToggle.hidden = false;
+    guestbookAdmin.hidden = true;
+    moderatorPanelToggle.setAttribute("aria-expanded", "false");
     setAdminSection("reviews");
     closeAdminMenu();
     guestbookModerator.open = true;
@@ -2215,6 +2376,7 @@ async function verifyModerator(session) {
     } else {
       setMessage(moderatorFeedback, "");
     }
+    startModeratorPresenceHeartbeat();
   } catch (error) {
     reportError(moderatorFeedback, "Не удалось проверить права модератора.", error);
   }
@@ -2234,6 +2396,14 @@ async function initializeGuestbook() {
   const { createClient } = await import(SUPABASE_MODULE_URL);
   supabase = createClient(config.supabaseUrl, config.publishableKey);
   await Promise.all([loadPublishedReviews(), loadPublishedMuseumNews()]);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && moderatorUserId) {
+      void sendModeratorPresenceHeartbeat();
+    }
+  });
+  window.addEventListener("focus", () => {
+    if (moderatorUserId) void sendModeratorPresenceHeartbeat();
+  });
 
   guestbookPreviousPage.addEventListener("click", () => {
     if (publishedReviewPage > 1) loadPublishedReviews(publishedReviewPage - 1);
@@ -2411,11 +2581,29 @@ async function initializeGuestbook() {
       }
 
       moderatorPassword.value = "";
+      setModeratorPasswordVisibility(false);
       await verifyModerator(data.session);
     } catch (error) {
       reportError(moderatorFeedback, "Не удалось войти. Проверьте подключение.", error);
     } finally {
       moderatorLoginButton.disabled = false;
+    }
+  });
+
+  moderatorPasswordToggle.addEventListener("click", () => {
+    setModeratorPasswordVisibility(moderatorPassword.type === "password");
+  });
+
+  moderatorPanelToggle.addEventListener("click", () => {
+    const shouldOpen = guestbookAdmin.hidden;
+    guestbookAdmin.hidden = !shouldOpen;
+    moderatorPanelToggle.setAttribute("aria-expanded", String(shouldOpen));
+    if (shouldOpen) {
+      if (!guestbookAdminModeratorDirectory.hidden) {
+        loadModeratorDirectory();
+        startModeratorDirectoryRefresh();
+      }
+      guestbookAdmin.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   });
 
@@ -2445,6 +2633,7 @@ async function initializeGuestbook() {
     setAdminSection("moderators");
     closeAdminMenu();
     loadModeratorDirectory();
+    startModeratorDirectoryRefresh();
   });
 
   document.getElementById("moderatorMenuProfile").addEventListener("click", () => {
@@ -2466,28 +2655,53 @@ async function initializeGuestbook() {
   });
 
   document.getElementById("moderatorSignOut").addEventListener("click", async () => {
+    stopModeratorPresenceHeartbeat();
+    let presenceError = null;
+    try {
+      await updateModeratorPresence(false);
+    } catch (error) {
+      presenceError = error;
+    }
+
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
+        startModeratorPresenceHeartbeat();
         reportError(moderatorAdminFeedback, "Не удалось завершить сеанс модератора.", error);
         return;
       }
+      stopModeratorPresenceHeartbeat(true);
       guestbookAdmin.hidden = true;
       guestbookLogin.hidden = false;
       moderatorUserId = null;
+      moderatorPanelToggle.hidden = true;
+      moderatorPanelToggle.setAttribute("aria-expanded", "false");
       setAdminSection("reviews");
       closeAdminMenu();
-      setMessage(moderatorFeedback, "Вы вышли из панели модерации.");
+      if (presenceError) {
+        reportError(
+          moderatorFeedback,
+          "Вы вышли, но сетевой статус обновится автоматически в течение 90 секунд.",
+          presenceError
+        );
+      } else {
+        setMessage(moderatorFeedback, "Вы вышли из панели модерации.");
+      }
     } catch (error) {
+      startModeratorPresenceHeartbeat();
       reportError(moderatorAdminFeedback, "Не удалось завершить сеанс модератора.", error);
     }
   });
 
   supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_OUT") {
+      stopModeratorPresenceHeartbeat(true);
+      stopModeratorDirectoryRefresh();
       guestbookAdmin.hidden = true;
       guestbookLogin.hidden = false;
       moderatorUserId = null;
+      moderatorPanelToggle.hidden = true;
+      moderatorPanelToggle.setAttribute("aria-expanded", "false");
       setAdminSection("reviews");
       closeAdminMenu();
       loadPublishedReviews();

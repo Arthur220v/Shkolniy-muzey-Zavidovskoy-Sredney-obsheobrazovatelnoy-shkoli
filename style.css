@@ -3461,6 +3461,29 @@ body.modal-open {
   box-shadow: 0 0 0 3px rgba(240, 213, 154, 0.13);
 }
 
+.guestbook-password-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.guestbook-password-control input {
+  min-width: 0;
+}
+
+.guestbook-password-control .guestbook-secondary-button {
+  min-height: 44px;
+  padding-inline: 0.75rem;
+  white-space: nowrap;
+}
+
+.guestbook-moderator-panel-toggle {
+  width: 100%;
+  max-width: 640px;
+  margin-top: 0.9rem;
+}
+
 .guestbook-avatar-builder {
   display: grid;
   justify-items: start;
@@ -4363,6 +4386,22 @@ body.modal-open {
   object-fit: cover;
 }
 
+.guestbook-moderator-presence-dot {
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  z-index: 2;
+  width: 13px;
+  height: 13px;
+  border: 2px solid #f5f6f7;
+  border-radius: 50%;
+  background: #929aa6;
+}
+
+.guestbook-moderator-presence-dot.is-online {
+  background: #20b957;
+}
+
 .guestbook-moderator-directory-entry {
   display: flex;
   align-items: center;
@@ -4387,12 +4426,19 @@ body.modal-open {
   overflow-wrap: anywhere;
 }
 
-.guestbook-moderator-profile-card time {
+.guestbook-moderator-profile-card .guestbook-moderator-last-seen,
+.guestbook-moderator-directory-details .guestbook-moderator-last-seen {
   display: block;
   margin: 0;
   color: var(--muted);
   font-size: 0.72rem;
   line-height: 1.45;
+}
+
+.guestbook-moderator-profile-card .guestbook-moderator-last-seen.is-online,
+.guestbook-moderator-directory-details .guestbook-moderator-last-seen.is-online {
+  color: #43d477;
+  font-weight: 800;
 }
 
 .guestbook-moderator-profile-close {
@@ -4918,6 +4964,11 @@ html[data-theme="light"] .guestbook-moderator-profile-card {
 html[data-theme="light"] .guestbook-moderator-profile-card strong,
 html[data-theme="light"] .guestbook-moderator-profile-trigger {
   color: #78531e;
+}
+
+html[data-theme="light"] .guestbook-moderator-profile-card .guestbook-moderator-last-seen.is-online,
+html[data-theme="light"] .guestbook-moderator-directory-details .guestbook-moderator-last-seen.is-online {
+  color: #208647;
 }
 
 html[data-theme="light"] .guestbook-admin-menu {
