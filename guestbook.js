@@ -1,4 +1,7 @@
-const SUPABASE_MODULE_URL = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+const SUPABASE_MODULE_URLS = [
+  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm",
+  "https://esm.sh/@supabase/supabase-js@2",
+];
 const AVATAR_BUCKET = "guestbook-avatars";
 const MODERATOR_PROFILE_BUCKET = "guestbook-moderator-profile";
 const MUSEUM_NEWS_BUCKET = "museum-news";
@@ -125,6 +128,47 @@ function reportError(element, message, error) {
   setMessage(element, message, true);
 }
 
+function createUuid() {
+  if (typeof crypto?.randomUUID === "function") return crypto.randomUUID();
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+function isRetryableSupabaseError(error) {
+  if (!error) return false;
+  const status = Number(error.status);
+  return status === 429
+    || status === 0
+    || status >= 500
+    || error instanceof TypeError
+    || /network|fetch|timed out/i.test(error.message || "");
+}
+
+async function insertGuestbookReview(review) {
+  let lastError = null;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const operation = supabase.from("guestbook_reviews").insert(review);
+      const result = await Promise.race([
+        operation,
+        new Promise((_, reject) => {
+          window.setTimeout(() => reject(new TypeError("Supabase request timed out")), 20_000);
+        }),
+      ]);
+      if (!result.error) return result;
+      lastError = result.error;
+      if (!isRetryableSupabaseError(result.error)) return result;
+    } catch (error) {
+      lastError = error;
+    }
+    if (attempt < 2) await new Promise((resolve) => window.setTimeout(resolve, 700 * (attempt + 1)));
+  }
+  return { error: lastError };
+}
+
 function setModeratorPasswordVisibility(isVisible) {
   moderatorPassword.type = isVisible ? "text" : "password";
   moderatorPasswordToggle.checked = isVisible;
@@ -132,7 +176,7 @@ function setModeratorPasswordVisibility(isVisible) {
 
 async function updateModeratorPresence(isOnline) {
   if (!moderatorUserId) return;
-  if (!moderatorPresenceSessionId) moderatorPresenceSessionId = crypto.randomUUID();
+  if (!moderatorPresenceSessionId) moderatorPresenceSessionId = createUuid();
 
   const { error } = await supabase.rpc("set_guestbook_moderator_presence", {
     p_session_id: moderatorPresenceSessionId,
@@ -157,7 +201,7 @@ async function sendModeratorPresenceHeartbeat() {
 
 function startModeratorPresenceHeartbeat() {
   if (moderatorPresenceHeartbeatTimer) return;
-  if (!moderatorPresenceSessionId) moderatorPresenceSessionId = crypto.randomUUID();
+  if (!moderatorPresenceSessionId) moderatorPresenceSessionId = createUuid();
   void sendModeratorPresenceHeartbeat();
   moderatorPresenceHeartbeatTimer = window.setInterval(
     sendModeratorPresenceHeartbeat,
@@ -944,7 +988,7 @@ function getVoterId() {
   const storageKey = "museumGuestbookVoterId";
   let voterId = window.localStorage.getItem(storageKey);
   if (!voterId) {
-    voterId = crypto.randomUUID();
+    voterId = createUuid();
     window.localStorage.setItem(storageKey, voterId);
   }
   return voterId;
@@ -1326,7 +1370,7 @@ function getMuseumNewsVoterId() {
   try {
     let voterId = window.localStorage.getItem(storageKey);
     if (!voterId) {
-      voterId = crypto.randomUUID();
+      voterId = createUuid();
       window.localStorage.setItem(storageKey, voterId);
     }
     return voterId;
@@ -1640,7 +1684,7 @@ async function publishMuseumNews(event) {
   const uploadedPaths = [];
   const photosToPublish = [...selectedNewsPhotos];
   try {
-    newsId = crypto.randomUUID();
+    newsId = createUuid();
     const { error: insertError } = await supabase
       .from("museum_news")
       .insert({
@@ -1654,7 +1698,7 @@ async function publishMuseumNews(event) {
     const photoRows = [];
     for (const [index, photo] of photosToPublish.entries()) {
       const extension = AVATAR_EXTENSIONS.get(photo.file.type);
-      const path = `${newsId}/${crypto.randomUUID()}.${extension}`;
+      const path = `${newsId}/${createUuid()}.${extension}`;
       const { error: uploadError } = await supabase.storage
         .from(MUSEUM_NEWS_BUCKET)
         .upload(path, photo.file, {
@@ -2255,7 +2299,7 @@ async function saveModeratorProfile(event) {
         return;
       }
 
-      uploadedPath = `profiles/${crypto.randomUUID()}.${extension}`;
+      uploadedPath = `profiles/${createUuid()}.${extension}`;
       const { error: uploadError } = await supabase.storage
         .from(MODERATOR_PROFILE_BUCKET)
         .upload(uploadedPath, file, {
@@ -2407,7 +2451,21 @@ async function initializeGuestbook() {
     return;
   }
 
-  const { createClient } = await import(SUPABASE_MODULE_URL);
+  let createClient = null;
+  let moduleError = null;
+  for (const moduleUrl of SUPABASE_MODULE_URLS) {
+    try {
+      ({ createClient } = await import(moduleUrl));
+      break;
+    } catch (error) {
+      moduleError = error;
+    }
+  }
+  if (!createClient) {
+    reportError(guestbookLoadFeedback, "Не удалось загрузить компонент отправки отзывов. Проверьте подключение и отключите блокировщик для CDN.", moduleError);
+    guestbookSubmit.disabled = true;
+    return;
+  }
   supabase = createClient(config.supabaseUrl, config.publishableKey);
   await Promise.all([loadPublishedReviews(), loadPublishedMuseumNews()]);
   document.addEventListener("visibilitychange", () => {
@@ -2477,9 +2535,9 @@ async function initializeGuestbook() {
     guestbookSubmit.disabled = true;
     guestbookForm.classList.add("is-submitting");
     setMessage(guestbookFeedback, "Отправляем отзыв на проверку…");
-    const reviewId = crypto.randomUUID();
+    const reviewId = createUuid();
     try {
-      const { error } = await supabase.from("guestbook_reviews").insert({
+      const { error } = await insertGuestbookReview({
         id: reviewId,
         first_name: guestbookFirstName.value.trim(),
         last_name: guestbookLastName.value.trim(),
@@ -2493,6 +2551,17 @@ async function initializeGuestbook() {
       });
 
       if (error) {
+        if (
+          error instanceof TypeError
+          || /network|fetch|timed out/i.test(error.message || "")
+        ) {
+          reportError(
+            guestbookFeedback,
+            "Не удалось отправить отзыв из-за нестабильной сети. Проверьте подключение и отправьте снова.",
+            error
+          );
+          return;
+        }
         if (
           error.code === "23514"
           && error.message?.includes("guestbook_reviews_avatar_color_check")
@@ -2512,7 +2581,7 @@ async function initializeGuestbook() {
       let photoSaved = false;
       if (selectedAvatarFile) {
         const extension = AVATAR_EXTENSIONS.get(selectedAvatarFile.type);
-        const path = `${reviewId}/${crypto.randomUUID()}.${extension}`;
+        const path = `${reviewId}/${createUuid()}.${extension}`;
         try {
           const { error: uploadError } = await supabase.storage
             .from(AVATAR_BUCKET)
