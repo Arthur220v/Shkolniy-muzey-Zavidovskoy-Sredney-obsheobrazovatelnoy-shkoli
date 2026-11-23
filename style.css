@@ -2694,7 +2694,7 @@ body.modal-open {
   scale: 1;
 }
 
-.right-longitudinal-pin.is-disabled:not(:hover):not(:focus) .pin-label {
+.right-longitudinal-pin.is-disabled:not(.is-label-visible):not(:hover):not(:focus) .pin-label {
   opacity: 0;
   visibility: hidden;
   scale: 0.96;
