@@ -540,14 +540,14 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     number: "2",
     color: "blue",
     left: "66.4%",
-    top: "67%",
+    top: "72%",
     disabled: true,
   },
   {
     id: "voennie_trofei(4)",
     title: "Советское вооружение",
     number: "4",
-    color: "blue",
+    color: "green",
     left: "56%",
     top: "46%",
     type: "exhibit",
@@ -555,15 +555,15 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
   {
     title: "Немецкое вооружение",
     number: "5",
-    color: "red",
-    left: "78%",
+    color: "green",
+    left: "82%",
     top: "57%",
     disabled: true,
   },
   {
     title: "Личные вещи солдата",
     number: "6",
-    color: "gold",
+    color: "green",
     left: "50%",
     top: "44%",
     disabled: true,
@@ -571,9 +571,9 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
   {
     title: "Боеприпасы",
     number: "7",
-    color: "red",
+    color: "blue",
     left: "53.8%",
-    top: "44%",
+    top: "45%",
     disabled: true,
   },
   {
@@ -596,24 +596,24 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
   {
     title: "«Труженики тыла»",
     number: "10",
-    color: "gold",
+    color: "red",
     left: "26.5%",
-    top: "38%",
+    top: "41%",
     disabled: true,
   },
   {
     title: "«Освобождение Завидово»",
     number: "11",
-    color: "gold",
+    color: "red",
     left: "30.5%",
-    top: "38%",
+    top: "41%",
     disabled: true,
   },
   {
     id: "maket_boev(12)",
     title: "«Освобождение Калинина»",
     number: "12",
-    color: "blue",
+    color: "red",
     left: "34%",
     top: "35%",
     type: "exhibit",
@@ -622,7 +622,7 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     id: "vitrina_pamyati(13)",
     title: "«Артефакты и записи»",
     number: "13",
-    color: "green",
+    color: "blue",
     left: "34%",
     top: "49%",
     type: "scene",
@@ -1880,7 +1880,7 @@ async function switchTourMap(image, alt, renderMarkers, showContinue, immediate)
     mapImage.alt = alt;
     renderMarkers();
     tourContinue.hidden = !showContinue;
-    tourBack.hidden = showContinue;
+    tourBack.hidden = showContinue || image === "Right_longitudinal_view.png";
     tourRightPassage.hidden = image !== "facing_two_longitudinal_(interactive).png";
     tourPrevious.hidden = image !== "Right_longitudinal_view.png";
     if (mapImage.getAttribute("src") !== imagePath) mapImage.src = imagePath;
