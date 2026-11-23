@@ -527,13 +527,12 @@ const LONGITUDINAL_OBJECTS = [
 
 const RIGHT_LONGITUDINAL_OBJECTS = [
   {
-    id: "Flag_RF(2)",
     title: "Российский флаг",
     number: "1",
     color: "gold",
     left: "19%",
     top: "15%",
-    type: "exhibit",
+    disabled: true,
   },
   {
     title: "Ящик Мозговой А.Н.",
@@ -544,13 +543,11 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     disabled: true,
   },
   {
-    id: "voennie_trofei(4)",
     title: "Советское вооружение",
     number: "4",
     color: "green",
     left: "56%",
     top: "46%",
-    type: "exhibit",
   },
   {
     title: "Немецкое вооружение",
@@ -609,22 +606,20 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     disabled: true,
   },
   {
-    id: "maket_boev(12)",
     title: "«Освобождение Калинина»",
     number: "12",
     color: "red",
     left: "34%",
     top: "35%",
-    type: "exhibit",
+    disabled: true,
   },
   {
-    id: "vitrina_pamyati(13)",
     title: "«Артефакты и записи»",
     number: "13",
     color: "blue",
     left: "34%",
     top: "49%",
-    type: "scene",
+    disabled: true,
   },
 ];
 

@@ -2582,7 +2582,7 @@ body.modal-open {
 }
 
 .tour-right-passage {
-  left: 69%;
+  left: 71%;
   top: 60%;
   width: 54px;
   height: 54px;
@@ -3484,6 +3484,17 @@ body.modal-open {
 }
 
 @media (hover: none) {
+  .tour-right-passage {
+    left: 70%;
+    width: 46px;
+    height: 46px;
+  }
+
+  .tour-right-passage svg {
+    width: 32px;
+    height: 32px;
+  }
+
   .tour-hint {
     right: 0.45rem;
     bottom: 5.25rem;
