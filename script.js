@@ -1,7 +1,7 @@
 const IMAGE_DIR = "images/";
 const TEXT_DIR = "Texts/";
 const AUDIO_DIR = "Audio/";
-const TEXT_CACHE_VERSION = "20261122-4";
+const TEXT_CACHE_VERSION = "20261123-1";
 const VALERIY_BIOGRAPHY_QUOTES = [
   "«В нашей семье, как и в остальных семьях, есть свои герои: наши деды, дяди (братья наших дедов) — все они вдохновляли, много героических рассказов про них»",
   "«А если мы найдём останки фашиста, что будем делать?»",
@@ -313,6 +313,18 @@ Object.assign(EXHIBITS, {
     textFile: "voennie_trofei(4)_info_about_image.txt",
     audioFile: "audio_for_voennie_trofei(4).mp3",
   }),
+  "Sovetskoye_vooruzheniye(4)": makeExhibit("Sovetskoye_vooruzheniye(4)", "Советское вооружение", {
+    image: "Sovetskoye_vooruzheniye(4).jpg",
+    preserveImageFormat: true,
+    textFile: "Sovetskoye_vooruzheniye(4)_info_about_image.txt",
+    audioFile: "audio_for_Sovetskoye_vooruzheniye(4)_info_about_image.txt.mp3",
+  }),
+  "Nemetskoye_vooruzheniye(5)": makeExhibit("Nemetskoye_vooruzheniye(5)", "Немецкое вооружение", {
+    image: "Nemetskoye_vooruzheniye(5).jpg",
+    preserveImageFormat: true,
+    textFile: "Nemetskoye_vooruzheniye(5)_info_about_image.txt",
+    audioFile: "audio_for_Nemetskoye_vooruzheniye(5)_info_about_image.mp3",
+  }),
   "vitrina_tankov(10)": makeExhibit("vitrina_tankov(10)", "Витрина военной техники"),
   "medicinskaya_vitrina(11)": makeExhibit("medicinskaya_vitrina(11)", "Медицинская витрина"),
   "maket_boev(12)": makeExhibit("maket_boev(12)", "Макет уличных боёв"),
@@ -549,7 +561,8 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     color: "green",
     left: "56%",
     top: "46%",
-    disabled: true,
+    type: "exhibit",
+    id: "Sovetskoye_vooruzheniye(4)",
   },
   {
     title: "Немецкое вооружение",
@@ -557,7 +570,8 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     color: "green",
     left: "82%",
     top: "57%",
-    disabled: true,
+    type: "exhibit",
+    id: "Nemetskoye_vooruzheniye(5)",
   },
   {
     title: "Личные вещи солдата",

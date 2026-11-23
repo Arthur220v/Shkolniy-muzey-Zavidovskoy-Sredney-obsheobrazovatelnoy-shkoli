@@ -2649,12 +2649,14 @@ body.modal-open {
   opacity: 0;
   visibility: hidden;
   scale: 0.96;
+  translate: 0 0.25rem;
   transition:
-    opacity 0.2s ease,
-    visibility 0.2s ease,
+    opacity 0.24s cubic-bezier(0.2, 0.8, 0.2, 1),
+    visibility 0s linear 0.24s,
     background 0.2s ease,
     border-color 0.2s ease,
-    scale 0.2s ease;
+    scale 0.24s cubic-bezier(0.2, 0.8, 0.2, 1),
+    translate 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .map-pin[data-label-position="left"] .pin-label {
@@ -2692,6 +2694,8 @@ body.modal-open {
   opacity: 1;
   visibility: visible;
   scale: 1;
+  translate: 0 0;
+  transition-delay: 0s;
 }
 
 .right-longitudinal-pin.is-disabled:not(.is-label-visible):not(:hover):not(:focus) .pin-label {
@@ -2704,6 +2708,8 @@ body.modal-open {
   opacity: 1;
   visibility: visible;
   scale: 1;
+  translate: 0 0;
+  transition-delay: 0s;
 }
 
 .longitudinal-pin .pin-label {
@@ -2717,6 +2723,8 @@ body.modal-open {
   opacity: 1;
   visibility: visible;
   scale: 1;
+  translate: 0 0;
+  transition-delay: 0s;
 }
 
 .pin-label-image {
@@ -3406,6 +3414,8 @@ body.modal-open {
   opacity: 1;
   visibility: visible;
   scale: 1;
+  translate: 0 0;
+  transition-delay: 0s;
 }
 
 .map-pin.is-active .pin-dot {
