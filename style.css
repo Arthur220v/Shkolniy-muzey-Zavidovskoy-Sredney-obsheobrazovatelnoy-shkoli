@@ -3387,6 +3387,24 @@ body.modal-open {
   transform: translate(-50%, -50%) scale(1);
 }
 
+.map-markers.has-active-pin .map-pin:not(.is-active) {
+  opacity: 0.26;
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+.map-pin.is-active {
+  z-index: 30;
+  opacity: 1;
+  filter: none;
+  transform: translate(-50%, -50%) scale(1.18);
+}
+
+.map-pin.is-active .pin-dot {
+  transform: translate(-50%, -50%) scale(1.18);
+  box-shadow: 0 0 0 4px var(--pin-highlight), 0 0 28px 9px var(--pin-highlight);
+}
+
 .map-pin:active {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);

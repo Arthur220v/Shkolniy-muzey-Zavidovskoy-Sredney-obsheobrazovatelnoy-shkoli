@@ -1462,6 +1462,49 @@ function isVisibleMarkerClick(event, targetSelector) {
     event.clientY <= bounds.bottom;
 }
 
+function activateMapPin(pin, container = mapMarkers) {
+  container.querySelectorAll(".map-pin.is-active")
+    .forEach((activePin) => activePin.classList.remove("is-active"));
+  pin.classList.add("is-active");
+  container.classList.add("has-active-pin");
+}
+
+function clearMapPinFocus(container = mapMarkers) {
+  container.querySelectorAll(".map-pin.is-active")
+    .forEach((pin) => pin.classList.remove("is-active"));
+  container.querySelectorAll(".is-label-visible")
+    .forEach((pin) => pin.classList.remove("is-label-visible"));
+  container.querySelectorAll(".map-pin")
+    .forEach((pin) => {
+      pin.dataset.pinned = "false";
+      pin.blur();
+    });
+  container.classList.remove("has-active-pin");
+}
+
+function addMapPinFocus(pin, container = mapMarkers) {
+  pin.addEventListener("pointerenter", (event) => {
+    if (event.pointerType !== "mouse") return;
+    activateMapPin(pin, container);
+  });
+  pin.addEventListener("pointerleave", (event) => {
+    if (event.pointerType !== "mouse" || pin.dataset.pinned === "true") return;
+    clearMapPinFocus(container);
+  });
+  pin.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "touch") return;
+    activateMapPin(pin, container);
+  });
+  pin.addEventListener("click", () => {
+    pin.dataset.pinned = "true";
+    activateMapPin(pin, container);
+  });
+  pin.addEventListener("blur", () => {
+    if (pin.dataset.pinned === "true") return;
+    clearMapPinFocus(container);
+  });
+}
+
 function renderSceneNumerals(container, numerals, blurSrc) {
   (numerals || []).forEach(({ numeral, title, exhibitId, left, top }) => {
     const button = document.createElement("button");
@@ -1776,6 +1819,7 @@ function renderMapMarkers() {
       event.stopPropagation();
       openMapObject(item);
     });
+    addMapPinFocus(pin);
     mapMarkers.appendChild(pin);
   });
 }
@@ -1818,6 +1862,7 @@ function renderLongitudinalMarkers() {
         }
       });
     }
+    addMapPinFocus(pin);
 
     mapMarkers.appendChild(pin);
   });
@@ -2289,10 +2334,7 @@ bookView.addEventListener("click", (event) => {
 document.getElementById("walkBtn").addEventListener("click", openTour);
 mapFrame.addEventListener("pointerdown", (event) => {
   if (event.target.closest(".map-pin, .tour-direction")) return;
-  mapMarkers.querySelectorAll(".is-label-visible")
-    .forEach((pin) => pin.classList.remove("is-label-visible"));
-  mapMarkers.querySelectorAll(".map-pin")
-    .forEach((pin) => pin.blur());
+  clearMapPinFocus();
 });
 tourContinue.addEventListener("click", showLongitudinalMap);
 tourRightPassage.addEventListener("click", (event) => {
