@@ -1477,10 +1477,13 @@ function isVisibleMarkerClick(event, targetSelector) {
 }
 
 function activateMapPin(pin, container = mapMarkers) {
-  container.querySelectorAll(".map-pin.is-active")
-    .forEach((activePin) => activePin.classList.remove("is-active"));
+  container.querySelectorAll(".map-pin")
+    .forEach((otherPin) => {
+      if (otherPin === pin) return;
+      otherPin.classList.remove("is-active", "is-label-visible");
+      otherPin.dataset.pinned = "false";
+    });
   pin.classList.add("is-active");
-  container.classList.add("has-active-pin");
 }
 
 function clearMapPinFocus(container = mapMarkers) {
@@ -1489,11 +1492,8 @@ function clearMapPinFocus(container = mapMarkers) {
   container.querySelectorAll(".is-label-visible")
     .forEach((pin) => pin.classList.remove("is-label-visible"));
   container.querySelectorAll(".map-pin")
-    .forEach((pin) => {
-      pin.dataset.pinned = "false";
-      pin.blur();
-    });
-  container.classList.remove("has-active-pin");
+    .forEach((pin) => { pin.dataset.pinned = "false"; });
+  container.querySelector(".map-pin:focus")?.blur();
 }
 
 function addMapPinFocus(pin, container = mapMarkers) {
@@ -1508,13 +1508,14 @@ function addMapPinFocus(pin, container = mapMarkers) {
   pin.addEventListener("pointerdown", (event) => {
     if (event.pointerType !== "touch") return;
     activateMapPin(pin, container);
+    pin.classList.add("is-label-visible");
   });
   pin.addEventListener("click", () => {
     pin.dataset.pinned = "true";
     activateMapPin(pin, container);
   });
   pin.addEventListener("blur", () => {
-    if (pin.dataset.pinned === "true") return;
+    if (pin.dataset.pinned === "true" || !pin.classList.contains("is-active")) return;
     clearMapPinFocus(container);
   });
 }
@@ -1639,6 +1640,7 @@ function closeExhibit() {
     exhibitStack = [];
     currentExhibitId = null;
     stopAudio();
+    clearMapPinFocus();
     return;
   }
   const previous = exhibitStack.pop();
@@ -1648,6 +1650,7 @@ function closeExhibit() {
     exhibitStack.pop();
     return;
   }
+  clearMapPinFocus();
   exhibit.classList.remove("is-open");
   exhibit.classList.add("is-closing");
   exhibit.setAttribute("aria-hidden", "true");
@@ -1894,13 +1897,6 @@ function renderRightLongitudinalMarkers() {
     pin.setAttribute("aria-label", item.title);
     pin.setAttribute("aria-disabled", String(Boolean(item.disabled)));
     pin.title = item.title;
-    pin.addEventListener("pointerdown", (event) => {
-      if (event.pointerType !== "touch") return;
-      mapMarkers.querySelectorAll(".right-longitudinal-pin.is-label-visible")
-        .forEach((activePin) => activePin.classList.remove("is-label-visible"));
-      pin.classList.add("is-label-visible");
-    });
-
     const glow = document.createElement("span");
     glow.className = "pin-glow";
     const dot = document.createElement("span");
@@ -1934,6 +1930,7 @@ async function switchTourMap(image, alt, renderMarkers, showContinue, immediate)
   const imagePath = encodePath(IMAGE_DIR, image);
   const transitionId = ++mapTransitionId;
   const updateView = () => {
+    clearMapPinFocus();
     mapImage.alt = alt;
     renderMarkers();
     tourContinue.hidden = !showContinue;
@@ -2125,6 +2122,7 @@ function openScene(id) {
 function closeScene() {
   const sceneIsPending = scene.getAttribute("aria-hidden") === "false";
   if (!isSceneOpen() && !scene.classList.contains("is-closing") && !sceneIsPending) return;
+  clearMapPinFocus();
   sceneRequestId += 1;
   scene.classList.remove("is-open");
   scene.classList.add("is-closing");
@@ -2195,6 +2193,7 @@ function openBook(pages = MEMORY_BOOK_PAGES, title = "Книга памяти 19
 
 function closeBook() {
   if (!isBookOpen() && !bookView.classList.contains("is-closing")) return;
+  clearMapPinFocus();
   clearTimeout(bookTransitionTimer);
   bookTransitionId += 1;
   bookBusy = false;

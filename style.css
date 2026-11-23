@@ -2717,6 +2717,7 @@ body.modal-open {
 }
 
 .map-pin:hover .pin-label,
+.map-pin:active .pin-label,
 .map-pin:focus .pin-label {
   border-color: var(--blue-rect-button-border-hover);
   background: var(--blue-rect-button-background-hover);
@@ -2833,13 +2834,23 @@ body.modal-open {
   pointer-events: auto;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, scale 0.2s ease;
+  opacity: 0.92;
+  scale: 0.98;
+  transition:
+    opacity 0.24s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    scale 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .hot-area:hover .hot-area-label,
+.hot-area:active .hot-area-label,
 .hot-area:focus-visible .hot-area-label {
   border-color: var(--blue-rect-button-border-hover);
   background: var(--blue-rect-button-background-hover);
+  opacity: 1;
   scale: 1;
 }
 
@@ -3300,7 +3311,15 @@ body.modal-open {
   white-space: normal;
   overflow-wrap: anywhere;
   box-shadow: 0 5px 14px rgba(0, 0, 0, 0.32);
-  transition: var(--blue-rect-button-transition);
+  opacity: 0.94;
+  scale: 0.98;
+  transition:
+    opacity 0.24s cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    scale 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .scene.is-zavidovo-history .scene-numeral-button:hover,
@@ -3311,9 +3330,12 @@ body.modal-open {
 }
 
 .scene.is-zavidovo-history .scene-numeral-button:hover .scene-numeral-label,
+.scene.is-zavidovo-history .scene-numeral-button:active .scene-numeral-label,
 .scene.is-zavidovo-history .scene-numeral-button:focus-visible .scene-numeral-label {
   border-color: var(--blue-rect-button-border-hover);
   background: var(--blue-rect-button-background-hover);
+  opacity: 1;
+  scale: 1;
 }
 
 .book-toolbar {
@@ -3393,12 +3415,6 @@ body.modal-open {
 .map-pin:focus-visible {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
-}
-
-.map-markers.has-active-pin .map-pin:not(.is-active) {
-  opacity: 0.26;
-  filter: blur(1px);
-  pointer-events: none;
 }
 
 .map-pin.is-active {
@@ -5715,6 +5731,7 @@ html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-label {
 }
 
 html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:hover .scene-numeral-label,
+html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:active .scene-numeral-label,
 html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:focus-visible .scene-numeral-label {
   border-color: var(--light-control-border);
   background: var(--light-control-hover-background);
@@ -5864,6 +5881,9 @@ html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:focus-
   .marker-icon,
   .map-pin,
   .map-pin .pin-dot,
+  .pin-label,
+  .hot-area-label,
+  .scene-numeral-label,
   .map-pin .pin-glow {
     transition: none;
     animation: none;
