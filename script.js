@@ -2272,7 +2272,11 @@ exhibit.addEventListener("click", (event) => {
 
 document.getElementById("walkBtn").addEventListener("click", openTour);
 tourContinue.addEventListener("click", showLongitudinalMap);
-tourRightPassage.addEventListener("click", showRightLongitudinalMap);
+tourRightPassage.addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  void showRightLongitudinalMap();
+});
 tourBack.addEventListener("click", () => showEntranceMap());
 document.getElementById("tourExit").addEventListener("click", closeTour);
 document.getElementById("mobileMapWarningClose").addEventListener("click", () => {

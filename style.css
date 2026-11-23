@@ -2587,22 +2587,23 @@ body.modal-open {
   width: 54px;
   height: 54px;
   padding: 0.35rem;
+  z-index: 20;
   animation: directionPulse 2.2s ease-in-out infinite;
 }
 
 .tour-right-passage svg {
-  transform: rotate(45deg);
+  transform: rotate(-45deg);
   animation: rightPassageArrowNudge 1.5s ease-in-out infinite;
 }
 
 .tour-right-passage:hover,
 .tour-right-passage:focus-visible {
-  transform: translate(3px, 3px);
+  transform: translate(3px, -3px);
 }
 
 @keyframes rightPassageArrowNudge {
-  0%, 100% { transform: rotate(45deg) translateY(-2px); }
-  50% { transform: rotate(45deg) translateY(3px); }
+  0%, 100% { transform: rotate(-45deg) translate(0, -2px); }
+  50% { transform: rotate(-45deg) translate(3px, -5px); }
 }
 
 @keyframes directionPulse {
