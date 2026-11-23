@@ -2582,7 +2582,7 @@ body.modal-open {
 }
 
 .tour-right-passage {
-  left: 73.5%;
+  left: 67%;
   top: 60%;
   width: 54px;
   height: 54px;
@@ -2592,18 +2592,30 @@ body.modal-open {
 }
 
 .tour-right-passage svg {
-  transform: rotate(-45deg);
+  transform: rotate(180deg);
   animation: rightPassageArrowNudge 1.5s ease-in-out infinite;
 }
 
 .tour-right-passage:hover,
 .tour-right-passage:focus-visible {
-  transform: translate(3px, -3px);
+  transform: translateY(-3px);
 }
 
 @keyframes rightPassageArrowNudge {
-  0%, 100% { transform: rotate(-45deg) translate(0, -2px); }
-  50% { transform: rotate(-45deg) translate(3px, -5px); }
+  0%, 100% { transform: rotate(180deg) translateY(-2px); }
+  50% { transform: rotate(180deg) translateY(3px); }
+}
+
+.tour-previous {
+  top: 4.6rem;
+  left: 1rem;
+  min-height: 48px;
+  padding: 0.25rem 0.85rem 0.25rem 0.3rem;
+}
+
+.tour-previous svg {
+  width: 34px;
+  height: 34px;
 }
 
 @keyframes directionPulse {
@@ -2677,6 +2689,18 @@ body.modal-open {
 }
 
 .longitudinal-pin.is-disabled .pin-label {
+  opacity: 1;
+  visibility: visible;
+  scale: 1;
+}
+
+.right-longitudinal-pin.is-disabled:not(:hover):not(:focus) .pin-label {
+  opacity: 0;
+  visibility: hidden;
+  scale: 0.96;
+}
+
+.right-longitudinal-pin.is-label-visible .pin-label {
   opacity: 1;
   visibility: visible;
   scale: 1;
@@ -3534,8 +3558,8 @@ body.modal-open {
     font-size: 0.78rem;
   }
 
-  .touch-device .map-pin:hover .pin-label,
-  .touch-device .map-pin:focus:not(:focus-visible) .pin-label {
+  .touch-device .map-pin:hover:not(.is-label-visible) .pin-label,
+  .touch-device .map-pin:focus:not(:focus-visible):not(.is-label-visible) .pin-label {
     opacity: 0;
     visibility: hidden;
   }

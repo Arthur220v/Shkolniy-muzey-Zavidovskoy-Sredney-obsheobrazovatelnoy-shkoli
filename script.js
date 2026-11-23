@@ -531,8 +531,8 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     title: "Российский флаг",
     number: "1",
     color: "gold",
-    left: "16%",
-    top: "8%",
+    left: "17.5%",
+    top: "12.9%",
     type: "exhibit",
   },
   {
@@ -540,8 +540,8 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     title: "Немецкий сундук",
     number: "2",
     color: "blue",
-    left: "65%",
-    top: "91%",
+    left: "66.4%",
+    top: "62.4%",
     type: "exhibit",
   },
   {
@@ -549,40 +549,40 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     title: "Советское вооружение",
     number: "4",
     color: "blue",
-    left: "49%",
-    top: "48%",
+    left: "56.5%",
+    top: "37.5%",
     type: "exhibit",
   },
   {
     title: "Немецкое вооружение",
     number: "5",
     color: "red",
-    left: "78%",
-    top: "45%",
+    left: "80.3%",
+    top: "50.2%",
     disabled: true,
   },
   {
     title: "Личные вещи солдата",
     number: "6",
     color: "gold",
-    left: "87%",
-    top: "51%",
+    left: "50.8%",
+    top: "33.9%",
     disabled: true,
   },
   {
     title: "Боеприпасы",
     number: "7",
     color: "red",
-    left: "49%",
-    top: "36%",
+    left: "54.9%",
+    top: "33.9%",
     disabled: true,
   },
   {
     title: "Стенд посвящённый участникам СВО",
     number: "8",
     color: "red",
-    left: "58%",
-    top: "33%",
+    left: "6.8%",
+    top: "27%",
     disabled: true,
   },
   {
@@ -590,24 +590,24 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     title: "«Они сражались за родину!»",
     number: "9",
     color: "red",
-    left: "21%",
-    top: "43%",
+    left: "20.2%",
+    top: "28.7%",
     type: "scene",
   },
   {
     title: "«Труженики тыла»",
     number: "10",
     color: "gold",
-    left: "31%",
-    top: "35%",
+    left: "27.2%",
+    top: "33.5%",
     disabled: true,
   },
   {
     title: "«Освобождение Завидово»",
     number: "11",
     color: "gold",
-    left: "32%",
-    top: "49%",
+    left: "31.1%",
+    top: "33.5%",
     disabled: true,
   },
   {
@@ -615,8 +615,8 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     title: "«Освобождение Калинина»",
     number: "12",
     color: "blue",
-    left: "37%",
-    top: "58%",
+    left: "34.4%",
+    top: "29.9%",
     type: "exhibit",
   },
   {
@@ -624,8 +624,8 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     title: "«Артефакты и записи»",
     number: "13",
     color: "green",
-    left: "34%",
-    top: "70%",
+    left: "34.4%",
+    top: "39.4%",
     type: "scene",
   },
 ];
@@ -833,6 +833,7 @@ const mapMarkers = document.getElementById("mapMarkers");
 const tourContinue = document.getElementById("tourContinue");
 const tourRightPassage = document.getElementById("tourRightPassage");
 const tourBack = document.getElementById("tourBack");
+const tourPrevious = document.getElementById("tourPrevious");
 const mobileMapWarning = document.getElementById("mobileMapWarning");
 const tourHint = document.getElementById("tourHint");
 const hintContent = document.getElementById("hintContent");
@@ -1795,7 +1796,6 @@ function renderLongitudinalMarkers() {
     pin.setAttribute("aria-label", item.title);
     pin.setAttribute("aria-disabled", String(Boolean(item.disabled)));
     pin.title = item.title;
-
     const glow = document.createElement("span");
     glow.className = "pin-glow";
     const dot = document.createElement("span");
@@ -1832,13 +1832,19 @@ function renderRightLongitudinalMarkers() {
   RIGHT_LONGITUDINAL_OBJECTS.forEach((item) => {
     const pin = document.createElement("button");
     pin.type = "button";
-    pin.className = `map-pin longitudinal-pin ${item.color}${item.disabled ? " is-disabled" : ""}`;
+    pin.className = `map-pin longitudinal-pin right-longitudinal-pin ${item.color}${item.disabled ? " is-disabled" : ""}`;
     pin.style.left = item.left;
     pin.style.top = item.top;
     pin.dataset.labelPosition = item.labelPosition || "below";
     pin.setAttribute("aria-label", item.title);
     pin.setAttribute("aria-disabled", String(Boolean(item.disabled)));
     pin.title = item.title;
+    pin.addEventListener("pointerdown", (event) => {
+      if (event.pointerType !== "touch") return;
+      mapMarkers.querySelectorAll(".right-longitudinal-pin.is-label-visible")
+        .forEach((activePin) => activePin.classList.remove("is-label-visible"));
+      pin.classList.add("is-label-visible");
+    });
 
     const glow = document.createElement("span");
     glow.className = "pin-glow";
@@ -1877,6 +1883,7 @@ async function switchTourMap(image, alt, renderMarkers, showContinue, immediate)
     tourContinue.hidden = !showContinue;
     tourBack.hidden = showContinue;
     tourRightPassage.hidden = image !== "facing_two_longitudinal_(interactive).png";
+    tourPrevious.hidden = image !== "Right_longitudinal_view.png";
     if (mapImage.getAttribute("src") !== imagePath) mapImage.src = imagePath;
   };
 
@@ -1936,6 +1943,10 @@ function showRightLongitudinalMap() {
     false,
     false
   );
+}
+
+function showPreviousLongitudinalMap() {
+  return showLongitudinalMap();
 }
 
 function openMapObject(item) {
@@ -2279,6 +2290,7 @@ tourRightPassage.addEventListener("click", (event) => {
   void showRightLongitudinalMap();
 });
 tourBack.addEventListener("click", () => showEntranceMap());
+tourPrevious.addEventListener("click", () => showPreviousLongitudinalMap());
 document.getElementById("tourExit").addEventListener("click", closeTour);
 document.getElementById("mobileMapWarningClose").addEventListener("click", () => {
   clearTimeout(mobileMapWarningTimer);
