@@ -533,6 +533,7 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     left: "19%",
     top: "15%",
     disabled: true,
+    disabled: true,
   },
   {
     title: "Ящик Мозговой А.Н.",
@@ -548,6 +549,7 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     color: "green",
     left: "56%",
     top: "46%",
+    disabled: true,
   },
   {
     title: "Немецкое вооружение",
