@@ -2581,6 +2581,30 @@ body.modal-open {
   height: 34px;
 }
 
+.tour-right-passage {
+  left: 73.5%;
+  top: 60%;
+  width: 54px;
+  height: 54px;
+  padding: 0.35rem;
+  animation: directionPulse 2.2s ease-in-out infinite;
+}
+
+.tour-right-passage svg {
+  transform: rotate(45deg);
+  animation: rightPassageArrowNudge 1.5s ease-in-out infinite;
+}
+
+.tour-right-passage:hover,
+.tour-right-passage:focus-visible {
+  transform: translate(3px, 3px);
+}
+
+@keyframes rightPassageArrowNudge {
+  0%, 100% { transform: rotate(45deg) translateY(-2px); }
+  50% { transform: rotate(45deg) translateY(3px); }
+}
+
 @keyframes directionPulse {
   0%, 100% { box-shadow: 0 8px 26px rgba(0, 0, 0, 0.45), 0 0 18px rgba(240, 213, 154, 0.22); }
   50% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 30px rgba(240, 213, 154, 0.52); }

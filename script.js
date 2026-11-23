@@ -525,6 +525,111 @@ const LONGITUDINAL_OBJECTS = [
   },
 ];
 
+const RIGHT_LONGITUDINAL_OBJECTS = [
+  {
+    id: "Flag_RF(2)",
+    title: "Российский флаг",
+    number: "1",
+    color: "gold",
+    left: "16%",
+    top: "8%",
+    type: "exhibit",
+  },
+  {
+    id: "sunduk_N2(3)",
+    title: "Немецкий сундук",
+    number: "2",
+    color: "blue",
+    left: "65%",
+    top: "91%",
+    type: "exhibit",
+  },
+  {
+    id: "voennie_trofei(4)",
+    title: "Советское вооружение",
+    number: "4",
+    color: "blue",
+    left: "49%",
+    top: "48%",
+    type: "exhibit",
+  },
+  {
+    title: "Немецкое вооружение",
+    number: "5",
+    color: "red",
+    left: "78%",
+    top: "45%",
+    disabled: true,
+  },
+  {
+    title: "Личные вещи солдата",
+    number: "6",
+    color: "gold",
+    left: "87%",
+    top: "51%",
+    disabled: true,
+  },
+  {
+    title: "Боеприпасы",
+    number: "7",
+    color: "red",
+    left: "49%",
+    top: "36%",
+    disabled: true,
+  },
+  {
+    title: "Стенд посвящённый участникам СВО",
+    number: "8",
+    color: "red",
+    left: "58%",
+    top: "33%",
+    disabled: true,
+  },
+  {
+    id: "vipuskniki_1941g(9)",
+    title: "«Они сражались за родину!»",
+    number: "9",
+    color: "red",
+    left: "21%",
+    top: "43%",
+    type: "scene",
+  },
+  {
+    title: "«Труженики тыла»",
+    number: "10",
+    color: "gold",
+    left: "31%",
+    top: "35%",
+    disabled: true,
+  },
+  {
+    title: "«Освобождение Завидово»",
+    number: "11",
+    color: "gold",
+    left: "32%",
+    top: "49%",
+    disabled: true,
+  },
+  {
+    id: "maket_boev(12)",
+    title: "«Освобождение Калинина»",
+    number: "12",
+    color: "blue",
+    left: "37%",
+    top: "58%",
+    type: "exhibit",
+  },
+  {
+    id: "vitrina_pamyati(13)",
+    title: "«Артефакты и записи»",
+    number: "13",
+    color: "green",
+    left: "34%",
+    top: "70%",
+    type: "scene",
+  },
+];
+
 const SCENES = {
   "bratskiye_zakhoroneniya(6)": {
     image: "bratskiye_zakhoroneniya(6).jpg",
@@ -726,6 +831,7 @@ const mapFrame = document.getElementById("mapFrame");
 const mapImage = document.getElementById("mapImage");
 const mapMarkers = document.getElementById("mapMarkers");
 const tourContinue = document.getElementById("tourContinue");
+const tourRightPassage = document.getElementById("tourRightPassage");
 const tourBack = document.getElementById("tourBack");
 const mobileMapWarning = document.getElementById("mobileMapWarning");
 const tourHint = document.getElementById("tourHint");
@@ -1716,6 +1822,47 @@ function renderLongitudinalMarkers() {
         }
       });
     }
+
+    function renderRightLongitudinalMarkers() {
+      mapMarkers.innerHTML = "";
+      RIGHT_LONGITUDINAL_OBJECTS.forEach((item) => {
+        const pin = document.createElement("button");
+        pin.type = "button";
+        pin.className = `map-pin longitudinal-pin ${item.color}${item.disabled ? " is-disabled" : ""}`;
+        pin.style.left = item.left;
+        pin.style.top = item.top;
+        pin.dataset.labelPosition = item.labelPosition || "below";
+        pin.setAttribute("aria-label", item.title);
+        pin.setAttribute("aria-disabled", String(Boolean(item.disabled)));
+        pin.title = item.title;
+
+        const glow = document.createElement("span");
+        glow.className = "pin-glow";
+        const dot = document.createElement("span");
+        dot.className = "pin-dot";
+        dot.textContent = item.number;
+        const label = document.createElement("span");
+        label.className = "pin-label";
+        const title = document.createElement("span");
+        title.className = "pin-label-text";
+        title.textContent = item.title;
+        label.appendChild(title);
+        pin.append(glow, dot, label);
+
+        if (!item.disabled) {
+          pin.addEventListener("click", (event) => {
+            if (!isVisibleMarkerClick(event, ".pin-dot, .pin-label")) return;
+            event.stopPropagation();
+            if (item.type === "exhibit") {
+              openExhibit(item.id, encodePath(IMAGE_DIR, "Right_longitudinal_view.png"));
+            } else {
+              openScene(item.id);
+            }
+          });
+        }
+        mapMarkers.appendChild(pin);
+      });
+    }
     mapMarkers.appendChild(pin);
   });
 }
@@ -1728,6 +1875,7 @@ async function switchTourMap(image, alt, renderMarkers, showContinue, immediate)
     renderMarkers();
     tourContinue.hidden = !showContinue;
     tourBack.hidden = showContinue;
+    tourRightPassage.hidden = image !== "facing_two_longitudinal_(interactive).png";
     if (mapImage.getAttribute("src") !== imagePath) mapImage.src = imagePath;
   };
 
@@ -1774,6 +1922,16 @@ function showLongitudinalMap() {
     "facing_two_longitudinal_(interactive).png",
     "Продольный вид экспозиции школьного музея",
     renderLongitudinalMarkers,
+    false,
+    false
+  );
+}
+
+function showRightLongitudinalMap() {
+  return switchTourMap(
+    "Right_longitudinal_view.png",
+    "Правый продольный проход школьного музея",
+    renderRightLongitudinalMarkers,
     false,
     false
   );
@@ -2114,6 +2272,7 @@ exhibit.addEventListener("click", (event) => {
 
 document.getElementById("walkBtn").addEventListener("click", openTour);
 tourContinue.addEventListener("click", showLongitudinalMap);
+tourRightPassage.addEventListener("click", showRightLongitudinalMap);
 tourBack.addEventListener("click", () => showEntranceMap());
 document.getElementById("tourExit").addEventListener("click", closeTour);
 document.getElementById("mobileMapWarningClose").addEventListener("click", () => {
