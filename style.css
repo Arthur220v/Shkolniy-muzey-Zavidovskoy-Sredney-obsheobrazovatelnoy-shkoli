@@ -2832,7 +2832,18 @@ body.modal-open {
 .hot-area:focus-visible .hot-area-label {
   border-color: var(--blue-rect-button-border-hover);
   background: var(--blue-rect-button-background-hover);
-  scale: 1.06;
+  scale: 1.02;
+}
+
+.hot-area-label.is-bocharov {
+  width: calc(100% - 0.2rem);
+  bottom: 0.08rem;
+  padding: 0.08rem 0.12rem;
+  font-size: clamp(0.42rem, 0.56vw, 0.54rem);
+  line-height: 1.05;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 .hot-area:focus-visible .hot-area-label {
@@ -3372,9 +3383,14 @@ body.modal-open {
 
 .map-pin:hover,
 .map-pin:focus-visible,
-.map-pin:active {
+.map-pin.is-label-visible {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1.12);
+}
+
+.map-pin:active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .map-pin {
@@ -3484,6 +3500,13 @@ body.modal-open {
 }
 
 @media (hover: none) {
+  .hot-area-label.is-bocharov {
+    width: 100%;
+    padding: 0.06rem 0.08rem;
+    font-size: 0.42rem;
+    line-height: 1;
+  }
+
   .tour-right-passage {
     left: 70%;
     width: 46px;

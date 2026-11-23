@@ -330,8 +330,8 @@ Object.assign(EXHIBITS, {
           title: "Н.П.Бочаров",
           left: "38%",
           top: "40%",
-          width: "14%",
-          height: "22%",
+          width: "20%",
+          height: "14%",
         },
       ],
     }
@@ -1430,7 +1430,8 @@ function renderNestedMarkers(container, spots, blurSrc) {
     const isLongLabel = spot.id.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_") &&
       (spot.id.endsWith("_(II)") || spot.id.endsWith("_(III)"));
     const isGraduateLabel = spot.id.startsWith("vipuskniki_1941g(9)_");
-    label.className = `hot-area-label${spot.labelPosition === "above" ? " is-above" : ""}${isLongLabel ? " is-long" : ""}${isGraduateLabel ? " is-graduate" : ""}`;
+    const isBocharovLabel = spot.id === "Pamyatniy_znak_Bocharovu_N.P_(II)_(XXXVI)";
+    label.className = `hot-area-label${spot.labelPosition === "above" ? " is-above" : ""}${isLongLabel ? " is-long" : ""}${isGraduateLabel ? " is-graduate" : ""}${isBocharovLabel ? " is-bocharov" : ""}`;
     label.textContent = spot.title;
     area.appendChild(label);
 
@@ -2277,7 +2278,22 @@ exhibit.addEventListener("click", (event) => {
   }
 });
 
+scene.addEventListener("click", (event) => {
+  if (event.target === scene) closeScene();
+});
+
+bookView.addEventListener("click", (event) => {
+  if (event.target === bookView) closeBook();
+});
+
 document.getElementById("walkBtn").addEventListener("click", openTour);
+mapFrame.addEventListener("pointerdown", (event) => {
+  if (event.target.closest(".map-pin, .tour-direction")) return;
+  mapMarkers.querySelectorAll(".is-label-visible")
+    .forEach((pin) => pin.classList.remove("is-label-visible"));
+  mapMarkers.querySelectorAll(".map-pin")
+    .forEach((pin) => pin.blur());
+});
 tourContinue.addEventListener("click", showLongitudinalMap);
 tourRightPassage.addEventListener("click", (event) => {
   event.preventDefault();
