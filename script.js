@@ -540,7 +540,7 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     number: "2",
     color: "blue",
     left: "66.4%",
-    top: "72%",
+    top: "74%",
     disabled: true,
   },
   {
@@ -573,7 +573,7 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     number: "7",
     color: "blue",
     left: "53.8%",
-    top: "45%",
+    top: "43%",
     disabled: true,
   },
   {
@@ -585,13 +585,12 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     disabled: true,
   },
   {
-    id: "vipuskniki_1941g(9)",
     title: "«Они сражались за родину!»",
     number: "9",
     color: "red",
     left: "20%",
     top: "34%",
-    type: "scene",
+    disabled: true,
   },
   {
     title: "«Труженики тыла»",
