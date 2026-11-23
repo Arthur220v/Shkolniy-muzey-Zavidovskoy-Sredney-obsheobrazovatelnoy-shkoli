@@ -1823,44 +1823,45 @@ function renderLongitudinalMarkers() {
       });
     }
 
-    function renderRightLongitudinalMarkers() {
-      mapMarkers.innerHTML = "";
-      RIGHT_LONGITUDINAL_OBJECTS.forEach((item) => {
-        const pin = document.createElement("button");
-        pin.type = "button";
-        pin.className = `map-pin longitudinal-pin ${item.color}${item.disabled ? " is-disabled" : ""}`;
-        pin.style.left = item.left;
-        pin.style.top = item.top;
-        pin.dataset.labelPosition = item.labelPosition || "below";
-        pin.setAttribute("aria-label", item.title);
-        pin.setAttribute("aria-disabled", String(Boolean(item.disabled)));
-        pin.title = item.title;
+    mapMarkers.appendChild(pin);
+  });
+}
 
-        const glow = document.createElement("span");
-        glow.className = "pin-glow";
-        const dot = document.createElement("span");
-        dot.className = "pin-dot";
-        dot.textContent = item.number;
-        const label = document.createElement("span");
-        label.className = "pin-label";
-        const title = document.createElement("span");
-        title.className = "pin-label-text";
-        title.textContent = item.title;
-        label.appendChild(title);
-        pin.append(glow, dot, label);
+function renderRightLongitudinalMarkers() {
+  mapMarkers.innerHTML = "";
+  RIGHT_LONGITUDINAL_OBJECTS.forEach((item) => {
+    const pin = document.createElement("button");
+    pin.type = "button";
+    pin.className = `map-pin longitudinal-pin ${item.color}${item.disabled ? " is-disabled" : ""}`;
+    pin.style.left = item.left;
+    pin.style.top = item.top;
+    pin.dataset.labelPosition = item.labelPosition || "below";
+    pin.setAttribute("aria-label", item.title);
+    pin.setAttribute("aria-disabled", String(Boolean(item.disabled)));
+    pin.title = item.title;
 
-        if (!item.disabled) {
-          pin.addEventListener("click", (event) => {
-            if (!isVisibleMarkerClick(event, ".pin-dot, .pin-label")) return;
-            event.stopPropagation();
-            if (item.type === "exhibit") {
-              openExhibit(item.id, encodePath(IMAGE_DIR, "Right_longitudinal_view.png"));
-            } else {
-              openScene(item.id);
-            }
-          });
+    const glow = document.createElement("span");
+    glow.className = "pin-glow";
+    const dot = document.createElement("span");
+    dot.className = "pin-dot";
+    dot.textContent = item.number;
+    const label = document.createElement("span");
+    label.className = "pin-label";
+    const title = document.createElement("span");
+    title.className = "pin-label-text";
+    title.textContent = item.title;
+    label.appendChild(title);
+    pin.append(glow, dot, label);
+
+    if (!item.disabled) {
+      pin.addEventListener("click", (event) => {
+        if (!isVisibleMarkerClick(event, ".pin-dot, .pin-label")) return;
+        event.stopPropagation();
+        if (item.type === "exhibit") {
+          openExhibit(item.id, encodePath(IMAGE_DIR, "Right_longitudinal_view.png"));
+        } else {
+          openScene(item.id);
         }
-        mapMarkers.appendChild(pin);
       });
     }
     mapMarkers.appendChild(pin);
