@@ -1911,6 +1911,7 @@ function renderRightLongitudinalMarkers() {
         }
       });
     }
+    addMapPinFocus(pin);
     mapMarkers.appendChild(pin);
   });
 }
