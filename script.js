@@ -2279,11 +2279,11 @@ exhibit.addEventListener("click", (event) => {
 });
 
 scene.addEventListener("click", (event) => {
-  if (event.target === scene) closeScene();
+  if (event.target === scene || event.target === sceneViewport || event.target === sceneWorld) closeScene();
 });
 
 bookView.addEventListener("click", (event) => {
-  if (event.target === bookView) closeBook();
+  if (event.target === bookView || event.target === bookViewport || event.target === bookWorld) closeBook();
 });
 
 document.getElementById("walkBtn").addEventListener("click", openTour);

@@ -2832,7 +2832,7 @@ body.modal-open {
 .hot-area:focus-visible .hot-area-label {
   border-color: var(--blue-rect-button-border-hover);
   background: var(--blue-rect-button-background-hover);
-  scale: 1.02;
+  scale: 1;
 }
 
 .hot-area-label.is-bocharov {
@@ -3382,10 +3382,9 @@ body.modal-open {
 }
 
 .map-pin:hover,
-.map-pin:focus-visible,
-.map-pin.is-label-visible {
+.map-pin:focus-visible {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1.12);
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .map-pin:active {
