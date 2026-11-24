@@ -313,6 +313,12 @@ Object.assign(EXHIBITS, {
     textFile: "Yashik_Mozgovoy(2)_info_about_image.txt",
     audioFile: "audio_for_Yashik_Mozgovoy(2)_info_about_image.mp3",
   }),
+  "Boepripasy(7)": makeExhibit("Boepripasy(7)", "Боеприпасы", {
+    image: "Boepripasy(7).jpg",
+    preserveImageFormat: true,
+    textFile: "Boepripasy(7)_info_about_image.txt",
+    audioFile: "audio_for_Boepripasy(7)_info_about_image.mp3",
+  }),
   "voennie_trofei(4)": makeExhibit("voennie_trofei(4)", "Военные трофеи", {
     image: "voennie_trofei(4).jpg",
     preserveImageFormat: true,
@@ -594,7 +600,8 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     color: "blue",
     left: "53.8%",
     top: "43%",
-    disabled: true,
+    type: "exhibit",
+    id: "Boepripasy(7)",
   },
   {
     title: "Стенд посвящённый участникам СВО",
