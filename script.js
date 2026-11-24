@@ -319,6 +319,12 @@ Object.assign(EXHIBITS, {
     textFile: "Boepripasy(7)_info_about_image.txt",
     audioFile: "audio_for_Boepripasy(7)_info_about_image.mp3",
   }),
+  "lichniye_veshi_soldata(6)": makeExhibit("lichniye_veshi_soldata(6)", "Личные вещи солдата", {
+    image: "lichniye_veshi_soldata(6).jpg",
+    preserveImageFormat: true,
+    textFile: "lichniye_veshi_soldata(6)_info_about_image.txt",
+    audioFile: "audio_for_lichniye_veshi_soldata(6)_info_about_image.mp3",
+  }),
   "voennie_trofei(4)": makeExhibit("voennie_trofei(4)", "Военные трофеи", {
     image: "voennie_trofei(4).jpg",
     preserveImageFormat: true,
@@ -592,7 +598,8 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     color: "green",
     left: "50%",
     top: "44%",
-    disabled: true,
+    type: "exhibit",
+    id: "lichniye_veshi_soldata(6)",
   },
   {
     title: "Боеприпасы",
