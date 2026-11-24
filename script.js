@@ -307,6 +307,12 @@ Object.assign(EXHIBITS, {
   "sunduk_N2(3)": makeExhibit("sunduk_N2(3)", "Немецкий сундук", {
     preserveImageFormat: true,
   }),
+  "Yashik_Mozgovoy(2)": makeExhibit("Yashik_Mozgovoy(2)", "Ящик Мозговой А.Н.", {
+    image: "Yashik_Mozgovoy(2).jpg",
+    preserveImageFormat: true,
+    textFile: "Yashik_Mozgovoy(2)_info_about_image.txt",
+    audioFile: "audio_for_Yashik_Mozgovoy(2)_info_about_image.mp3",
+  }),
   "voennie_trofei(4)": makeExhibit("voennie_trofei(4)", "Военные трофеи", {
     image: "voennie_trofei(4).jpg",
     preserveImageFormat: true,
@@ -553,7 +559,8 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     color: "blue",
     left: "66.4%",
     top: "74%",
-    disabled: true,
+    type: "exhibit",
+    id: "Yashik_Mozgovoy(2)",
   },
   {
     title: "Советское вооружение",
@@ -595,6 +602,7 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     color: "red",
     left: "5%",
     top: "31%",
+    labelPosition: "right",
     disabled: true,
   },
   {
@@ -935,6 +943,7 @@ function createPanZoom(viewport, world) {
   let pointers = new Map();
   let pinchStart = 0;
   let pinchScale = 1;
+  let multiTouchGesture = false;
 
   function constrain() {
     const width = world.offsetWidth * state.scale;
@@ -969,16 +978,22 @@ function createPanZoom(viewport, world) {
   }, { passive: false });
 
   viewport.addEventListener("pointerdown", (event) => {
-    if (event.target.closest("button")) return;
+    const isButtonTarget = event.target.closest("button");
+    if (isButtonTarget && event.pointerType !== "touch") return;
+    if (pointers.size === 0) multiTouchGesture = false;
     pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-    if (viewport.setPointerCapture) viewport.setPointerCapture(event.pointerId);
+    if (!isButtonTarget && viewport.setPointerCapture) viewport.setPointerCapture(event.pointerId);
     if (pointers.size === 1) {
-      dragging = true;
-      lastX = event.clientX;
-      lastY = event.clientY;
-      viewport.classList.add("is-panning");
+      dragging = !isButtonTarget;
+      if (dragging) {
+        lastX = event.clientX;
+        lastY = event.clientY;
+        viewport.classList.add("is-panning");
+      }
     } else if (pointers.size === 2) {
+      multiTouchGesture = true;
       dragging = false;
+      viewport.classList.remove("is-panning");
       const pts = [...pointers.values()];
       pinchStart = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
       pinchScale = state.scale;
@@ -1022,6 +1037,11 @@ function createPanZoom(viewport, world) {
   viewport.addEventListener("pointerup", endPointer);
   viewport.addEventListener("pointercancel", endPointer);
   viewport.addEventListener("lostpointercapture", endPointer);
+  viewport.addEventListener("click", (event) => {
+    if (!multiTouchGesture || event.detail === 0 || !event.target.closest("button")) return;
+    event.preventDefault();
+    event.stopPropagation();
+  }, true);
 
   return {
     state,
