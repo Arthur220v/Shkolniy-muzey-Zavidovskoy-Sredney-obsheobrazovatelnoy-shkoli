@@ -1,7 +1,7 @@
 const IMAGE_DIR = "images/";
 const TEXT_DIR = "Texts/";
 const AUDIO_DIR = "Audio/";
-const TEXT_CACHE_VERSION = "20261123-1";
+const TEXT_CACHE_VERSION = "20261125-1";
 const VALERIY_BIOGRAPHY_QUOTES = [
   "«В нашей семье, как и в остальных семьях, есть свои герои: наши деды, дяди (братья наших дедов) — все они вдохновляли, много героических рассказов про них»",
   "«А если мы найдём останки фашиста, что будем делать?»",
