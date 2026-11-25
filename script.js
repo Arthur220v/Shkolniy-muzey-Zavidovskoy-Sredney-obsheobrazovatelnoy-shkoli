@@ -312,7 +312,7 @@ Object.assign(EXHIBITS, {
     additionalImages: [
       {
         image: "Uchastnik_SVO_Evgeniy_Telegin_raspisivaetsya_na_flage.jpg",
-        alt: "Участник СВО Евгений Телегин расписывается на флаге",
+        alt: 'Участник СВО - Телегин Евгений Юрьевич (позывной - "Клин") расписывается на флаге',
       },
     ],
   }),
