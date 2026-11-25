@@ -1987,6 +1987,13 @@ footer {
   cursor: zoom-in;
 }
 
+@media (min-width: 861px) {
+  .exhibit.is-right-flag-detail .exhibit-photo {
+    height: 48vh;
+    object-fit: cover;
+  }
+}
+
 .exhibit.is-right-flag-detail .exhibit-copy {
   grid-column: 1;
   grid-row: 2;
