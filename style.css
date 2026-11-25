@@ -727,7 +727,7 @@ footer {
   line-height: 1.75;
   color: #e7edf6;
   margin: 0 0 1rem;
-  text-align: justify;
+  text-align: left;
   hyphens: auto;
 }
 
@@ -2330,7 +2330,6 @@ body.modal-open {
 
 @media (max-width: 560px) {
   .about-text p {
-    text-align: left;
     hyphens: none;
   }
 
