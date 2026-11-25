@@ -135,6 +135,7 @@ function makeExhibit(id, title, extras = {}) {
     audioFile: extras.audioFile === null ? null : (extras.audioFile || audioFileForExhibit(id, textFile)),
     fallback: extras.fallback || "",
     innerMarkers: extras.innerMarkers || null,
+    additionalImages: extras.additionalImages || [],
   };
 }
 
@@ -302,6 +303,19 @@ function audioFileForExhibit(key, textFile) {
 Object.assign(EXHIBITS, {
   "Putin_Vladimir_Vladimirovich(1)": makeExhibit("Putin_Vladimir_Vladimirovich(1)", "Президент Российской Федерации"),
   "Flag_RF(2)": makeExhibit("Flag_RF(2)", "Государственный флаг России"),
+  "SVO_flag(1)": makeExhibit("SVO_flag(1)", "Российский флаг", {
+    image: "Rossiyskiy_flag(1).jpg",
+    preserveImageFormat: true,
+    textFile: null,
+    audioFile: null,
+    fallback: "Данный флаг был передан участниками Специальной Военной Операции и в нашем музее хранится с 2024 года.",
+    additionalImages: [
+      {
+        image: "Uchastnik_SVO_Evgeniy_Telegin_raspisivaetsya_na_flage.jpg",
+        alt: "Участник СВО Евгений Телегин расписывается на флаге",
+      },
+    ],
+  }),
   "Gerb_RF(3)": makeExhibit("Gerb_RF(3)", "Государственный герб России"),
   "Hymn_RF(4)": makeExhibit("Hymn_RF(4)", "Государственный гимн России"),
   "sunduk_N2(3)": makeExhibit("sunduk_N2(3)", "Немецкий сундук", {
@@ -562,8 +576,8 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     color: "gold",
     left: "19%",
     top: "15%",
-    disabled: true,
-    disabled: true,
+    type: "exhibit",
+    id: "SVO_flag(1)",
   },
   {
     title: "Ящик Мозговой А.Н.",
@@ -842,6 +856,7 @@ const eventDots = document.getElementById("eventDots");
 const eventCarousel = document.getElementById("eventCarousel");
 const exhibit = document.getElementById("exhibit");
 const exhibitPhoto = document.getElementById("exhibitPhoto");
+const exhibitShot = document.querySelector(".exhibit-shot");
 const exhibitText = document.getElementById("exhibitText");
 const exhibitTitle = document.getElementById("exhibitTitle");
 const exhibitBlur = document.getElementById("exhibitBlur");
@@ -1578,6 +1593,7 @@ async function openExhibit(id, blurSrc) {
   const audioFile = typeof data.audioFile === "undefined"
     ? audioFileForExhibit(id, data.textFile)
     : data.audioFile;
+  const additionalImages = data.additionalImages || [];
   const requestId = ++exhibitRequestId;
 
   if (isExhibitOpen() && currentExhibitId && currentExhibitId !== id) {
@@ -1587,13 +1603,15 @@ async function openExhibit(id, blurSrc) {
   const isHeroPortrait = id === "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)";
   const isStandPhoto = id.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_");
   const isZavidovoHistoryPhoto = id.startsWith("Stend_about_Zavidovo_history(2)_");
-  const canOpenFullView = isStandPhoto || isZavidovoHistoryPhoto || Boolean(data.fullViewImage);
+  const canOpenFullView = isStandPhoto || isZavidovoHistoryPhoto || Boolean(data.fullViewImage) || additionalImages.length > 0;
   exhibit.classList.toggle("is-symbol-detail", id === "Gerb_RF(3)" || id === "Hymn_RF(4)");
   exhibit.classList.toggle("is-hymn-detail", id === "Hymn_RF(4)");
   exhibit.classList.toggle("is-flag-detail", id === "Flag_RF(2)");
+  exhibit.classList.toggle("is-right-flag-detail", id === "SVO_flag(1)");
   exhibit.classList.toggle("is-biography-detail", isHeroPortrait);
 
   exhibit.classList.remove("is-open");
+  exhibitShot.querySelectorAll(".exhibit-additional-photo").forEach((image) => image.remove());
   exhibitPhoto.src = encodePath(IMAGE_DIR, data.image, data.preserveImageFormat);
   exhibitPhoto.alt = data.title || data.image;
   if (canOpenFullView) {
@@ -1605,6 +1623,17 @@ async function openExhibit(id, blurSrc) {
     exhibitPhoto.removeAttribute("tabindex");
     exhibitPhoto.removeAttribute("aria-label");
   }
+  additionalImages.forEach((photo) => {
+    const image = document.createElement("img");
+    image.className = "exhibit-photo exhibit-additional-photo";
+    image.src = encodePath(IMAGE_DIR, photo.image, data.preserveImageFormat);
+    image.alt = photo.alt;
+    image.setAttribute("role", "button");
+    image.setAttribute("tabindex", "0");
+    image.setAttribute("aria-label", `Открыть фотографию на весь экран: ${photo.alt}`);
+    addExhibitPhotoFullView(image);
+    exhibitShot.appendChild(image);
+  });
   exhibitTitle.replaceChildren();
   if (data.titleLinkUrl) {
     const titleLink = document.createElement("a");
@@ -2314,24 +2343,29 @@ document.querySelectorAll(".teacher-photo-button, .author-photo-button").forEach
   });
 });
 document.getElementById("closeExhibit").addEventListener("click", closeExhibit);
-function openCurrentExhibitFullView() {
+function openCurrentExhibitFullView(event) {
   const data = EXHIBITS[currentExhibitId];
   const isStandPhoto = currentExhibitId?.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_");
   const isZavidovoHistoryPhoto = currentExhibitId?.startsWith("Stend_about_Zavidovo_history(2)_");
-  if (!data?.fullViewImage && !isStandPhoto && !isZavidovoHistoryPhoto) return;
+  if (!data?.fullViewImage && !isStandPhoto && !isZavidovoHistoryPhoto && !data?.additionalImages?.length) return;
+  const image = event.currentTarget instanceof HTMLImageElement ? event.currentTarget : exhibitPhoto;
   const src = data.fullViewImage
     ? encodePath(IMAGE_DIR, data.fullViewImage)
-    : exhibitPhoto.src;
-  openImageLightbox(src, exhibitPhoto.alt);
+    : image.currentSrc || image.src;
+  openImageLightbox(src, image.alt);
 }
 
-exhibitPhoto.addEventListener("click", openCurrentExhibitFullView);
-exhibitPhoto.addEventListener("keydown", (event) => {
-  if (event.key !== "Enter" && event.key !== " ") return;
-  if (!exhibitPhoto.hasAttribute("role")) return;
-  event.preventDefault();
-  openCurrentExhibitFullView();
-});
+function addExhibitPhotoFullView(image) {
+  image.addEventListener("click", openCurrentExhibitFullView);
+  image.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    if (!image.hasAttribute("role")) return;
+    event.preventDefault();
+    openCurrentExhibitFullView(event);
+  });
+}
+
+addExhibitPhotoFullView(exhibitPhoto);
 audioToggle.addEventListener("click", async () => {
   if (!exhibitAudio.paused) {
     exhibitAudio.pause();
