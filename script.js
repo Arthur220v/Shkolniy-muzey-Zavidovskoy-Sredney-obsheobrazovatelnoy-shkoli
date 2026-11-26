@@ -148,6 +148,51 @@ const ZAVIDOVO_ROAD_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XVI)";
 const ZAVIDOVO_COACHMEN_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XVII)";
 const ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XVIII)";
 const ZAVIDOVO_CLUB_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XIX)";
+const TRUZHENIKI_TYLA_ID = "Truzheniki_tyla(10)";
+const TRUZHENIKI_TYLA_MARKERS = [
+  { numeral: "I", title: "Труженики тыла - 2", image: "Truzheniki_tyla(10)_(I).jpg", left: "24.35%", top: "26.08%" },
+  {
+    numeral: "II",
+    title: "Плакат Кукрыниксов",
+    image: "Truzheniki_tyla(10)_(II).jpg",
+    textFile: "Truzheniki_tyla(10)_(II)_info_about_image.txt",
+    audioFile: "audio_for_Truzheniki_tyla(10)_(II)_info_about_image.mp3",
+    left: "51.92%",
+    top: "25.54%",
+  },
+  { numeral: "III", title: "Труженики тыла - 1", image: "Truzheniki_tyla(10)_(III) (1).jpg", left: "78.35%", top: "27.38%" },
+  { numeral: "IV", title: "Женская тракторная бригада", image: "Truzheniki_tyla(10)_(IV).jpg", left: "22.8%", top: "51.3%" },
+  {
+    numeral: "V",
+    title: "Всё для фронта!",
+    detailTitle: "Всё для фронта, всё для Победы!",
+    image: "Truzheniki_tyla(10)_(V).jpg",
+    audioFile: "audio_for_Truzheniki_tyla(10)_(V).mp3",
+    left: "52.6%",
+    top: "51.3%",
+  },
+  { numeral: "VI", title: "Повозка в пути", image: "Truzheniki_tyla(10)_(VI).jpg", left: "78.5%", top: "50.9%" },
+  {
+    numeral: "VII",
+    title: "Ткацкий цех",
+    detailTitle: "Ткацкий цех матрасных полотен",
+    image: "Truzheniki_tyla(10)_(VII).jpg",
+    left: "22.8%",
+    top: "70.1%",
+  },
+  { numeral: "VIII", title: "Боевое братство", image: "Truzheniki_tyla(10)_(VIII).jpg", left: "53.7%", top: "72.7%" },
+  { numeral: "IX", title: "Детский сад в Шорново", image: "Truzheniki_tyla(10)_(IX).jpg", left: "81%", top: "69.2%" },
+  { numeral: "X", title: "Фабричный клуб", image: "Truzheniki_tyla(10)_(X).jpg", left: "23%", top: "85.5%" },
+  { numeral: "XI", title: "Операция в поле", image: "Truzheniki_tyla(10)_(XI).jpg", left: "52.7%", top: "86.8%" },
+  {
+    numeral: "XII",
+    title: "Артель",
+    detailTitle: "Завидовская артель стекловудов",
+    image: "Truzheniki_tyla(10)_(XII).jpg",
+    left: "79.9%",
+    top: "85.9%",
+  },
+];
 const ZAVIDOVO_DORMITORY_2_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XX)";
 const ZAVIDOVO_TEMPLE_INFO_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXI)";
 const ZAVIDOVO_KLIN_DISTRICT_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XXII)";
@@ -437,6 +482,17 @@ Object.assign(EXHIBITS, {
   }),
 });
 
+TRUZHENIKI_TYLA_MARKERS.forEach(({ numeral, title, detailTitle, image, textFile, audioFile }) => {
+  const id = `${TRUZHENIKI_TYLA_ID}_(${numeral})`;
+  EXHIBITS[id] = makeExhibit(id, detailTitle || title || `Раздел ${numeral}`, {
+    image: image || "Truzheniki_tyla(10).jpg",
+    preserveImageFormat: true,
+    textFile: textFile || null,
+    audioFile: audioFile || null,
+    fallback: (textFile || image) ? "" : "Информация об этом разделе будет добавлена позже.",
+  });
+});
+
 [
   {
     numeral: "I",
@@ -647,7 +703,8 @@ const RIGHT_LONGITUDINAL_OBJECTS = [
     color: "red",
     left: "26.5%",
     top: "41%",
-    disabled: true,
+    type: "scene",
+    id: TRUZHENIKI_TYLA_ID,
   },
   {
     title: "«Освобождение Завидово»",
@@ -731,6 +788,19 @@ const SCENES = {
       { id: "vipuskniki_1941g(9)_(XXXIII)", title: "Савинков Николай", left: "52%", top: "54%", width: "13%", height: "24%" },
       { id: "vipuskniki_1941g(9)_(XXXV)", title: "Закунов Александр", left: "68%", top: "54%", width: "13%", height: "24%" },
     ],
+  },
+  [TRUZHENIKI_TYLA_ID]: {
+    image: "Truzheniki_tyla(10).jpg",
+    title: "Стенд «Труженики тыла»",
+    preserveImageFormat: true,
+    spots: [],
+    romanNumerals: TRUZHENIKI_TYLA_MARKERS.map(({ numeral, title, left, top }) => ({
+      numeral,
+      title: title || numeral,
+      exhibitId: `${TRUZHENIKI_TYLA_ID}_(${numeral})`,
+      left,
+      top,
+    })),
   },
   "maket_boev(12)": {
     image: "maket_boev(12).jpg",
@@ -2160,7 +2230,10 @@ function closeTour() {
 function openScene(id) {
   const data = SCENES[id];
   if (!data) return;
-  scene.classList.toggle("is-zavidovo-history", id === "Stend_about_Zavidovo_history(2)");
+  scene.classList.toggle(
+    "is-numeral-button-scene",
+    id === "Stend_about_Zavidovo_history(2)" || id === TRUZHENIKI_TYLA_ID
+  );
   const requestId = ++sceneRequestId;
   clearTimeout(sceneCloseTimer);
   scenePhoto.src = encodePath(IMAGE_DIR, data.image, data.preserveImageFormat);

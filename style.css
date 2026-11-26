@@ -238,7 +238,7 @@ footer {
   top: 50%;
   right: 0.85rem;
   color: rgba(240, 213, 154, 0.72);
-  content: "›";
+  content: ">";
   font-size: 1.25rem;
   line-height: 1;
   transform: translateY(-53%);
@@ -3332,7 +3332,7 @@ body.modal-open {
   transform: translate(-50%, -50%) scale(0.96);
 }
 
-.scene.is-zavidovo-history .scene-numeral-button {
+.scene.is-numeral-button-scene .scene-numeral-button {
   width: 42px;
   height: 42px;
   min-width: 42px;
@@ -3346,7 +3346,7 @@ body.modal-open {
   font-size: 0;
 }
 
-.scene.is-zavidovo-history .scene-numeral-label {
+.scene.is-numeral-button-scene .scene-numeral-label {
   display: block;
   width: max-content;
   min-width: 1.8rem;
@@ -3372,16 +3372,16 @@ body.modal-open {
     scale 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.scene.is-zavidovo-history .scene-numeral-button:hover,
-.scene.is-zavidovo-history .scene-numeral-button:focus-visible {
+.scene.is-numeral-button-scene .scene-numeral-button:hover,
+.scene.is-numeral-button-scene .scene-numeral-button:focus-visible {
   border-color: transparent;
   background: transparent;
   box-shadow: none;
 }
 
-.scene.is-zavidovo-history .scene-numeral-button:hover .scene-numeral-label,
-.scene.is-zavidovo-history .scene-numeral-button:active .scene-numeral-label,
-.scene.is-zavidovo-history .scene-numeral-button:focus-visible .scene-numeral-label {
+.scene.is-numeral-button-scene .scene-numeral-button:hover .scene-numeral-label,
+.scene.is-numeral-button-scene .scene-numeral-button:active .scene-numeral-label,
+.scene.is-numeral-button-scene .scene-numeral-button:focus-visible .scene-numeral-label {
   border-color: var(--blue-rect-button-border-hover);
   background: var(--blue-rect-button-background-hover);
   opacity: 1;
@@ -4186,7 +4186,7 @@ body.modal-open {
   z-index: 4;
   top: -0.85rem;
   right: 0.65rem;
-  content: "🏛️";
+  content: "???";
   color: #efd38d;
   font-size: clamp(1.35rem, 5vw, 2rem);
   filter: drop-shadow(0 0 7px rgba(227, 188, 94, 0.82)) drop-shadow(0 0 16px rgba(227, 188, 94, 0.42));
@@ -5774,15 +5774,15 @@ html[data-theme="light"] .scene-numeral-button:active {
   box-shadow: 0 8px 20px rgba(30, 45, 65, 0.18);
 }
 
-html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-label {
+html[data-theme="light"] .scene.is-numeral-button-scene .scene-numeral-label {
   border-color: var(--light-control-border);
   background: #fff;
   color: var(--light-control-ink);
 }
 
-html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:hover .scene-numeral-label,
-html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:active .scene-numeral-label,
-html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:focus-visible .scene-numeral-label {
+html[data-theme="light"] .scene.is-numeral-button-scene .scene-numeral-button:hover .scene-numeral-label,
+html[data-theme="light"] .scene.is-numeral-button-scene .scene-numeral-button:active .scene-numeral-label,
+html[data-theme="light"] .scene.is-numeral-button-scene .scene-numeral-button:focus-visible .scene-numeral-label {
   border-color: var(--light-control-border);
   background: var(--light-control-hover-background);
   color: var(--light-control-ink);
@@ -5877,14 +5877,14 @@ html[data-theme="light"] .scene.is-zavidovo-history .scene-numeral-button:focus-
 }
 
 @media (max-width: 560px) {
-  .scene.is-zavidovo-history .scene-numeral-button {
+  .scene.is-numeral-button-scene .scene-numeral-button {
     width: 44px;
     height: 44px;
     min-width: 44px;
     min-height: 44px;
   }
 
-  .scene.is-zavidovo-history .scene-numeral-label {
+  .scene.is-numeral-button-scene .scene-numeral-label {
     max-width: min(68px, 20vw);
     padding: 0.12rem 0.2rem;
     font-size: 0.52rem;
