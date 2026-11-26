@@ -161,7 +161,7 @@ const TRUZHENIKI_TYLA_MARKERS = [
     top: "25.54%",
   },
   { numeral: "III", title: "Труженики тыла - 1", image: "Truzheniki_tyla(10)_(III) (1).jpg", left: "76.35%", top: "27.38%" },
-  { numeral: "IV", title: "Женская тракторная бригада", image: "Truzheniki_tyla(10)_(IV).jpg", left: "20.8%", top: "51.3%" },
+  { numeral: "IV", title: "Женская тракторная бригада", image: "Truzheniki_tyla(10)_(IV).jpg", left: "18.8%", top: "51.3%" },
   {
     numeral: "V",
     title: "Всё для фронта!",
@@ -181,7 +181,7 @@ const TRUZHENIKI_TYLA_MARKERS = [
     top: "70.1%",
   },
   { numeral: "VIII", title: "Боевое братство", image: "Truzheniki_tyla(10)_(VIII).jpg", left: "51.7%", top: "72.7%" },
-  { numeral: "IX", title: "Детский сад в Шорново", image: "Truzheniki_tyla(10)_(IX).jpg", left: "79%", top: "69.2%" },
+  { numeral: "IX", title: "Детский сад в Шорново", image: "Truzheniki_tyla(10)_(IX).jpg", left: "77%", top: "69.2%" },
   { numeral: "X", title: "Фабричный клуб", image: "Truzheniki_tyla(10)_(X).jpg", left: "23%", top: "85.5%" },
   { numeral: "XI", title: "Операция в поле", image: "Truzheniki_tyla(10)_(XI).jpg", left: "50.7%", top: "86.8%" },
   {
