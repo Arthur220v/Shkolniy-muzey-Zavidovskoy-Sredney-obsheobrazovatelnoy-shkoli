@@ -1877,6 +1877,10 @@ footer {
   transition: transform 0.18s ease-out;
 }
 
+.exhibit-photo[role="button"] {
+  cursor: zoom-in;
+}
+
 .exhibit-photo:hover {
   transform: scale(1.003);
 }

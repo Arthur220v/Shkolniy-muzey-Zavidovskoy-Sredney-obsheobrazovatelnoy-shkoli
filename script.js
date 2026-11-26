@@ -150,18 +150,18 @@ const ZAVIDOVO_LENINGRADSKAYA_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XVI
 const ZAVIDOVO_CLUB_EXHIBIT_ID = "Stend_about_Zavidovo_history(2)_(XIX)";
 const TRUZHENIKI_TYLA_ID = "Truzheniki_tyla(10)";
 const TRUZHENIKI_TYLA_MARKERS = [
-  { numeral: "I", title: "Труженики тыла - 2", image: "Truzheniki_tyla(10)_(I).jpg", left: "24.35%", top: "26.08%" },
+  { numeral: "I", title: "Труженики тыла - 2", image: "Truzheniki_tyla(10)_(I).jpg", left: "22.35%", top: "26.08%" },
   {
     numeral: "II",
     title: "Плакат Кукрыниксов",
     image: "Truzheniki_tyla(10)_(II).jpg",
     textFile: "Truzheniki_tyla(10)_(II)_info_about_image.txt",
     audioFile: "audio_for_Truzheniki_tyla(10)_(II)_info_about_image.mp3",
-    left: "51.92%",
+    left: "49.92%",
     top: "25.54%",
   },
-  { numeral: "III", title: "Труженики тыла - 1", image: "Truzheniki_tyla(10)_(III) (1).jpg", left: "78.35%", top: "27.38%" },
-  { numeral: "IV", title: "Женская тракторная бригада", image: "Truzheniki_tyla(10)_(IV).jpg", left: "22.8%", top: "51.3%" },
+  { numeral: "III", title: "Труженики тыла - 1", image: "Truzheniki_tyla(10)_(III) (1).jpg", left: "76.35%", top: "27.38%" },
+  { numeral: "IV", title: "Женская тракторная бригада", image: "Truzheniki_tyla(10)_(IV).jpg", left: "20.8%", top: "51.3%" },
   {
     numeral: "V",
     title: "Всё для фронта!",
@@ -180,10 +180,10 @@ const TRUZHENIKI_TYLA_MARKERS = [
     left: "22.8%",
     top: "70.1%",
   },
-  { numeral: "VIII", title: "Боевое братство", image: "Truzheniki_tyla(10)_(VIII).jpg", left: "53.7%", top: "72.7%" },
-  { numeral: "IX", title: "Детский сад в Шорново", image: "Truzheniki_tyla(10)_(IX).jpg", left: "81%", top: "69.2%" },
+  { numeral: "VIII", title: "Боевое братство", image: "Truzheniki_tyla(10)_(VIII).jpg", left: "51.7%", top: "72.7%" },
+  { numeral: "IX", title: "Детский сад в Шорново", image: "Truzheniki_tyla(10)_(IX).jpg", left: "79%", top: "69.2%" },
   { numeral: "X", title: "Фабричный клуб", image: "Truzheniki_tyla(10)_(X).jpg", left: "23%", top: "85.5%" },
-  { numeral: "XI", title: "Операция в поле", image: "Truzheniki_tyla(10)_(XI).jpg", left: "52.7%", top: "86.8%" },
+  { numeral: "XI", title: "Операция в поле", image: "Truzheniki_tyla(10)_(XI).jpg", left: "50.7%", top: "86.8%" },
   {
     numeral: "XII",
     title: "Артель",
@@ -1671,9 +1671,11 @@ async function openExhibit(id, blurSrc) {
   }
   currentExhibitId = id;
   const isHeroPortrait = id === "Stend_about_Chechnya_Afghanistan_WWII(1)_(VI)";
+  const isTruzhenikiTylaPhoto = isTruzhenikiTylaPhotoId(id);
   const isStandPhoto = id.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_");
   const isZavidovoHistoryPhoto = id.startsWith("Stend_about_Zavidovo_history(2)_");
-  const canOpenFullView = isStandPhoto || isZavidovoHistoryPhoto || Boolean(data.fullViewImage) || additionalImages.length > 0;
+  const canOpenFullView =
+    isTruzhenikiTylaPhoto || isStandPhoto || isZavidovoHistoryPhoto || Boolean(data.fullViewImage) || additionalImages.length > 0;
   exhibit.classList.toggle("is-symbol-detail", id === "Gerb_RF(3)" || id === "Hymn_RF(4)");
   exhibit.classList.toggle("is-hymn-detail", id === "Hymn_RF(4)");
   exhibit.classList.toggle("is-flag-detail", id === "Flag_RF(2)");
@@ -2416,11 +2418,16 @@ document.querySelectorAll(".teacher-photo-button, .author-photo-button").forEach
   });
 });
 document.getElementById("closeExhibit").addEventListener("click", closeExhibit);
+function isTruzhenikiTylaPhotoId(id) {
+  return typeof id === "string" && id.startsWith(`${TRUZHENIKI_TYLA_ID}_(`);
+}
+
 function openCurrentExhibitFullView(event) {
   const data = EXHIBITS[currentExhibitId];
+  const isTruzhenikiTylaPhoto = isTruzhenikiTylaPhotoId(currentExhibitId);
   const isStandPhoto = currentExhibitId?.startsWith("Stend_about_Chechnya_Afghanistan_WWII(1)_");
   const isZavidovoHistoryPhoto = currentExhibitId?.startsWith("Stend_about_Zavidovo_history(2)_");
-  if (!data?.fullViewImage && !isStandPhoto && !isZavidovoHistoryPhoto && !data?.additionalImages?.length) return;
+  if (!data?.fullViewImage && !isTruzhenikiTylaPhoto && !isStandPhoto && !isZavidovoHistoryPhoto && !data?.additionalImages?.length) return;
   const image = event.currentTarget instanceof HTMLImageElement ? event.currentTarget : exhibitPhoto;
   const src = data.fullViewImage
     ? encodePath(IMAGE_DIR, data.fullViewImage)
