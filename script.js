@@ -592,16 +592,16 @@ const LONGITUDINAL_OBJECTS = [
     title: "Стенд о Чечне, Афганистане и Великой Отечественной войне",
     number: "1",
     color: "red",
-    left: "58%",
-    top: "14%",
+    left: "57.8%",
+    top: "14.6%",
   },
   {
     id: "Stend_about_Zavidovo_history(2)",
     title: "Стенд «История Завидово»",
     number: "2",
     color: "red",
-    left: "23%",
-    top: "80%",
+    left: "24%",
+    top: "79.4%",
     labelPosition: "above",
   },
   {
@@ -609,8 +609,8 @@ const LONGITUDINAL_OBJECTS = [
     title: "Немецкий сундук",
     number: "3",
     color: "blue",
-    left: "58%",
-    top: "89%",
+    left: "57.2%",
+    top: "77.2%",
     type: "exhibit",
     labelPosition: "above",
   },
@@ -619,9 +619,18 @@ const LONGITUDINAL_OBJECTS = [
     title: "Военные трофеи",
     number: "4",
     color: "blue",
-    left: "81.2%",
-    top: "53.3%",
+    left: "83.2%",
+    top: "61.2%",
     type: "exhibit",
+  },
+  {
+    title: "Шкаф",
+    number: "5",
+    color: "blue",
+    left: "36.4%",
+    top: "53.6%",
+    disabled: true,
+    hideLabel: true,
   },
 ];
 
@@ -1018,6 +1027,8 @@ function encodePath(dir, file, preserveImageFormat = false) {
     /^vitrina_pamyati\(13\)(?:_hits_for_markers|_\(GX\)(?:_full_view_photo)?)?\.(?:jpe?g|webp)$/i.test(imageFile);
   const isUpdatedEntranceMap = dir === IMAGE_DIR &&
     /^interior_of_the_museum_entrance(?:_hits_for_markers)?\.(?:png|jpe?g|webp)$/i.test(imageFile);
+  const isUpdatedLongitudinalMap = dir === IMAGE_DIR &&
+    file === "facing_two_longitudinal_(interactive).png";
   const isUpdatedMotovilinAudio = dir === AUDIO_DIR &&
     file === "audio_for_museum_entrance_left_soviet_soldier_photo_info_about_image.mp3";
   const isUpdatedVaraksinoAudio = dir === AUDIO_DIR &&
@@ -1029,9 +1040,10 @@ function encodePath(dir, file, preserveImageFormat = false) {
   return isUpdatedMemoryDisplay
     ? `${path}?v=20261108-1`
     : isUpdatedEntranceMap ? `${path}?v=20261108-2`
-      : isUpdatedMotovilinAudio ? `${path}?v=20261118-1`
-        : isUpdatedVaraksinoAudio || isUpdatedVaraksinoText ? `${path}?v=20261115-2`
-          : isUpdatedZavidovoXXIV ? `${path}?v=20261121-xxiv-3` : path;
+      : isUpdatedLongitudinalMap ? `${path}?v=20261127-longitudinal-1`
+        : isUpdatedMotovilinAudio ? `${path}?v=20261118-1`
+          : isUpdatedVaraksinoAudio || isUpdatedVaraksinoText ? `${path}?v=20261115-2`
+            : isUpdatedZavidovoXXIV ? `${path}?v=20261121-xxiv-3` : path;
 }
 
 function createPanZoom(viewport, world) {
@@ -1987,18 +1999,22 @@ function renderLongitudinalMarkers() {
     pin.dataset.labelPosition = item.labelPosition || "below";
     pin.setAttribute("aria-label", item.title);
     pin.setAttribute("aria-disabled", String(Boolean(item.disabled)));
-    pin.title = item.title;
+    pin.title = item.hideLabel ? "" : item.title;
     const glow = document.createElement("span");
     glow.className = "pin-glow";
     const dot = document.createElement("span");
     dot.className = "pin-dot";
-    const label = document.createElement("span");
-    label.className = "pin-label";
-    const title = document.createElement("span");
-    title.className = "pin-label-text";
-    title.textContent = item.title;
-    label.appendChild(title);
-    pin.append(glow, dot, label);
+    pin.append(glow, dot);
+
+    if (!item.hideLabel) {
+      const label = document.createElement("span");
+      label.className = "pin-label";
+      const title = document.createElement("span");
+      title.className = "pin-label-text";
+      title.textContent = item.title;
+      label.appendChild(title);
+      pin.appendChild(label);
+    }
 
     if (!item.disabled) {
       pin.addEventListener("click", (event) => {
