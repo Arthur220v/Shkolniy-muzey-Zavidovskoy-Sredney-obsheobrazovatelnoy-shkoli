@@ -2746,14 +2746,6 @@ body.modal-open {
   cursor: not-allowed;
 }
 
-.longitudinal-pin.is-disabled .pin-label {
-  opacity: 1;
-  visibility: visible;
-  scale: 1;
-  translate: 0 0;
-  transition-delay: 0s;
-}
-
 .right-longitudinal-pin.is-disabled:not(.is-label-visible):not(:hover):not(:focus) .pin-label {
   opacity: 0;
   visibility: hidden;

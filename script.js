@@ -630,7 +630,6 @@ const LONGITUDINAL_OBJECTS = [
     left: "36.4%",
     top: "53.6%",
     disabled: true,
-    hideLabel: true,
   },
 ];
 
@@ -1999,22 +1998,18 @@ function renderLongitudinalMarkers() {
     pin.dataset.labelPosition = item.labelPosition || "below";
     pin.setAttribute("aria-label", item.title);
     pin.setAttribute("aria-disabled", String(Boolean(item.disabled)));
-    pin.title = item.hideLabel ? "" : item.title;
+    pin.title = item.title;
     const glow = document.createElement("span");
     glow.className = "pin-glow";
     const dot = document.createElement("span");
     dot.className = "pin-dot";
-    pin.append(glow, dot);
-
-    if (!item.hideLabel) {
-      const label = document.createElement("span");
-      label.className = "pin-label";
-      const title = document.createElement("span");
-      title.className = "pin-label-text";
-      title.textContent = item.title;
-      label.appendChild(title);
-      pin.appendChild(label);
-    }
+    const label = document.createElement("span");
+    label.className = "pin-label";
+    const title = document.createElement("span");
+    title.className = "pin-label-text";
+    title.textContent = item.title;
+    label.appendChild(title);
+    pin.append(glow, dot, label);
 
     if (!item.disabled) {
       pin.addEventListener("click", (event) => {
