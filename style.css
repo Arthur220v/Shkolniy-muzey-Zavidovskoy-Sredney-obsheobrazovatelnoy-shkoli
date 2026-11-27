@@ -3750,6 +3750,51 @@ body.modal-open {
   line-height: 1.6;
 }
 
+.guestbook-average-rating {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-top: 0.8rem;
+  color: var(--gold-bright);
+}
+
+.guestbook-average-stars {
+  position: relative;
+  display: inline-block;
+  width: 3.05rem;
+  height: 2.3rem;
+  line-height: 1;
+}
+
+.guestbook-average-star--large,
+.guestbook-average-star--small {
+  position: absolute;
+  text-shadow: 0 0 12px rgba(240, 213, 154, 0.42);
+}
+
+.guestbook-average-star--large {
+  left: 0;
+  bottom: 0;
+  font-size: 2.45rem;
+}
+
+.guestbook-average-star--small {
+  right: 0.15rem;
+  bottom: 0;
+  font-size: 1.55rem;
+}
+
+.guestbook-average-number {
+  min-width: 2.8rem;
+  color: var(--gold-bright);
+  font-size: 1.8rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-align: left;
+}
+
 .guestbook-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
@@ -3960,6 +4005,13 @@ body.modal-open {
   border-radius: 50%;
   font-size: 1.55rem;
   box-shadow: inset 0 1px 5px rgba(255, 255, 255, 0.2), 0 4px 14px rgba(0, 0, 0, 0.28);
+}
+
+.guestbook-avatar-symbol {
+  display: block;
+  width: 1em;
+  height: 1em;
+  color: inherit;
 }
 
 .guestbook-avatar-preview .guestbook-avatar {
@@ -4185,19 +4237,20 @@ body.modal-open {
   box-shadow: inset 0 0 28px rgba(153, 111, 28, 0.12), 0 0 22px rgba(145, 105, 28, 0.16);
 }
 
-.guestbook-review--first::before {
+.guestbook-first-review-icon {
   position: absolute;
   z-index: 4;
   top: -0.85rem;
   right: 0.65rem;
-  content: "???";
-  color: #efd38d;
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
   font-size: clamp(1.35rem, 5vw, 2rem);
+  line-height: 1;
+  color: #efd38d;
   filter: drop-shadow(0 0 7px rgba(227, 188, 94, 0.82)) drop-shadow(0 0 16px rgba(227, 188, 94, 0.42));
   pointer-events: none;
 }
 
-.guestbook-review--first > * {
+.guestbook-review--first > :not(.guestbook-first-review-icon) {
   position: relative;
   z-index: 1;
 }
@@ -4211,7 +4264,6 @@ body.modal-open {
 
 .guestbook-featured-badge {
   display: inline-flex;
-  margin-top: 0.7rem;
   padding: 0.28rem 0.65rem;
   border: 1px solid rgba(240, 210, 74, 0.72);
   border-radius: 999px;
@@ -4219,6 +4271,19 @@ body.modal-open {
   color: #ffe66d;
   font-size: 0.76rem;
   font-weight: 800;
+  line-height: 1.2;
+}
+
+.guestbook-review-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.55rem;
+  margin-top: 0.15rem;
+}
+
+.guestbook-review-identity .guestbook-review-meta time {
+  margin-top: 0;
 }
 
 @keyframes guestbookFeaturedGlow {

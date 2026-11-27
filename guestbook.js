@@ -20,6 +20,7 @@ const AVATAR_EXTENSIONS = new Map([
 ]);
 const AVATARS = ["📚", "⭐", "🕊️", "🌿", "🦉", "🏛️"];
 const AVATAR_COLORS = ["blue", "gold", "green", "burgundy", "violet"];
+const LEAF_AVATAR_EMOJI = "🌿";
 
 const guestbookForm = document.getElementById("guestbookForm");
 const guestbookFirstName = document.getElementById("guestbookFirstName");
@@ -38,6 +39,8 @@ const guestbookUseEmoji = document.getElementById("guestbookUseEmoji");
 const guestbookFeedback = document.getElementById("guestbookFeedback");
 const guestbookLoadFeedback = document.getElementById("guestbookLoadFeedback");
 const guestbookReviewList = document.getElementById("guestbookReviewList");
+const guestbookAverageRating = document.getElementById("guestbookAverageRating");
+const guestbookAverageNumber = document.getElementById("guestbookAverageNumber");
 const guestbookPagination = document.getElementById("guestbookPagination");
 const guestbookPageNumbers = document.getElementById("guestbookPageNumbers");
 const guestbookPreviousPage = document.getElementById("guestbookPreviousPage");
@@ -225,6 +228,67 @@ function getModeratorSignInErrorMessage(error) {
   return `Supabase отклонил вход (код: ${error.code || "не указан"}). Проверьте аккаунт в Authentication → Users.`;
 }
 
+function makeLeafAvatarSymbol() {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.classList.add("guestbook-avatar-symbol");
+  svg.setAttribute("viewBox", "0 0 36 36");
+  svg.setAttribute("aria-hidden", "true");
+
+  const stem = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  stem.setAttribute("d", "M7 31C13 24 18 17 29 5");
+  stem.setAttribute("fill", "none");
+  stem.setAttribute("stroke", "currentColor");
+  stem.setAttribute("stroke-width", "2.2");
+  stem.setAttribute("stroke-linecap", "round");
+
+  const leafData = [
+    "M21 20c-6 0-10-3-12-8 6-1 11 2 12 8Z",
+    "M25 15c-1-6 2-10 7-12 2 5-1 10-7 12Z",
+    "M17 24c-6 1-11-1-14-6 6-2 12 0 14 6Z",
+    "M27 12c4-5 8-6 12-4-3 5-7 7-12 4Z",
+    "M13 28c-5 0-8-2-10-6 5-1 9 1 10 6Z",
+  ];
+
+  leafData.forEach((data) => {
+    const leaf = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    leaf.setAttribute("d", data);
+    leaf.setAttribute("fill", "currentColor");
+    svg.append(leaf);
+  });
+
+  const veins = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  veins.setAttribute("fill", "none");
+  veins.setAttribute("stroke", "#315c46");
+  veins.setAttribute("stroke-width", "0.55");
+  veins.setAttribute("stroke-linecap", "round");
+
+  ["M21 20l-8-6", "M25 15l5-8", "M17 24l-10-5", "M27 12l8-3", "M13 28l-7-4"].forEach((data) => {
+    const vein = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    vein.setAttribute("d", data);
+    veins.append(vein);
+  });
+
+  svg.append(stem, veins);
+  return svg;
+}
+
+function makeFirstReviewSymbol() {
+  const symbol = document.createElement("span");
+  symbol.className = "guestbook-first-review-icon";
+  symbol.textContent = "🏛️";
+  symbol.setAttribute("role", "img");
+  symbol.setAttribute("aria-label", "Античное здание");
+  return symbol;
+}
+
+function appendAvatarSymbol(container, emoji) {
+  if (emoji === LEAF_AVATAR_EMOJI) {
+    container.append(makeLeafAvatarSymbol());
+  } else {
+    container.textContent = emoji;
+  }
+}
+
 function makeAvatar(emoji, color, label, photoUrl = null) {
   const avatar = document.createElement("span");
   const isCustomColor = /^#[\da-f]{6}$/i.test(color);
@@ -244,11 +308,11 @@ function makeAvatar(emoji, color, label, photoUrl = null) {
     image.loading = "lazy";
     image.addEventListener("error", () => {
       image.remove();
-      avatar.textContent = emoji;
+      appendAvatarSymbol(avatar, emoji);
     }, { once: true });
     avatar.append(image);
   } else {
-    avatar.textContent = emoji;
+    appendAvatarSymbol(avatar, emoji);
   }
   return avatar;
 }
@@ -309,7 +373,7 @@ function createAvatarChoices() {
     const option = document.createElement("button");
     option.type = "button";
     option.className = "guestbook-avatar-choice";
-    option.textContent = emoji;
+    appendAvatarSymbol(option, emoji);
     option.setAttribute("aria-label", `Аватар ${emoji}`);
     option.setAttribute("aria-pressed", String(emoji === selectedEmoji));
     option.addEventListener("click", () => {
@@ -407,6 +471,26 @@ function createRatingDisplay(rating) {
     display.append(star);
   }
   return display;
+}
+
+function updateAverageRating(ratings) {
+  const validRatings = ratings
+    .map((entry) => Number(entry.rating))
+    .filter((rating) => Number.isFinite(rating) && rating >= 1 && rating <= 5);
+
+  if (!validRatings.length) {
+    guestbookAverageNumber.textContent = "0.0";
+    guestbookAverageRating.setAttribute("aria-label", "Средняя оценка: нет отзывов");
+    return;
+  }
+
+  const average = validRatings.reduce((sum, rating) => sum + rating, 0) / validRatings.length;
+  const formattedAverage = average.toFixed(1);
+  guestbookAverageNumber.textContent = formattedAverage;
+  guestbookAverageRating.setAttribute(
+    "aria-label",
+    `Средняя оценка: ${formattedAverage} из 5 звёзд по ${validRatings.length} отзывам`
+  );
 }
 
 function formatReviewDate(value) {
@@ -709,6 +793,10 @@ function createReviewCard(review, isModeration = false, photoUrl = null) {
     review.is_first_review ? "guestbook-review--first" : "",
   ].filter(Boolean).join(" ");
 
+  if (review.is_first_review) {
+    card.append(makeFirstReviewSymbol());
+  }
+
   const header = document.createElement("div");
   header.className = "guestbook-review-header";
   header.append(makeAvatar(review.avatar_emoji, review.avatar_color, "Аватар автора отзыва", photoUrl));
@@ -731,7 +819,16 @@ function createReviewCard(review, isModeration = false, photoUrl = null) {
   const date = document.createElement("time");
   date.dateTime = review.created_at;
   date.textContent = formatReviewDate(review.created_at);
-  identity.append(date);
+  const meta = document.createElement("div");
+  meta.className = "guestbook-review-meta";
+  meta.append(date);
+  if (review.is_featured) {
+    const featuredBadge = document.createElement("span");
+    featuredBadge.className = "guestbook-featured-badge";
+    featuredBadge.textContent = "Ценный отзыв";
+    meta.append(featuredBadge);
+  }
+  identity.append(meta);
   header.append(identity);
 
   if (isModeration) {
@@ -749,12 +846,6 @@ function createReviewCard(review, isModeration = false, photoUrl = null) {
   body.className = "guestbook-review-body";
   body.textContent = review.body;
   card.append(header, createRatingDisplay(review.rating), body);
-  if (review.is_featured) {
-    const featuredBadge = document.createElement("span");
-    featuredBadge.className = "guestbook-featured-badge";
-    featuredBadge.textContent = "Ценный отзыв";
-    card.append(featuredBadge);
-  }
 
   if (isModeration) {
     if (review.status !== "approved") card.append(createModeratorReplyEditor(review));
@@ -1859,6 +1950,19 @@ async function loadPublishedReviews(page = publishedReviewPage) {
         return;
       }
     }
+
+    const { data: ratingRows, error: ratingsError } = await supabase
+      .from("guestbook_reviews")
+      .select("rating")
+      .eq("status", "approved")
+      .range(0, 9999);
+    if (ratingsError) {
+      console.error("Не удалось рассчитать среднюю оценку.", ratingsError);
+      updateAverageRating([]);
+    } else {
+      updateAverageRating(ratingRows || []);
+    }
+
     renderGuestbookPagination(pageCount);
 
     const data = result.data || [];
