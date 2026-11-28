@@ -2734,3 +2734,25 @@ renderGallery();
 initializeEventGallery();
 renderMapMarkers();
 loadAboutAndLinks();
+
+function initializeSocialCardTouch() {
+  document.querySelectorAll(".max-social-card, .vk-social-card").forEach((card) => {
+    card.addEventListener("pointerdown", () => {
+      card.classList.add("is-social-active");
+    });
+
+    card.addEventListener("pointerup", () => {
+      card.classList.remove("is-social-active");
+    });
+
+    card.addEventListener("pointerleave", () => {
+      card.classList.remove("is-social-active");
+    });
+
+    card.addEventListener("pointercancel", () => {
+      card.classList.remove("is-social-active");
+    });
+  });
+}
+
+initializeSocialCardTouch();

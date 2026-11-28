@@ -1023,7 +1023,8 @@ footer {
 
 .max-social-card:hover,
 .max-social-card:focus-visible,
-.max-social-card:active {
+.max-social-card:active,
+.max-social-card.is-social-active {
   border-color: #9b6cff;
   background: rgba(74, 36, 128, 0.82);
   box-shadow:
@@ -1033,14 +1034,16 @@ footer {
 
 .max-social-card:hover strong,
 .max-social-card:focus-visible strong,
-.max-social-card:active strong {
+.max-social-card:active strong,
+.max-social-card.is-social-active strong {
   color: #c69cff;
   text-shadow: 0 0 14px rgba(155, 108, 255, 0.82);
 }
 
 .vk-social-card:hover,
 .vk-social-card:focus-visible,
-.vk-social-card:active {
+.vk-social-card:active,
+.vk-social-card.is-social-active {
   border-color: #4d9eff;
   background: rgba(25, 91, 157, 0.82);
   box-shadow:
@@ -1050,7 +1053,8 @@ footer {
 
 .vk-social-card:hover strong,
 .vk-social-card:focus-visible strong,
-.vk-social-card:active strong {
+.vk-social-card:active strong,
+.vk-social-card.is-social-active strong {
   color: #74b1ff;
   text-shadow: 0 0 14px rgba(77, 158, 255, 0.82);
 }
@@ -5498,7 +5502,8 @@ html[data-theme="light"] .social-card:hover {
 
 html[data-theme="light"] .max-social-card:hover,
 html[data-theme="light"] .max-social-card:focus-visible,
-html[data-theme="light"] .max-social-card:active {
+html[data-theme="light"] .max-social-card:active,
+html[data-theme="light"] .max-social-card.is-social-active {
   border-color: #9b6cff;
   background: rgba(74, 36, 128, 0.82);
   box-shadow:
@@ -5508,7 +5513,8 @@ html[data-theme="light"] .max-social-card:active {
 
 html[data-theme="light"] .vk-social-card:hover,
 html[data-theme="light"] .vk-social-card:focus-visible,
-html[data-theme="light"] .vk-social-card:active {
+html[data-theme="light"] .vk-social-card:active,
+html[data-theme="light"] .vk-social-card.is-social-active {
   border-color: #4d9eff;
   background: rgba(25, 91, 157, 0.82);
   box-shadow:
