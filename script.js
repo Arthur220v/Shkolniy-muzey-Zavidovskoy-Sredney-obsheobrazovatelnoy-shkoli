@@ -2737,6 +2737,14 @@ loadAboutAndLinks();
 
 function initializeSocialCardTouch() {
   document.querySelectorAll(".max-social-card, .vk-social-card").forEach((card) => {
+    card.addEventListener("pointerenter", () => {
+      card.classList.add("is-social-active");
+    });
+
+    card.addEventListener("pointerleave", () => {
+      card.classList.remove("is-social-active");
+    });
+
     card.addEventListener("pointerdown", () => {
       card.classList.add("is-social-active");
     });
