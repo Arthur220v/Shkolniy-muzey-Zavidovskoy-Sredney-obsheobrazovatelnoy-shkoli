@@ -238,7 +238,7 @@ footer {
   top: 50%;
   right: 0.85rem;
   color: rgba(240, 213, 154, 0.72);
-  content: ">";
+  content: "›";
   font-size: 1.25rem;
   line-height: 1;
   transform: translateY(-53%);
@@ -517,7 +517,7 @@ footer {
 }
 
 .slide.is-active .slide-photo {
-  opacity: 1;
+  opacity: 0.92;
 }
 
 .hotspot {
@@ -1009,6 +1009,50 @@ footer {
   margin-top: 0.15rem;
   color: var(--muted);
   font-size: 0.85rem;
+}
+
+.max-social-card,
+.vk-social-card {
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.max-social-card:hover,
+.max-social-card:focus-visible,
+.max-social-card:active {
+  border-color: #9b6cff;
+  background: rgba(74, 36, 128, 0.82);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.28),
+    0 0 22px rgba(155, 108, 255, 0.55);
+}
+
+.max-social-card:hover strong,
+.max-social-card:focus-visible strong,
+.max-social-card:active strong {
+  color: #c69cff;
+  text-shadow: 0 0 14px rgba(155, 108, 255, 0.82);
+}
+
+.vk-social-card:hover,
+.vk-social-card:focus-visible,
+.vk-social-card:active {
+  border-color: #4d9eff;
+  background: rgba(25, 91, 157, 0.82);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.28),
+    0 0 22px rgba(77, 158, 255, 0.55);
+}
+
+.vk-social-card:hover strong,
+.vk-social-card:focus-visible strong,
+.vk-social-card:active strong {
+  color: #74b1ff;
+  text-shadow: 0 0 14px rgba(77, 158, 255, 0.82);
 }
 
 .additional-info {
@@ -5450,6 +5494,26 @@ html[data-theme="light"] .social-card {
 
 html[data-theme="light"] .social-card:hover {
   border-color: rgba(120, 83, 30, 0.42);
+}
+
+html[data-theme="light"] .max-social-card:hover,
+html[data-theme="light"] .max-social-card:focus-visible,
+html[data-theme="light"] .max-social-card:active {
+  border-color: #9b6cff;
+  background: rgba(74, 36, 128, 0.82);
+  box-shadow:
+    0 12px 28px rgba(30, 45, 65, 0.18),
+    0 0 22px rgba(155, 108, 255, 0.55);
+}
+
+html[data-theme="light"] .vk-social-card:hover,
+html[data-theme="light"] .vk-social-card:focus-visible,
+html[data-theme="light"] .vk-social-card:active {
+  border-color: #4d9eff;
+  background: rgba(25, 91, 157, 0.82);
+  box-shadow:
+    0 12px 28px rgba(30, 45, 65, 0.18),
+    0 0 22px rgba(77, 158, 255, 0.55);
 }
 
 html[data-theme="light"] .author-card {
